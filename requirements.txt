@@ -1,0 +1,3 @@
+beautifulsoup4==4.15.0
+# Project folder mein terminal open karke:
+# python -m pip install -r requirements.txt
