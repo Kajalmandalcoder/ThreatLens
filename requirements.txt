@@ -1,4 +1,5 @@
 beautifulsoup4==4.15.0
+# Header Forensics & DNS Lookups
 dnspython==2.6.1
 # Project folder mein terminal open karke:
 # python -m pip install -r requirements.txt
