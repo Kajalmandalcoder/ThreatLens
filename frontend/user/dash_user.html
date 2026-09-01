@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreatLens - AI Email Safety Check</title>
+    <link rel="stylesheet" href="css/dash_user.css">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <div class="nav-left">
+            <div class="logo-box">
+                <i data-lucide="shield-check"></i>
+            </div>
+
+            <div class="brand">
+                <h2>ThreatLens</h2>
+                <span>AI EMAIL SAFETY CHECK</span>
+            </div>
+        </div>
+
+        <div class="nav-right">
+
+            <button class="nav-btn" id="themeToggle">
+                <i data-lucide="moon"></i>
+                <span id="themeText">Dark</span>
+            </button>
+
+            <button class="nav-link" id="helpBtn">
+                <i data-lucide="circle-help"></i>
+                Help
+            </button>
+
+            <button class="nav-link">
+                <i data-lucide="history"></i>
+                Analysis history
+            </button>
+
+            <div class="divider"></div>
+
+            <div class="profile">
+                <div class="avatar">JA</div>
+                <div>
+                    <strong>Jiya Arya</strong>
+                    <span>Personal workspace</span>
+                </div>
+                <i data-lucide="chevron-down"></i>
+            </div>
+
+        </div>
+    </header>
+
+
+    <!-- MAIN -->
+    <main class="container">
+
+        <!-- HELP MODAL -->
+        <div class="modal-overlay" id="helpModal">
+
+            <div class="help-modal">
+
+                <!-- Close -->
+                <button class="close-modal" id="closeModal">
+                    <i data-lucide="x"></i>
+                </button>
+
+                <!-- Icon -->
+                <div class="modal-icon">
+                    <i data-lucide="mail"></i>
+                </div>
+
+                <h2>How to save an email as a file</h2>
+
+                <p class="modal-subtitle">
+                    Follow the steps for your email provider.
+                </p>
+
+
+                <!-- Gmail + Outlook -->
+                <div class="provider-container">
+
+                    <!-- Gmail -->
+                    <div class="provider-card">
+
+                        <h3>Gmail</h3>
+
+                        <div class="step">
+                            <span>1</span>
+                            <p>Open the suspicious email.</p>
+                        </div>
+
+                        <div class="step">
+                            <span>2</span>
+                            <p>Click the three-dot menu.</p>
+                        </div>
+
+                        <div class="step">
+                            <span>3</span>
+                            <p>Select Download message.</p>
+                        </div>
+
+                        <div class="step">
+                            <span>4</span>
+                            <p>Upload the downloaded .eml file here.</p>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Outlook -->
+                    <div class="provider-card">
+
+                        <h3>Outlook</h3>
+
+                        <div class="step">
+                            <span>1</span>
+                            <p>Open the email.</p>
+                        </div>
+
+                        <div class="step">
+                            <span>2</span>
+                            <p>Select More Actions.</p>
+                        </div>
+
+                        <div class="step">
+                            <span>3</span>
+                            <p>Choose Save or Download the message.</p>
+                        </div>
+
+                        <div class="step">
+                            <span>4</span>
+                            <p>Upload the email file here.</p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Got it -->
+                <button class="got-it" id="gotIt">
+                    Got it
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- HERO -->
+        <section class="hero">
+
+            <div class="eyebrow">
+                <i data-lucide="sparkles"></i>
+                SIMPLE EMAIL SAFETY, POWERED BY AI
+            </div>
+
+            <h1>
+                Is this email <span>safe?</span>
+            </h1>
+
+            <p>
+                Upload the original email file and ThreatLens will check for
+                phishing, spoofing, impersonation and fraud indicators.
+            </p>
+
+        </section>
+
+
+        <!-- UPLOAD CARD -->
+        <section class="upload-card">
+
+            <div class="upload-header">
+
+                <div class="upload-title">
+
+                    <div class="small-icon">
+                        <i data-lucide="inbox"></i>
+                    </div>
+
+                    <div>
+                        <h3>Upload suspicious email</h3>
+                        <p>We'll keep the process clear and simple.</p>
+                    </div>
+
+                </div>
+
+                <div class="secure-badge">
+                    <i data-lucide="shield-check"></i>
+                    Private &amp; secure
+                </div>
+
+            </div>
+
+
+            <!-- DROP ZONE -->
+            <div class="drop-zone">
+
+                <div class="upload-icon">
+                    <i data-lucide="upload"></i>
+                </div>
+
+                <h3>Upload suspicious email</h3>
+
+                <p class="drag-text">
+                    Drag and drop your .eml file here
+                </p>
+
+                <div class="or">
+                    <span></span>
+                    <small>or</small>
+                    <span></span>
+                </div>
+
+                <label for="fileInput" class="choose-btn">
+                    <i data-lucide="file-text"></i>
+                    Choose .EML file
+                </label>
+
+                <input
+                    type="file"
+                    id="fileInput"
+                    accept=".eml"
+                    hidden
+                >
+
+                <p class="file-info">
+                    Supported format: .eml
+                    <b>·</b>
+                    Maximum size: 20 MB
+                </p>
+
+            </div>
+
+
+            <div class="help-link">
+                <i data-lucide="circle-help"></i>
+                How do I get an .eml file?
+            </div>
+
+        </section>
+
+
+        <!-- RECENT ANALYSES -->
+        <section class="recent">
+
+            <div class="recent-heading">
+                <div>
+                    <div class="section-label">YOUR WORKSPACE</div>
+                    <h2>Recent analyses</h2>
+                </div>
+
+                <span class="saved">3 saved checks</span>
+            </div>
+
+
+            <!-- ITEM 1 -->
+            <div class="analysis-card">
+
+                <div class="mail-icon">
+                    <i data-lucide="mail"></i>
+                </div>
+
+                <div class="analysis-info">
+                    <h3>Verify Your Account</h3>
+                    <p>
+                        account_verification.eml
+                        <span>·</span>
+                        security@microsoft-support.com
+                    </p>
+                </div>
+
+                <div class="risk high">High Risk</div>
+
+                <div class="date">Today, 10:42 AM</div>
+
+                <button class="view-btn">
+                    View result
+                    <i data-lucide="arrow-up-right"></i>
+                </button>
+
+            </div>
+
+
+            <!-- ITEM 2 -->
+            <div class="analysis-card">
+
+                <div class="mail-icon">
+                    <i data-lucide="mail"></i>
+                </div>
+
+                <div class="analysis-info">
+                    <h3>Invoice Payment Required</h3>
+                    <p>
+                        invoice_march.eml
+                        <span>·</span>
+                        billing@vendor-payments.co
+                    </p>
+                </div>
+
+                <div class="risk suspicious">Suspicious</div>
+
+                <div class="date">Yesterday</div>
+
+                <button class="view-btn">
+                    View result
+                    <i data-lucide="arrow-up-right"></i>
+                </button>
+
+            </div>
+
+
+            <!-- ITEM 3 -->
+            <div class="analysis-card">
+
+                <div class="mail-icon">
+                    <i data-lucide="mail"></i>
+                </div>
+
+                <div class="analysis-info">
+                    <h3>Team Meeting Invitation</h3>
+                    <p>
+                        team_invite.eml
+                        <span>·</span>
+                        calendar@yourcompany.com
+                    </p>
+                </div>
+
+                <div class="risk safe">Safe</div>
+
+                <div class="date">29 August</div>
+
+                <button class="view-btn">
+                    View result
+                    <i data-lucide="arrow-up-right"></i>
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <script src="js/dash_user.js"></script>
+
+</body>
+</html>
