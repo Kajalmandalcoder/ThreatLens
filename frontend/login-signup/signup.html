@@ -231,6 +231,48 @@
 
             </form>
 
+            <!-- OTP VERIFICATION -->
+
+            <div id="otpSection" style="display: none;">
+
+                <div class="form-group">
+
+                    <label for="otp">
+                        Verification code
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <i data-lucide="shield-check"></i>
+
+                        <input
+                            type="text"
+                            id="otp"
+                            name="otp"
+                            placeholder="Enter 6-digit OTP"
+                            maxlength="6"
+                            inputmode="numeric"
+                        >
+
+                    </div>
+
+                    <p class="otp-message">
+                        We've sent a verification code to your email.
+                    </p>
+
+                </div>
+
+                <button
+                    type="button"
+                    class="signup-btn"
+                    id="verifyOtpBtn"
+                >
+                    Verify email
+                    <i data-lucide="arrow-right"></i>
+                </button>
+
+            </div>
+
 
             <!-- LOGIN -->
 
@@ -301,6 +343,7 @@
         });
 
     </script>
+    <script src="js/signup.js"></script>
 
 </body>
 </html>

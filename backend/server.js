@@ -1,11 +1,19 @@
 require("dotenv").config();
 
+console.log("Mongo URL:", process.env.MONGODB_URL);
 const express = require("express");
+const cors = require("cors");
+
 const connectDB = require("./config/db");
+const authRoutes = require("./routes/authRoutes");
 const emailRoutes = require("./routes/emailRoutes");
 const app = express();
+app.use(cors());
 app.use(express.json());
+
 app.use("/api/emails", emailRoutes);
+app.use("/api/auth", authRoutes);
+
 async function startServer() {
     try {
         await connectDB();

@@ -73,7 +73,9 @@ const savedTheme = localStorage.getItem("theme");
 
 if (savedTheme === "dark") {
     document.body.classList.add("dark-mode");
-    themeText.textContent = "Light";
+    if (themeText) {
+        themeText.textContent = "Light";
+    }
 }
 
 
