@@ -1,0 +1,321 @@
+/* ================================
+   HEADER / NAVBAR
+================================ */
+
+.navbar {
+    height: 74px;
+
+    width: 100%;
+
+    padding: 0 38px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    background: #ffffff;
+
+    border-bottom: 1px solid #e3e7ef;
+
+    transition: 0.3s ease;
+}
+
+
+/* ================================
+   LEFT
+================================ */
+
+.nav-left {
+    display: flex;
+    align-items: center;
+
+    gap: 13px;
+}
+
+
+/* LOGO */
+
+.logo-box {
+    width: 44px;
+    height: 44px;
+
+    border-radius: 12px;
+
+    background: #4169e1;
+
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    box-shadow:
+        0 7px 20px rgba(65, 105, 225, 0.20);
+}
+
+.logo-box svg {
+    width: 23px;
+    height: 23px;
+}
+
+
+/* BRAND */
+
+.brand {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand h2 {
+    margin: 0 0 3px;
+
+    font-size: 18px;
+
+    color: #172033;
+}
+
+.brand span {
+    font-size: 9px;
+
+    letter-spacing: 1.5px;
+
+    color: #8b96aa;
+}
+
+
+/* ================================
+   RIGHT
+================================ */
+
+.nav-right {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+}
+
+
+/* BUTTONS */
+
+.nav-btn,
+.nav-link {
+    border: none;
+
+    background: transparent;
+
+    color: #71809a;
+
+    text-decoration: none;
+
+    cursor: pointer;
+
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 10px 13px;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+
+    transition: 0.2s ease;
+}
+
+.nav-btn svg,
+.nav-link svg {
+    width: 17px;
+    height: 17px;
+}
+
+
+/* HOVER */
+
+.nav-btn:hover,
+.nav-link:hover {
+    background: #f0f3f8;
+
+    color: #172033;
+}
+
+
+/* ================================
+   DIVIDER
+================================ */
+
+.divider {
+    width: 1px;
+
+    height: 34px;
+
+    background: #e1e5ed;
+
+    margin: 0 8px;
+}
+
+
+/* ================================
+   PROFILE
+================================ */
+
+.profile {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+    margin-left: 4px;
+
+    cursor: pointer;
+}
+
+
+.avatar {
+    width: 38px;
+    height: 38px;
+
+    border-radius: 50%;
+
+    background: #7182ed;
+
+    color: #ffffff;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 12px;
+
+    font-weight: 700;
+}
+
+
+.profile-info strong {
+    display: block;
+
+    font-size: 13px;
+
+    color: #172033;
+
+    margin-bottom: 3px;
+}
+
+
+.profile-info span {
+    display: block;
+
+    font-size: 10px;
+
+    color: #8b96aa;
+}
+
+
+.profile > svg {
+    width: 15px;
+
+    color: #8b96aa;
+}
+
+
+/* ================================
+   DARK MODE
+================================ */
+
+body.dark-mode .navbar {
+    background: #0f111b;
+
+    border-bottom-color: #292e3e;
+}
+
+
+body.dark-mode .brand h2 {
+    color: #f1f4fb;
+}
+
+
+body.dark-mode .brand span {
+    color: #8993aa;
+}
+
+
+body.dark-mode .nav-btn,
+body.dark-mode .nav-link {
+    color: #929cb2;
+}
+
+
+body.dark-mode .nav-btn:hover,
+body.dark-mode .nav-link:hover {
+    background: #1d2130;
+
+    color: #ffffff;
+}
+
+
+body.dark-mode .divider {
+    background: #292e3e;
+}
+
+
+body.dark-mode .profile-info strong {
+    color: #f1f4fb;
+}
+
+
+body.dark-mode .profile-info span {
+    color: #8993aa;
+}
+
+
+body.dark-mode .profile > svg {
+    color: #8993aa;
+}
+
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 900px) {
+
+    .navbar {
+        padding: 0 22px;
+    }
+
+    .profile-info,
+    .profile > svg {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 650px) {
+
+    .navbar {
+        height: auto;
+
+        padding: 14px 18px;
+    }
+
+    .nav-right {
+        gap: 3px;
+    }
+
+    .nav-link span,
+    .nav-btn span {
+        display: none;
+    }
+
+    .nav-btn,
+    .nav-link {
+        padding: 9px;
+    }
+
+    .divider {
+        display: none;
+    }
+
+}

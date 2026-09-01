@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThreatLens - AI Email Safety Check</title>
     <link rel="stylesheet" href="css/dash_user.css">
+    <link rel="stylesheet" href="css/header.css">
 
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
@@ -13,49 +14,7 @@
 <body>
 
     <!-- NAVBAR -->
-    <header class="navbar">
-        <div class="nav-left">
-            <div class="logo-box">
-                <i data-lucide="shield-check"></i>
-            </div>
-
-            <div class="brand">
-                <h2>ThreatLens</h2>
-                <span>AI EMAIL SAFETY CHECK</span>
-            </div>
-        </div>
-
-        <div class="nav-right">
-
-            <button class="nav-btn" id="themeToggle">
-                <i data-lucide="moon"></i>
-                <span id="themeText">Dark</span>
-            </button>
-
-            <button class="nav-link" id="helpBtn">
-                <i data-lucide="circle-help"></i>
-                Help
-            </button>
-
-            <button class="nav-link">
-                <i data-lucide="history"></i>
-                Analysis history
-            </button>
-
-            <div class="divider"></div>
-
-            <div class="profile">
-                <div class="avatar">JA</div>
-                <div>
-                    <strong>Jiya Arya</strong>
-                    <span>Personal workspace</span>
-                </div>
-                <i data-lucide="chevron-down"></i>
-            </div>
-
-        </div>
-    </header>
-
+    <div id="header"></div>
 
     <!-- MAIN -->
     <main class="container">
@@ -348,6 +307,8 @@
 
 
     <script src="js/dash_user.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/header.js"></script>
 
 </body>
 </html>

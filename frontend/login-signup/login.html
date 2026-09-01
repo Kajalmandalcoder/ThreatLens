@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ThreatLens - Login</title>
+
+    <link rel="stylesheet" href="css/login.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="top-header">
+
+        <div class="brand">
+
+            <div class="logo-box">
+                <i data-lucide="shield-check"></i>
+            </div>
+
+            <div class="brand-text">
+                <h2>Threat<span>Lens</span></h2>
+                <p>AI EMAIL SAFETY CHECK</p>
+            </div>
+
+        </div>
+
+
+        <a href="index.html" class="back-home">
+            <i data-lucide="arrow-left"></i>
+            Back to home
+        </a>
+
+    </header>
+
+
+    <!-- ================= LOGIN PAGE ================= -->
+
+    <main class="login-container">
+
+        <!-- LEFT CONTENT -->
+
+        <section class="login-intro">
+
+            <div class="eyebrow">
+                <i data-lucide="sparkles"></i>
+                SECURITY STARTS WITH CLARITY
+            </div>
+
+
+            <h1>
+                Welcome back<br>
+                to clear<br>
+                answers.
+            </h1>
+
+
+            <p class="intro-text">
+                Sign in to continue protecting your organization
+                from the threats hiding in plain sight.
+            </p>
+
+
+            <div class="features">
+
+                <div class="feature">
+                    <span>
+                        <i data-lucide="check"></i>
+                    </span>
+                    AI-assisted threat analysis
+                </div>
+
+                <div class="feature">
+                    <span>
+                        <i data-lucide="check"></i>
+                    </span>
+                    Forensic intelligence in seconds
+                </div>
+
+                <div class="feature">
+                    <span>
+                        <i data-lucide="check"></i>
+                    </span>
+                    Built for modern security teams
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RIGHT LOGIN CARD -->
+
+        <section class="login-card">
+
+            <div class="card-heading">
+
+                <div class="card-icon">
+                    <i data-lucide="shield-check"></i>
+                </div>
+
+                <div>
+                    <h2>Sign in to ThreatLens</h2>
+
+                    <p>
+                        Your security intelligence, all in one place.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <form id="loginForm">
+
+                <!-- EMAIL -->
+
+                <div class="form-group">
+
+                    <label for="email">
+                        Work email
+                    </label>
+
+                    <div class="input-box">
+
+                        <i data-lucide="mail"></i>
+
+                        <input
+                            type="email"
+                            id="email"
+                            placeholder="you@company.com"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <!-- PASSWORD -->
+
+                <div class="form-group">
+
+                    <label for="password">
+                        Password
+                    </label>
+
+                    <div class="input-box">
+
+                        <i data-lucide="lock"></i>
+
+                        <input
+                            type="password"
+                            id="password"
+                            placeholder="••••••••••••"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                        >
+                            <i data-lucide="eye"></i>
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- OPTIONS -->
+
+                <div class="login-options">
+
+                    <label class="remember">
+
+                        <input type="checkbox">
+
+                        <span>Remember me</span>
+
+                    </label>
+
+
+                    <a href="#" class="forgot">
+                        Forgot password?
+                    </a>
+
+                </div>
+
+
+                <!-- SIGN IN -->
+
+                <button type="submit" class="signin-btn">
+
+                    Sign in
+
+                    <i data-lucide="arrow-right"></i>
+
+                </button>
+
+            </form>
+
+
+            <!-- DIVIDER -->
+
+            <div class="divider">
+                <span></span>
+            </div>
+
+
+            <!-- SIGN UP -->
+
+            <p class="signup-text">
+                Don't have an account?
+                <a href="signup.html">Get started</a>
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <span>
+            © 2025 ThreatLens
+        </span>
+
+        <span class="system-status">
+
+            <i data-lucide="circle"></i>
+
+            All systems operational
+
+        </span>
+
+    </footer>
+
+
+    <script>
+
+        lucide.createIcons();
+
+
+        // Password show / hide
+
+        const togglePassword =
+            document.getElementById("togglePassword");
+
+        const password =
+            document.getElementById("password");
+
+
+        togglePassword.addEventListener("click", function () {
+
+            if (password.type === "password") {
+
+                password.type = "text";
+
+                this.innerHTML =
+                    '<i data-lucide="eye-off"></i>';
+
+            } else {
+
+                password.type = "password";
+
+                this.innerHTML =
+                    '<i data-lucide="eye"></i>';
+
+            }
+
+            lucide.createIcons();
+
+        });
+
+
+        // Login
+
+        document
+            .getElementById("loginForm")
+            .addEventListener("submit", function (e) {
+
+                e.preventDefault();
+
+                // Yahan apna backend login code laga dena
+
+                console.log("Login submitted");
+
+            });
+
+    </script>
+
+</body>
+</html>
