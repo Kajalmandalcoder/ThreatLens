@@ -12,7 +12,7 @@ function parseEmailWithPython(filePath) {
 
         // Run Python parser
         const pythonProcess = spawn(
-            "python",
+            "python3",  // python3 is used to ensure compatibility with Python 3 mac pr pyhton 3 windows pr python 
             [parserPath, filePath]
         );
 

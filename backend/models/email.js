@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const headerForensicsSchema = require("./header_forensics");
 
 const emailSchema = new mongoose.Schema(
   {
@@ -33,6 +34,11 @@ const emailSchema = new mongoose.Schema(
         size: Number
       }
     ],
+
+    // ==============================
+    // HEADER FORENSICS - AKANKCHA
+    // ==============================
+    headerForensics: headerForensicsSchema,
 
     authentication: {
       spf: String,

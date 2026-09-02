@@ -1,6 +1,6 @@
 const path = require("path");
 const { parseEmailWithPython } = require("../services/emailParserService");
-const Email = require("../models/Email");
+const Email = require("../models/email");
 
 async function analyzeEmail(req, res) {
     try {
