@@ -36,19 +36,18 @@ with open(file_path, "rb") as f:
 # -----------------------------
 # BASIC HEADERS
 # -----------------------------
-print("\n========== EMAIL HEADERS ==========")
-
-print("FROM:", msg.get("From"))
-print("TO:", msg.get("To"))
-print("CC:", msg.get("Cc"))
-print("BCC:", msg.get("Bcc"))
-print("SUBJECT:", msg.get("Subject"))
-print("DATE:", msg.get("Date"))
-print("MESSAGE-ID:", msg.get("Message-ID"))
-print("REPLY-TO:", msg.get("Reply-To"))
-print("RETURN-PATH:", msg.get("Return-Path"))
-
-
+headers = {
+    "from": msg.get("From"),
+    "to": msg.get("To"),
+    "cc": msg.get("Cc"),
+    "bcc": msg.get("Bcc"),
+    "subject": msg.get("Subject"),
+    "date": msg.get("Date"),
+    "messageId": msg.get("Message-ID"),
+    "replyTo": msg.get("Reply-To"),
+    "returnPath": msg.get("Return-Path"),
+    "received": msg.get_all("Received", [])
+}
 # -----------------------------
 # BODY
 # -----------------------------

@@ -25,9 +25,9 @@ def parse_email(file_path):
         "subject": msg.get("Subject"),
         "date": msg.get("Date"),
         "messageId": msg.get("Message-ID"),
-        "replyTo": msg.get("Reply-To"),
-        "returnPath": msg.get("Return-Path")
-    }
+       "replyTo": msg.get("Reply-To"), 
+	"returnPath": msg.get("Return-Path"),
+	"received": msg.get_all("Received", [])    }
 
     # ---------------------------------
     # EMAIL BODY
