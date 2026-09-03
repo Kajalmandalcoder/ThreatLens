@@ -1,6 +1,10 @@
 import re
 import dns.resolver
 import ipaddress
+import json
+import sys
+from email import policy
+from email.parser import BytesParser
 
 
 class HeaderForensicsEngine:
@@ -380,3 +384,49 @@ class HeaderForensicsEngine:
 
             "header_findings_summary": summary
         }
+
+
+# =============================================================
+# COMMAND LINE ENTRY POINT
+# =============================================================
+
+if __name__ == "__main__":
+
+    if len(sys.argv) < 2:
+        print("Usage: python header_forensics.py <email.eml>")
+        sys.exit(1)
+
+    file_path = sys.argv[1]
+
+    try:
+
+        with open(file_path, "rb") as f:
+            msg = BytesParser(
+                policy=policy.default
+            ).parse(f)
+
+        engine = HeaderForensicsEngine(msg)
+
+        result = engine.generate_header_findings()
+
+        print(
+            json.dumps(
+                result,
+                ensure_ascii=False,
+                indent=4
+            )
+        )
+
+    except Exception as e:
+
+        print(
+            json.dumps(
+                {
+                    "error": str(e)
+                },
+                ensure_ascii=False,
+                indent=4
+            )
+        )
+
+        sys.exit(1)
