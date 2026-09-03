@@ -3,6 +3,7 @@ const { parseEmailWithPython } = require("../services/emailParserService");
 const Email = require("../models/email");
 
 async function analyzeEmail(req, res) {
+    console.log("🚀 analyzeEmail controller hit");
     try {
         // Check uploaded file
         if (!req.file) {
@@ -47,7 +48,8 @@ async function analyzeEmail(req, res) {
         return res.status(200).json({
             success: true,
             message: "Email parsed and saved successfully",
-            data: savedEmail
+            // data: savedEmail
+            emailId: savedEmail._id.toString()
         });
 
     } catch (error) {

@@ -17,8 +17,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+app.use((req, res, next) => {
+    console.log("REQUEST RECEIVED:", req.method, req.url);
+    next();
+});
+
 app.use("/api/emails", emailRoutes);
 app.use("/api/auth", authRoutes);
+
+app.post("/test", (req, res) => {
+    console.log("🔥 TEST POST RECEIVED");
+    res.json({ success: true });
+});
 
 async function startServer() {
     try {
@@ -30,7 +40,7 @@ async function startServer() {
             });
         });
 
-        app.listen(5001, () => {
+        app.listen(5000, () => {
             console.log("Server running on http://localhost:5000");
         });
 
