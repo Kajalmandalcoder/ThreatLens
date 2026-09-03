@@ -4,19 +4,25 @@ from bs4 import BeautifulSoup
 import re
 import json
 import sys
+sys.stdout.reconfigure(encoding="utf-8")
+sys.stderr.reconfigure(encoding="utf-8")
 from pathlib import Path
+from urllib.parse import urlparse
 
 
 def parse_email(file_path):
+
     # ---------------------------------
     # READ EML FILE
     # ---------------------------------
+
     with open(file_path, "rb") as f:
         msg = BytesParser(policy=policy.default).parse(f)
 
     # ---------------------------------
     # BASIC EMAIL HEADERS
     # ---------------------------------
+
     headers = {
         "from": msg.get("From"),
         "to": msg.get("To"),
@@ -25,13 +31,15 @@ def parse_email(file_path):
         "subject": msg.get("Subject"),
         "date": msg.get("Date"),
         "messageId": msg.get("Message-ID"),
-       "replyTo": msg.get("Reply-To"), 
-	"returnPath": msg.get("Return-Path"),
-	"received": msg.get_all("Received", [])    }
+        "replyTo": msg.get("Reply-To"),
+        "returnPath": msg.get("Return-Path"),
+        "received": msg.get_all("Received", [])
+    }
 
     # ---------------------------------
     # EMAIL BODY
     # ---------------------------------
+
     plain_text = ""
     html_text = ""
 
@@ -54,11 +62,12 @@ def parse_email(file_path):
     # ---------------------------------
     # EXTRACT LINKS
     # ---------------------------------
+
     urls = set()
 
     # URLs from plain text
     plain_urls = re.findall(
-        r'https?://[^\s<>"\']+',
+        r'https?://[^\s<>"\'\]]+',
         plain_text
     )
 
@@ -80,18 +89,24 @@ def parse_email(file_path):
             if href.startswith(("http://", "https://")):
                 urls.add(href)
 
-    # Convert links to list
+    # Convert links to structured list
     links = []
 
     for url in sorted(urls):
 
+        parsed_url = urlparse(url)
+
+        domain = parsed_url.netloc
+
         links.append({
-            "url": url
+            "url": url,
+            "domain": domain
         })
 
     # ---------------------------------
     # EXTRACT ATTACHMENTS
     # ---------------------------------
+
     attachments = []
 
     for part in msg.walk():
@@ -115,8 +130,8 @@ def parse_email(file_path):
     # ---------------------------------
     # FINAL STRUCTURED EMAIL DATA
     # ---------------------------------
-    result = {
 
+    result = {
         "headers": headers,
 
         "body": {

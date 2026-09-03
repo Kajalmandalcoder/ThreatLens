@@ -4,35 +4,33 @@ const path = require("path");
 function parseEmailWithPython(filePath) {
     return new Promise((resolve, reject) => {
 
-        // Path to parser.py
         const parserPath = path.join(
             __dirname,
             "../../email_parser/parser.py"
         );
 
-        // Run Python parser
         const pythonProcess = spawn(
-            "python",  // python3 is used to ensure compatibility with Python 3 mac pr pyhton 3 windows pr python 
+            "python",
             [parserPath, filePath]
         );
 
         let output = "";
         let errorOutput = "";
 
-        // Receive Python output
         pythonProcess.stdout.on("data", (data) => {
             output += data.toString();
         });
 
-        // Receive Python errors
         pythonProcess.stderr.on("data", (data) => {
             errorOutput += data.toString();
         });
 
-        // Python process finished
         pythonProcess.on("close", (code) => {
 
             if (code !== 0) {
+                console.error("❌ Python parser exit code:", code);
+                console.error("❌ Python stderr:", errorOutput);
+                console.error("❌ Python stdout:", output);
                 return reject(
                     new Error(
                         errorOutput || "Python parser failed"
@@ -42,9 +40,7 @@ function parseEmailWithPython(filePath) {
 
             try {
                 const parsedEmail = JSON.parse(output);
-
                 resolve(parsedEmail);
-
             } catch (error) {
                 reject(
                     new Error(
@@ -54,7 +50,6 @@ function parseEmailWithPython(filePath) {
             }
         });
 
-        // Python process error
         pythonProcess.on("error", (error) => {
             reject(error);
         });
