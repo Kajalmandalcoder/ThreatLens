@@ -7,7 +7,6 @@ dns.setServers([
 
 require("dotenv").config();
 
-console.log("Mongo URL:", process.env.MONGODB_URL);
 const express = require("express");
 const cors = require("cors");
 

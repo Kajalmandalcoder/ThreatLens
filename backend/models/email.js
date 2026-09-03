@@ -12,7 +12,8 @@ const emailSchema = new mongoose.Schema(
       date: String,
       messageId: String,
       replyTo: String,
-      returnPath: String
+      returnPath: String,
+      received: [String]
     },
 
     body: {
