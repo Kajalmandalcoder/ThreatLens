@@ -3,6 +3,7 @@ import dns.resolver
 import ipaddress
 import json
 import sys
+
 from email import policy
 from email.parser import BytesParser
 
@@ -51,6 +52,7 @@ class HeaderForensicsEngine:
     # =========================================================
 
     def check_live_dns_records(self, domain):
+
         if not domain:
             return {
                 "spf_record": False,
@@ -217,15 +219,18 @@ class HeaderForensicsEngine:
             r"\bspf\s*=\s*fail\b",
             auth_header
         ):
+
             spf = "FAIL"
 
         elif re.search(
             r"\bspf\s*=\s*pass\b",
             auth_header
         ):
+
             spf = "PASS"
 
         else:
+
             spf = "MISSING"
 
         # -----------------------------------------------------
@@ -236,15 +241,18 @@ class HeaderForensicsEngine:
             r"\bdkim\s*=\s*fail\b",
             auth_header
         ):
+
             dkim = "FAIL"
 
         elif re.search(
             r"\bdkim\s*=\s*pass\b",
             auth_header
         ):
+
             dkim = "PASS"
 
         else:
+
             dkim = "MISSING"
 
         # -----------------------------------------------------
@@ -255,15 +263,18 @@ class HeaderForensicsEngine:
             r"\bdmarc\s*=\s*fail\b",
             auth_header
         ):
+
             dmarc = "FAIL"
 
         elif re.search(
             r"\bdmarc\s*=\s*pass\b",
             auth_header
         ):
+
             dmarc = "PASS"
 
         else:
+
             dmarc = "MISSING"
 
         return {
@@ -294,15 +305,33 @@ class HeaderForensicsEngine:
         # -----------------------------------------------------
         # IPv4 + IPv6 candidate extraction
         # -----------------------------------------------------
+        #
+        # Handles:
+        #
+        # IPv4:
+        #   54.240.9.29
+        #
+        # IPv6:
+        #   2607:f8b0:4864::8846
+        #
+        # Bracketed IPv6:
+        #   [2607:f8b0:4864::8846]
+        #
+        # -----------------------------------------------------
 
         ip_pattern = re.compile(
             r"""
-            (?:
+            \[
+                ([0-9a-fA-F:.]+)
+            \]
+            |
+            (?<![a-zA-Z0-9])
+            (
                 (?:\d{1,3}\.){3}\d{1,3}
                 |
-                (?:[0-9a-fA-F]{1,4}:){2,7}
-                [0-9a-fA-F]{1,4}
+                [0-9a-fA-F]*:[0-9a-fA-F:.]+
             )
+            (?![a-zA-Z0-9])
             """,
             re.VERBOSE
         )
@@ -315,15 +344,35 @@ class HeaderForensicsEngine:
 
             raw_header = str(header).strip()
 
-            candidates = ip_pattern.findall(
-                raw_header
-            )
+            candidates = []
+
+            # -------------------------------------------------
+            # Extract bracketed and unbracketed candidates
+            # -------------------------------------------------
+
+            for match in ip_pattern.finditer(raw_header):
+
+                bracketed_ip = match.group(1)
+                unbracketed_ip = match.group(2)
+
+                candidate = (
+                    bracketed_ip
+                    or unbracketed_ip
+                )
+
+                if candidate:
+                    candidates.append(candidate)
+
+            # -------------------------------------------------
+            # Validate public IPs
+            # -------------------------------------------------
 
             valid_public_ips = []
 
             for candidate in candidates:
 
                 try:
+
                     ip_obj = ipaddress.ip_address(
                         candidate
                     )
@@ -333,16 +382,20 @@ class HeaderForensicsEngine:
 
                         ip_string = str(ip_obj)
 
-                        # Avoid duplicate IPs
-                        # inside same hop
+                        # -------------------------------------
+                        # Avoid duplicate IP inside same hop
+                        # -------------------------------------
+
                         if ip_string not in valid_public_ips:
 
                             valid_public_ips.append(
                                 ip_string
                             )
 
-                        # Avoid duplicate IPs
-                        # globally
+                        # -------------------------------------
+                        # Avoid duplicate IP globally
+                        # -------------------------------------
+
                         if ip_string not in all_public_ips:
 
                             all_public_ips.append(
@@ -350,7 +403,12 @@ class HeaderForensicsEngine:
                             )
 
                 except ValueError:
+
                     continue
+
+            # -------------------------------------------------
+            # Store hop
+            # -------------------------------------------------
 
             hops.append({
                 "hop_id": idx + 1,
@@ -358,9 +416,9 @@ class HeaderForensicsEngine:
                 "extracted_public_ips": valid_public_ips
             })
 
-        # -----------------------------------------------------
-        # Origin IP candidate
-        # -----------------------------------------------------
+        # =====================================================
+        # ORIGIN IP CANDIDATE
+        # =====================================================
 
         origin_ip_candidate = (
             all_public_ips[-1]
@@ -397,10 +455,12 @@ class HeaderForensicsEngine:
 
             # Reply-To mismatch is stronger signal
             if anomaly_type == "REPLY_TO_MISMATCH":
+
                 score += 30
 
             # Return-Path mismatch is weaker signal
             elif anomaly_type == "RETURN_PATH_MISMATCH":
+
                 score += 10
 
         # -----------------------------------------------------
