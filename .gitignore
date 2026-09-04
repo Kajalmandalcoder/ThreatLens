@@ -4,3 +4,5 @@ __pycache__/
 node_modules/
 .env
 email_parser/emails/*.eml
+package-lock.json
+package.json
