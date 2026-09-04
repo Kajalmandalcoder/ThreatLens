@@ -6,3 +6,4 @@ node_modules/
 email_parser/emails/*.eml
 package-lock.json
 package.json
+ml_model/model.safetensors

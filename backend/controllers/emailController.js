@@ -2,6 +2,7 @@ const path = require("path");
 
 const { parseEmailWithPython } = require("../services/emailParserService");
 const { runHeaderForensics } = require("../services/headerForensicsService");
+const { runMLPrediction } = require("../services/mlService");
 
 const Email = require("../models/email");
 
@@ -52,6 +53,23 @@ async function analyzeEmail(req, res) {
 
         console.log("✅ Python parser completed");
 
+        // =========================================
+// STEP 2: ML THREAT PREDICTION
+// =========================================
+
+const emailText = [
+    parsedEmail.headers?.subject || "",
+    parsedEmail.body?.plainText || ""
+].join(" ");
+
+const mlResult = await runMLPrediction(emailText);
+
+console.log("🤖 ML prediction completed");
+console.log("Prediction:", mlResult.prediction);
+console.log("Confidence:", mlResult.confidence);
+
+// Add ML result to parsed email
+parsedEmail.mlAnalysis = mlResult;
 
         // =========================================
         // STEP 2: HEADER FORENSICS
@@ -80,10 +98,15 @@ async function analyzeEmail(req, res) {
         // STEP 4: SAVE EVERYTHING TO MONGODB
         // =========================================
 
-        const savedEmail = await Email.create(
-            parsedEmail
-        );
-
+        const savedEmail = await Email.create({
+    ...parsedEmail,
+    mlAnalysis: {
+        success: mlResult.success,
+        prediction: mlResult.prediction,
+        confidence: mlResult.confidence,
+        raw_label: mlResult.raw_label
+    }
+});
         console.log(
             "✅ Email saved to MongoDB:",
             savedEmail._id.toString()

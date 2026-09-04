@@ -1,4 +1,5 @@
 const dns = require("dns");
+const mongoose = require("mongoose");
 
 dns.setServers([
     "8.8.8.8",
@@ -25,6 +26,10 @@ app.use("/api/auth", authRoutes);
 async function startServer() {
     try {
         await connectDB();
+
+        console.log("Connected database:", mongoose.connection.name);
+        console.log("Connected host:", mongoose.connection.host);
+
 
         app.get("/", (req, res) => {
             res.json({

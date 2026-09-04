@@ -40,7 +40,15 @@ const emailSchema = new mongoose.Schema(
     // HEADER FORENSICS - AKANKCHA
     // ==============================
     headerForensics: headerForensicsSchema,
-
+    // ==============================
+    // ML THREAT ANALYSIS - KAJAL
+    // ==============================
+    mlAnalysis: {
+      success: Boolean,
+      prediction: String,
+      confidence: Number,
+      raw_label: String
+    },
     authentication: {
       spf: String,
       dkim: String,
