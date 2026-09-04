@@ -3,14 +3,14 @@ const multer = require("multer");
 const path = require("path");
 
 const {
-    analyzeEmail
+    analyzeEmail,
+    getAllEmails,
+    getEmailById
 } = require("../controllers/emailController");
-
-
 
 const router = express.Router();
 
-// Store uploaded files temporarily
+// Store uploaded files temporarily in email_parser/emails
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, path.join(__dirname, "../../email_parser/emails"));
@@ -24,34 +24,14 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
-
         if (path.extname(file.originalname).toLowerCase() !== ".eml") {
             return cb(new Error("Only .eml files are allowed"));
         }
-
         cb(null, true);
     }
 });
 
 // POST /api/emails/analyze
-// router.post(
-//     // "/analyze",
-//     // upload.single("email"),
-//     // analyzeEmail
-
-//     "/analyze",
-//     (req, res, next) => {
-//         console.log("📨 /analyze route hit");
-//         next();
-//     },
-//     upload.single("email"),
-//     (req, res, next) => {
-//         console.log("📦 Multer completed:", req.file?.originalname);
-//         next();
-//     },
-//     analyzeEmail
-// );
-
 router.post(
     "/analyze",
 
@@ -85,5 +65,11 @@ router.post(
 
     analyzeEmail
 );
+
+// GET /api/emails - Fetch list of analyzed emails for dashboards
+router.get("/", getAllEmails);
+
+// GET /api/emails/:id - Fetch full forensics (URL, Header, IP, Domain) for case details
+router.get("/:id", getEmailById);
 
 module.exports = router;

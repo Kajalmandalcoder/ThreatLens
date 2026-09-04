@@ -3,14 +3,18 @@ const path = require("path");
 
 function parseEmailWithPython(filePath) {
     return new Promise((resolve, reject) => {
+        const isWindows = process.platform === "win32";
+        const pythonExecutable = isWindows
+            ? path.resolve(__dirname, "../../.venv/Scripts/python.exe")
+            : path.resolve(__dirname, "../../.venv/bin/python");
 
-        const parserPath = path.join(
+        const parserPath = path.resolve(
             __dirname,
             "../../email_parser/parser.py"
         );
 
         const pythonProcess = spawn(
-            "python",
+            pythonExecutable,
             [parserPath, filePath]
         );
 
@@ -26,7 +30,6 @@ function parseEmailWithPython(filePath) {
         });
 
         pythonProcess.on("close", (code) => {
-
             if (code !== 0) {
                 console.error("❌ Python parser exit code:", code);
                 console.error("❌ Python stderr:", errorOutput);
@@ -39,7 +42,7 @@ function parseEmailWithPython(filePath) {
             }
 
             try {
-                const parsedEmail = JSON.parse(output);
+                const parsedEmail = JSON.parse(output.trim());
                 resolve(parsedEmail);
             } catch (error) {
                 reject(

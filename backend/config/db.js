@@ -2,8 +2,8 @@ const mongoose = require("mongoose");
 
 async function connectDB() {
     try {
-        await mongoose.connect(process.env.MONGODB_URL, {
-            dbName: "threadLens"
+        await mongoose.connect(process.env.MONGO_URI, {
+            dbName: (process.env.DB_NAME || "threadLens").trim()
         });
 
         console.log("MongoDB connected successfully");

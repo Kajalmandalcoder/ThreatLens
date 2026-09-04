@@ -3,14 +3,18 @@ const path = require("path");
 
 function runHeaderForensics(filePath) {
     return new Promise((resolve, reject) => {
+        const isWindows = process.platform === "win32";
+        const pythonExecutable = isWindows
+            ? path.resolve(__dirname, "../../.venv/Scripts/python.exe")
+            : path.resolve(__dirname, "../../.venv/bin/python");
 
-        const scriptPath = path.join(
+        const scriptPath = path.resolve(
             __dirname,
             "../../header_forensics.py"
         );
 
         const pythonProcess = spawn(
-            "python",
+            pythonExecutable,
             [scriptPath, filePath]
         );
 
@@ -26,7 +30,6 @@ function runHeaderForensics(filePath) {
         });
 
         pythonProcess.on("close", (code) => {
-
             if (code !== 0) {
                 return reject(
                     new Error(
@@ -36,7 +39,7 @@ function runHeaderForensics(filePath) {
             }
 
             try {
-                const result = JSON.parse(output);
+                const result = JSON.parse(output.trim());
                 resolve(result);
             } catch (error) {
                 reject(

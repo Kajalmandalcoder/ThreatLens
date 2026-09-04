@@ -1,9 +1,16 @@
-.venv/
 __pycache__/
 *.pyc
 node_modules/
 .env
-email_parser/emails/*.eml
-package-lock.json
-package.json
+.venv/
+venv/
+*.DS_Store
+.DS_Store
+**/.DS_Store
 ml_model/model.safetensors
+
+# Ignore test uploads & transient emails
+email_parser/emails/*.eml
+email_parser/emails/1788*
+email_parser/emails/Application Support Engineer*
+email_parser/emails/Invitation to MongoDB Cloud*
