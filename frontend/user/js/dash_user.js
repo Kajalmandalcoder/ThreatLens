@@ -142,12 +142,17 @@ document.addEventListener("DOMContentLoaded", () => {
         console.log("📤 Sending EML file to server:", file.name);
 
         try {
-            const response = await fetch("http://localhost:5000/api/emails/analyze", {
+            console.log("🌐 Fetch starting...");
+            const response = await fetch("http://localhost:5001/api/emails/analyze", {
                 method: "POST",
                 body: formData
             });
 
+            console.log("🌐 Fetch response received:", response.status);
+
             const result = await response.json();
+
+            console.log("📥 Backend result:", result);
 
             if (!response.ok) {
                 throw new Error(result.message || "File analysis failed");

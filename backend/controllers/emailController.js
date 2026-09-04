@@ -1,4 +1,5 @@
 const path = require("path");
+const mongoose = require("mongoose");
 
 const { parseEmailWithPython } = require("../services/emailParserService");
 const { runHeaderForensics } = require("../services/headerForensicsService");
@@ -73,7 +74,12 @@ async function analyzeEmail(req, res) {
     parsedEmail.intelligenceSignals = intelligenceData.intelligenceSignals;
 
     // 7. Save full record to MongoDB Atlas
+    console.log("💾 About to save to MongoDB");
+    console.log("Database:", mongoose.connection.name);
+    console.log("Collection:", Email.collection.name);
+
     const savedEmail = await Email.create(parsedEmail);
+    console.log("✅ SAVED:", savedEmail._id);
     console.log("✅ Full forensic document saved to MongoDB:", savedEmail._id.toString());
 
     // 8. Response
