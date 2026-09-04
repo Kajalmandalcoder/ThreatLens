@@ -36,6 +36,7 @@ async function analyzeEmail(req, res) {
 
     // 2. ML Threat Prediction
     let mlResult = null;
+
     try {
       const emailText = [
         parsedEmail.headers?.subject || "",
@@ -45,63 +46,155 @@ async function analyzeEmail(req, res) {
       mlResult = await runMLPrediction(emailText);
       console.log("🤖 ML prediction completed");
     } catch (mlErr) {
-      console.warn("⚠️ ML prediction failed or skipped:", mlErr.message);
+      console.warn(
+        "⚠️ ML prediction failed or skipped:",
+        mlErr.message
+      );
     }
 
     // 3. Header Forensics
-    const headerForensics = await runHeaderForensics(req.file.path);
+    const headerForensics =
+      await runHeaderForensics(req.file.path);
+
     console.log("✅ Header Forensics completed");
+    console.log(
+      "Header Risk Score:",
+      headerForensics.header_risk_score
+    );
 
     // 4. URL Intelligence
     const rawLinks = (parsedEmail.links || [])
-      .map((link) => (typeof link === "string" ? link : link.url))
+      .map((link) =>
+        typeof link === "string" ? link : link.url
+      )
       .filter(Boolean);
-    const senderEmail = parsedEmail.headers?.from || "";
 
-    const urlIntelligence = await analyzeUrls(rawLinks, senderEmail);
-    console.log("✅ URL Intelligence completed");
+    const senderEmail =
+      parsedEmail.headers?.from || "";
+
+    console.log(
+      "🔎 URLs found:",
+      rawLinks.length
+    );
+
+    const urlIntelligence =
+      await analyzeUrls(
+        rawLinks,
+        senderEmail
+      );
+
+    console.log(
+      "✅ URL Intelligence completed"
+    );
+
+    console.log(
+      "URL Risk Summary:",
+      urlIntelligence.summary
+    );
 
     // 5. IP + Domain Intelligence
-    const intelligenceData = await analyzeNetworkAndDomains(parsedEmail, headerForensics);
-    console.log("✅ IP & Domain Intelligence completed");
+    const intelligenceData =
+      await analyzeNetworkAndDomains(
+        parsedEmail,
+        headerForensics
+      );
 
-    // 6. Merge all findings into the email document
+    console.log(
+      "✅ IP & Domain Intelligence completed"
+    );
+
+    // 6. Merge all findings
     parsedEmail.mlAnalysis = mlResult;
-    parsedEmail.headerForensics = headerForensics;
-    parsedEmail.urlIntelligence = urlIntelligence;
-    parsedEmail.domainIntelligence = intelligenceData.domainIntelligence;
-    parsedEmail.ipIntelligence = intelligenceData.ipIntelligence;
-    parsedEmail.intelligenceSignals = intelligenceData.intelligenceSignals;
 
-    // 7. Save full record to MongoDB Atlas
+    parsedEmail.headerForensics =
+      headerForensics;
+
+    parsedEmail.urlIntelligence =
+      urlIntelligence;
+
+    parsedEmail.domainIntelligence =
+      intelligenceData.domainIntelligence;
+
+    parsedEmail.ipIntelligence =
+      intelligenceData.ipIntelligence;
+
+    parsedEmail.intelligenceSignals =
+      intelligenceData.intelligenceSignals;
+
+    // 7. Save full record to MongoDB
     console.log("💾 About to save to MongoDB");
-    console.log("Database:", mongoose.connection.name);
-    console.log("Collection:", Email.collection.name);
+    console.log(
+      "Database:",
+      mongoose.connection.name
+    );
 
-    const savedEmail = await Email.create(parsedEmail);
-    console.log("✅ SAVED:", savedEmail._id);
-    console.log("✅ Full forensic document saved to MongoDB:", savedEmail._id.toString());
+    console.log(
+      "Collection:",
+      Email.collection.name
+    );
+
+    const savedEmail =
+      await Email.create(parsedEmail);
+
+    console.log(
+      "✅ SAVED:",
+      savedEmail._id
+    );
+
+    console.log(
+      "✅ Full forensic document saved to MongoDB:",
+      savedEmail._id.toString()
+    );
 
     // 8. Response
     return res.status(200).json({
       success: true,
-      message: "Email parsed, analyzed, and stored successfully",
-      emailId: savedEmail._id.toString(),
+      message:
+        "Email parsed, analyzed, and stored successfully",
+
+      emailId:
+        savedEmail._id.toString(),
+
       summary: {
-        mlPrediction: mlResult?.prediction || null,
-        mlConfidence: mlResult?.confidence || null,
-        headerRiskScore: headerForensics.header_risk_score,
-        urlRiskStatus: urlIntelligence.summary.overall_status,
-        urlMaxScore: urlIntelligence.summary.max_risk_score,
-        isLookalikeDomain: intelligenceData.domainIntelligence?.lookalike_analysis?.is_lookalike || false,
-        hasPublicOriginIp: intelligenceData.ipIntelligence?.routing_summary?.has_public_origin || false
+        mlPrediction:
+          mlResult?.prediction || null,
+
+        mlConfidence:
+          mlResult?.confidence || null,
+
+        headerRiskScore:
+          headerForensics.header_risk_score,
+
+        urlRiskStatus:
+          urlIntelligence.summary?.overall_status || null,
+
+        urlMaxScore:
+          urlIntelligence.summary?.max_risk_score || 0,
+
+        isLookalikeDomain:
+          intelligenceData
+            .domainIntelligence
+            ?.lookalike_analysis
+            ?.is_lookalike || false,
+
+        hasPublicOriginIp:
+          intelligenceData
+            .ipIntelligence
+            ?.routing_summary
+            ?.has_public_origin || false
       }
     });
+
   } catch (error) {
-    console.error("❌ Email analysis pipeline failed:", error);
+    console.error(
+      "❌ Email analysis pipeline failed:",
+      error
+    );
+
     return res.status(500).json({
       success: false,
-      message: "Failed to analyze and save email",
+      message:
+        "Failed to analyze and save email",
       error: error.message
     });
   }
@@ -113,7 +206,9 @@ async function analyzeEmail(req, res) {
 async function getAllEmails(req, res) {
   try {
     const emails = await Email.find()
-      .select("headers.subject headers.from headers.date threatAnalysis urlIntelligence headerForensics mlAnalysis createdAt")
+      .select(
+        "headers.subject headers.from headers.date threatAnalysis urlIntelligence headerForensics mlAnalysis createdAt"
+      )
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
@@ -121,6 +216,7 @@ async function getAllEmails(req, res) {
       count: emails.length,
       data: emails
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,
@@ -135,7 +231,8 @@ async function getAllEmails(req, res) {
  */
 async function getEmailById(req, res) {
   try {
-    const email = await Email.findById(req.params.id);
+    const email =
+      await Email.findById(req.params.id);
 
     if (!email) {
       return res.status(404).json({
@@ -148,6 +245,7 @@ async function getEmailById(req, res) {
       success: true,
       data: email
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,

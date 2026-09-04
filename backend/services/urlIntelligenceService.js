@@ -1,14 +1,17 @@
-const { spawn } = require('child_process');
-const path = require('path');
+const { spawn } = require("child_process");
+const path = require("path");
 
 /**
- * Executes the Python URL intelligence analyzer for a list of URLs and sender email.
- * @param {Array<string>} urls - List of extracted link URLs
- * @param {string} senderEmail - Sender's From email address
- * @returns {Promise<Object>} Analyzed URL intelligence payload
+ * Executes the Python URL intelligence analyzer.
+ *
+ * @param {Array<string>} urls
+ * @param {string} senderEmail
+ * @returns {Promise<Object>}
  */
-function analyzeUrls(urls, senderEmail = '') {
+function analyzeUrls(urls, senderEmail = "") {
   return new Promise((resolve, reject) => {
+
+    // No URLs
     if (!urls || urls.length === 0) {
       return resolve({
         summary: {
@@ -18,62 +21,114 @@ function analyzeUrls(urls, senderEmail = '') {
           medium_risk_urls: 0,
           low_risk_urls: 0,
           max_risk_score: 0,
-          overall_status: 'LOW'
+          overall_status: "LOW"
         },
         urls: []
       });
     }
 
-    // Path to the root Python virtual environment
-    const isWindows = process.platform === 'win32';
+    // Project root:
+    // C:\Users\kajal\Desktop\sih2026
+    const projectRoot =
+      path.resolve(__dirname, "../..");
+
+    // Python executable from project virtual environment
+    const isWindows =
+      process.platform === "win32";
+
     const pythonExecutable = isWindows
-      ? path.resolve(__dirname, '../../.venv/Scripts/python.exe')
-      : path.resolve(__dirname, '../../.venv/bin/python');
+      ? path.resolve(
+          projectRoot,
+          ".venv/Scripts/python.exe"
+        )
+      : path.resolve(
+          projectRoot,
+          ".venv/bin/python"
+        );
 
-    const projectRoot = path.resolve(__dirname, '../../');
-
-    const pythonScript = `
-import sys
-import json
-from url_intelligence import analyze_urls
-
-input_data = json.loads(sys.stdin.read())
-urls = input_data.get('urls', [])
-sender = input_data.get('sender', '')
-
-report = analyze_urls(urls, sender_email=sender)
-print(json.dumps(report))
-`;
-
-    const pyProcess = spawn(pythonExecutable, ['-c', pythonScript], {
-      cwd: projectRoot
-    });
-
-    let stdoutData = '';
-    let stderrData = '';
-
-    pyProcess.stdin.write(JSON.stringify({ urls, sender: senderEmail }));
-    pyProcess.stdin.end();
-
-    pyProcess.stdout.on('data', (chunk) => {
-      stdoutData += chunk.toString();
-    });
-
-    pyProcess.stderr.on('data', (chunk) => {
-      stderrData += chunk.toString();
-    });
-
-    pyProcess.on('close', (code) => {
-      if (code !== 0) {
-        return reject(new Error(`URL Intelligence failed (code ${code}): ${stderrData}`));
+    const pythonProcess = spawn(
+      pythonExecutable,
+      ["-m", "url_intelligence.analyzer"],
+      {
+        cwd: projectRoot
       }
-      try {
-        const result = JSON.parse(stdoutData.trim());
-        resolve(result);
-      } catch (err) {
-        reject(new Error(`Failed to parse URL intelligence output: ${err.message}`));
-      }
+    );
+
+    let output = "";
+    let errorOutput = "";
+
+    // Send input to Python
+    const inputData = JSON.stringify({
+      urls: urls || [],
+      sender_email: senderEmail || null
     });
+
+    pythonProcess.stdin.write(inputData);
+    pythonProcess.stdin.end();
+
+    // Receive Python output
+    pythonProcess.stdout.on(
+      "data",
+      (data) => {
+        output += data.toString();
+      }
+    );
+
+    // Receive Python errors/warnings
+    pythonProcess.stderr.on(
+      "data",
+      (data) => {
+        errorOutput += data.toString();
+      }
+    );
+
+    // Python process completed
+    pythonProcess.on(
+      "close",
+      (code) => {
+
+        if (code !== 0) {
+          console.error(
+            "URL Intelligence Python error:",
+            errorOutput
+          );
+
+          return reject(
+            new Error(
+              errorOutput ||
+              "URL Intelligence failed"
+            )
+          );
+        }
+
+        try {
+          const result =
+            JSON.parse(output.trim());
+
+          resolve(result);
+
+        } catch (error) {
+          console.error(
+            "Invalid URL Intelligence JSON:",
+            output
+          );
+
+          reject(
+            new Error(
+              "Invalid JSON returned by URL Intelligence"
+            )
+          );
+        }
+      }
+    );
+
+    // Python process error
+    pythonProcess.on(
+      "error",
+      (error) => {
+        reject(error);
+      }
+    );
   });
 }
 
