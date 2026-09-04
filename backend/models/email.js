@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const headerForensicsSchema = require("./header_forensics");
 
 // ============================================================
@@ -136,6 +135,43 @@ const emailSchema = new mongoose.Schema(
     // ========================================================
 
     urlIntelligence: urlIntelligenceSchema,
+
+    // ========================================================
+    // ATTACHMENT INTELLIGENCE
+    // ========================================================
+
+    attachmentIntelligence: {
+      summary: {
+        total_attachments: { type: Number, default: 0 },
+        has_high_risk_files: { type: Boolean, default: false },
+        has_executable_types: { type: Boolean, default: false },
+        has_macros_or_scripts: { type: Boolean, default: false },
+        max_attachment_risk_score: { type: Number, default: 0 },
+        overall_status: { type: String, default: "LOW" } // LOW | MEDIUM | HIGH | CRITICAL
+      },
+      attachments: [
+        {
+          filename: String,
+          contentType: String,
+          size: Number,
+          hashes: {
+            md5: String,
+            sha256: String
+          },
+          risk_score: Number,
+          risk_level: String, // LOW | MEDIUM | HIGH | CRITICAL
+          indicators: [String],
+          structural_analysis: {
+            is_executable: Boolean,
+            is_archive: Boolean,
+            has_macro: Boolean,
+            has_embedded_javascript: Boolean,
+            has_double_extension: Boolean,
+            extension_mime_mismatch: Boolean
+          }
+        }
+      ]
+    },
 
     // ========================================================
     // DOMAIN & IP INTELLIGENCE

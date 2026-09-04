@@ -4,6 +4,7 @@ from bs4 import BeautifulSoup
 import re
 import json
 import sys
+import base64
 sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
 from pathlib import Path
@@ -115,14 +116,16 @@ def parse_email(file_path):
 
         if filename:
 
-            payload = part.get_payload(
-                decode=True
-            )
+            payload = part.get_payload(decode=True)
+
+            # Convert binary payload to Base64 string for JSON safety
+            encoded_content = base64.b64encode(payload).decode("utf-8") if payload else ""
 
             attachment = {
                 "filename": filename,
                 "contentType": part.get_content_type(),
-                "size": len(payload) if payload else 0
+                "size": len(payload) if payload else 0,
+                "content": encoded_content
             }
 
             attachments.append(attachment)
@@ -153,62 +156,22 @@ def parse_email(file_path):
 
 if __name__ == "__main__":
 
-    # Check whether .eml file was provided
     if len(sys.argv) < 2:
-
-        print(
-            json.dumps(
-                {
-                    "error": "No .eml file provided"
-                },
-                indent=4
-            )
-        )
-
+        print(json.dumps({"error": "No .eml file provided"}, indent=4))
         sys.exit(1)
 
-    # Get file path from command line
     file_path = Path(sys.argv[1])
 
-    # Check file exists
     if not file_path.exists():
-
-        print(
-            json.dumps(
-                {
-                    "error": f"File not found: {file_path}"
-                },
-                indent=4
-            )
-        )
-
+        print(json.dumps({"error": f"File not found: {file_path}"}, indent=4))
         sys.exit(1)
 
-    # Parse email
     try:
-
         result = parse_email(file_path)
-
-        # Convert result to formatted JSON
-        formatted_json = json.dumps(
-            result,
-            ensure_ascii=False,
-            indent=4
-        )
-
-        # Print formatted JSON
+        formatted_json = json.dumps(result, ensure_ascii=False, indent=4)
         sys.stdout.write(formatted_json)
         sys.stdout.write("\n")
 
     except Exception as e:
-
-        print(
-            json.dumps(
-                {
-                    "error": str(e)
-                },
-                indent=4
-            )
-        )
-
+        print(json.dumps({"error": str(e)}, indent=4))
         sys.exit(1)
