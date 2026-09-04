@@ -52,7 +52,6 @@ class HeaderForensicsEngine:
     # =========================================================
 
     def check_live_dns_records(self, domain):
-
         if not domain:
             return {
                 "spf_record": False,
@@ -181,10 +180,12 @@ class HeaderForensicsEngine:
                     )
                 })
 
+                # IMPORTANT:
+                #
                 # Return-Path mismatch alone does NOT
                 # prove spoofing.
                 #
-                # Legitimate email providers often use
+                # Legitimate email providers can use
                 # separate bounce / mailing infrastructure.
 
         return {
@@ -219,18 +220,15 @@ class HeaderForensicsEngine:
             r"\bspf\s*=\s*fail\b",
             auth_header
         ):
-
             spf = "FAIL"
 
         elif re.search(
             r"\bspf\s*=\s*pass\b",
             auth_header
         ):
-
             spf = "PASS"
 
         else:
-
             spf = "MISSING"
 
         # -----------------------------------------------------
@@ -241,18 +239,15 @@ class HeaderForensicsEngine:
             r"\bdkim\s*=\s*fail\b",
             auth_header
         ):
-
             dkim = "FAIL"
 
         elif re.search(
             r"\bdkim\s*=\s*pass\b",
             auth_header
         ):
-
             dkim = "PASS"
 
         else:
-
             dkim = "MISSING"
 
         # -----------------------------------------------------
@@ -263,18 +258,15 @@ class HeaderForensicsEngine:
             r"\bdmarc\s*=\s*fail\b",
             auth_header
         ):
-
             dmarc = "FAIL"
 
         elif re.search(
             r"\bdmarc\s*=\s*pass\b",
             auth_header
         ):
-
             dmarc = "PASS"
 
         else:
-
             dmarc = "MISSING"
 
         return {
@@ -306,7 +298,7 @@ class HeaderForensicsEngine:
         # IPv4 + IPv6 candidate extraction
         # -----------------------------------------------------
         #
-        # Handles:
+        # Supported:
         #
         # IPv4:
         #   54.240.9.29
@@ -403,7 +395,6 @@ class HeaderForensicsEngine:
                             )
 
                 except ValueError:
-
                     continue
 
             # -------------------------------------------------
