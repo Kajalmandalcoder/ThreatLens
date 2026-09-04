@@ -3,7 +3,6 @@ import dns.resolver
 import ipaddress
 import json
 import sys
-
 from email import policy
 from email.parser import BytesParser
 
@@ -11,9 +10,6 @@ from email.parser import BytesParser
 class HeaderForensicsEngine:
     """
     Module B: Header Forensics Engine
-
-    Owner:
-        Akankcha
 
     Input:
         Parsed MIME Email Object
@@ -30,7 +26,6 @@ class HeaderForensicsEngine:
     # =========================================================
 
     def _extract_domain(self, address):
-
         if not address:
             return None
 
@@ -46,8 +41,7 @@ class HeaderForensicsEngine:
             return None
 
         return (
-            clean_addr
-            .split("@")[-1]
+            clean_addr.split("@")[-1]
             .strip()
             .lower()
         )
@@ -57,7 +51,6 @@ class HeaderForensicsEngine:
     # =========================================================
 
     def check_live_dns_records(self, domain):
-
         if not domain:
             return {
                 "spf_record": False,
@@ -74,23 +67,19 @@ class HeaderForensicsEngine:
         # -----------------------------------------------------
 
         try:
-
             txt_records = dns.resolver.resolve(
                 domain,
                 "TXT"
             )
 
             for record in txt_records:
-
                 record_text = str(record).lower()
 
                 if "v=spf1" in record_text:
-
                     records["spf_record"] = True
                     break
 
         except Exception:
-
             records["spf_record"] = False
 
         # -----------------------------------------------------
@@ -98,23 +87,19 @@ class HeaderForensicsEngine:
         # -----------------------------------------------------
 
         try:
-
             dmarc_records = dns.resolver.resolve(
                 f"_dmarc.{domain}",
                 "TXT"
             )
 
             for record in dmarc_records:
-
                 record_text = str(record).lower()
 
                 if "v=dmarc1" in record_text:
-
                     records["dmarc_record"] = True
                     break
 
         except Exception:
-
             records["dmarc_record"] = False
 
         return records
@@ -194,11 +179,10 @@ class HeaderForensicsEngine:
                     )
                 })
 
-                # IMPORTANT:
                 # Return-Path mismatch alone does NOT
                 # prove spoofing.
                 #
-                # Many legitimate email providers use
+                # Legitimate email providers often use
                 # separate bounce / mailing infrastructure.
 
         return {
@@ -233,18 +217,15 @@ class HeaderForensicsEngine:
             r"\bspf\s*=\s*fail\b",
             auth_header
         ):
-
             spf = "FAIL"
 
         elif re.search(
             r"\bspf\s*=\s*pass\b",
             auth_header
         ):
-
             spf = "PASS"
 
         else:
-
             spf = "MISSING"
 
         # -----------------------------------------------------
@@ -255,18 +236,15 @@ class HeaderForensicsEngine:
             r"\bdkim\s*=\s*fail\b",
             auth_header
         ):
-
             dkim = "FAIL"
 
         elif re.search(
             r"\bdkim\s*=\s*pass\b",
             auth_header
         ):
-
             dkim = "PASS"
 
         else:
-
             dkim = "MISSING"
 
         # -----------------------------------------------------
@@ -277,18 +255,15 @@ class HeaderForensicsEngine:
             r"\bdmarc\s*=\s*fail\b",
             auth_header
         ):
-
             dmarc = "FAIL"
 
         elif re.search(
             r"\bdmarc\s*=\s*pass\b",
             auth_header
         ):
-
             dmarc = "PASS"
 
         else:
-
             dmarc = "MISSING"
 
         return {
@@ -314,7 +289,6 @@ class HeaderForensicsEngine:
         )
 
         hops = []
-
         all_public_ips = []
 
         # -----------------------------------------------------
@@ -337,9 +311,7 @@ class HeaderForensicsEngine:
         # Process every Received header
         # -----------------------------------------------------
 
-        for idx, header in enumerate(
-            received_headers
-        ):
+        for idx, header in enumerate(received_headers):
 
             raw_header = str(header).strip()
 
@@ -352,7 +324,6 @@ class HeaderForensicsEngine:
             for candidate in candidates:
 
                 try:
-
                     ip_obj = ipaddress.ip_address(
                         candidate
                     )
@@ -362,14 +333,16 @@ class HeaderForensicsEngine:
 
                         ip_string = str(ip_obj)
 
-                        # Avoid duplicate IPs in same hop
+                        # Avoid duplicate IPs
+                        # inside same hop
                         if ip_string not in valid_public_ips:
 
                             valid_public_ips.append(
                                 ip_string
                             )
 
-                        # Avoid duplicate IPs globally
+                        # Avoid duplicate IPs
+                        # globally
                         if ip_string not in all_public_ips:
 
                             all_public_ips.append(
@@ -377,8 +350,6 @@ class HeaderForensicsEngine:
                             )
 
                 except ValueError:
-
-                    # Ignore invalid IP candidates
                     continue
 
             hops.append({
@@ -426,12 +397,10 @@ class HeaderForensicsEngine:
 
             # Reply-To mismatch is stronger signal
             if anomaly_type == "REPLY_TO_MISMATCH":
-
                 score += 30
 
             # Return-Path mismatch is weaker signal
             elif anomaly_type == "RETURN_PATH_MISMATCH":
-
                 score += 10
 
         # -----------------------------------------------------
@@ -439,15 +408,12 @@ class HeaderForensicsEngine:
         # -----------------------------------------------------
 
         if auth["spf"] == "FAIL":
-
             score += 20
 
         if auth["dkim"] == "FAIL":
-
             score += 20
 
         if auth["dmarc"] == "FAIL":
-
             score += 20
 
         # -----------------------------------------------------
