@@ -255,6 +255,14 @@
             Domain Intelligence
         </button>
 
+        <button class="tab" data-tab="url-intelligence">
+            URL Intelligence
+        </button>
+
+        <button class="tab" data-tab="attach-intelligence">
+            Attachment Intelligence
+        </button>
+
         <button class="tab" data-tab="campaign">
             Campaign
         </button>
@@ -623,7 +631,9 @@
 
         <!-- EMAIL JOURNEY -->
 
-        <section class="tab-panel" id="email-journey">
+        <!-- ================= EMAIL JOURNEY ================= -->
+
+        <section class="journey-section" id="email-journey">
 
             <div class="journey-label">
                 MESSAGE TRACE
@@ -631,78 +641,14 @@
 
             <h2>Probable Email Infrastructure Path</h2>
 
-            <!-- PATH -->
-            <div class="journey-path">
-
-                <div class="journey-node active">
-                    <span class="node-label">SOURCE</span>
-                    <strong>91.214.124.18</strong>
-                    <i data-lucide="chevron-right"></i>
-                </div>
-
-                <div class="journey-line"></div>
-
-                <div class="journey-node">
-                    <span class="node-label">RELAY</span>
-                    <strong>mail.secure-bank-login.xyz</strong>
-                    <i data-lucide="chevron-right"></i>
-                </div>
-
-                <div class="journey-line"></div>
-
-                <div class="journey-node">
-                    <span class="node-label">DESTINATION</span>
-                    <strong>victim@organization.com</strong>
-                    <i data-lucide="chevron-right"></i>
-                </div>
-
+            <!-- DYNAMIC PATH -->
+            <div class="journey-path" id="journeyPath">
+                <!-- JS will generate nodes here -->
             </div>
 
-
-            <!-- NODE INTELLIGENCE -->
-
-            <div class="node-intelligence">
-
-                <div class="node-title">
-                    <span class="live-dot"></span>
-                    <span>Node intelligence</span>
-                    <strong>SOURCE</strong>
-                </div>
-
-                <div class="node-details">
-
-                    <div>
-                        <span>ip</span>
-                        <strong>91.214.124.18</strong>
-                    </div>
-
-                    <div>
-                        <span>hostname</span>
-                        <strong>unknown</strong>
-                    </div>
-
-                    <div>
-                        <span>provider</span>
-                        <strong>M247 Europe</strong>
-                    </div>
-
-                    <div>
-                        <span>asn</span>
-                        <strong>AS9009</strong>
-                    </div>
-
-                    <div>
-                        <span>location</span>
-                        <strong>Amsterdam, NL</strong>
-                    </div>
-
-                    <div>
-                        <span>timestamp</span>
-                        <strong>10:41:52 AM</strong>
-                    </div>
-
-                </div>
-
+            <!-- DYNAMIC NODE INTELLIGENCE -->
+            <div class="node-intelligence" id="nodeIntelligence">
+                <!-- JS will generate selected node details -->
             </div>
 
             <p class="journey-note">

@@ -80,6 +80,13 @@ const urlIntelligenceSchema = new mongoose.Schema(
 
 const emailSchema = new mongoose.Schema(
   {
+
+    caseId: {
+        type: String,
+        unique: true,
+        index: true
+    },
+
     headers: {
       from: String,
       to: [String],
@@ -169,6 +176,22 @@ const emailSchema = new mongoose.Schema(
             has_double_extension: Boolean,
             extension_mime_mismatch: Boolean
           }
+        }
+      ]
+    },
+
+    // ========================================================
+    // EMAIL JOURNEY
+    // ========================================================
+
+    emailJourney: {
+      hops: [
+        {
+          hop_id: Number,
+          from: String,
+          by: String,
+          ip: String,
+          timestamp: String
         }
       ]
     },

@@ -93,6 +93,14 @@ async function analyzeEmail(req, res) {
     console.log("Database:", mongoose.connection.name);
     console.log("Collection:", Email.collection.name);
 
+    const caseId =
+        `CASE-${new Date().getFullYear()}-${new mongoose.Types.ObjectId()
+            .toString()
+            .slice(-6)
+            .toUpperCase()}`;
+
+    parsedEmail.caseId = caseId;
+
     const savedEmail = await Email.create(parsedEmail);
     console.log("✅ SAVED:", savedEmail._id);
     console.log("✅ Full forensic document saved to MongoDB:", savedEmail._id.toString());
@@ -130,8 +138,8 @@ async function analyzeEmail(req, res) {
  */
 async function getAllEmails(req, res) {
   try {
-    const emails = await Email.find()
-      .select("headers.subject headers.from headers.date threatAnalysis urlIntelligence headerForensics mlAnalysis attachmentIntelligence createdAt")
+    const emails = await Email.find().select("caseId headers.subject headers.from headers.date createdAt")
+      // .select("headers.subject headers.from headers.date threatAnalysis urlIntelligence headerForensics mlAnalysis attachmentIntelligence createdAt")
       .sort({ createdAt: -1 });
 
     return res.status(200).json({
