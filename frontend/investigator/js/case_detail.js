@@ -64,6 +64,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log("📦 EMAIL DATA:", email);
 
         const headers = email.headers || {};
+        renderHeaderAnalysis(email);
+        setupRawHeaderModal(headers);
 
         // =========================
         // CASE ID
@@ -613,6 +615,515 @@ function getJourneyLabel(index, total) {
     return "RELAY";
 }
 
+// =========================================================
+// RAW EMAIL HEADERS MODAL
+// =========================================================
+
+function setupRawHeaderModal(headers) {
+
+    const modal = document.getElementById("rawHeaderModal");
+    const rawHeaderBtn = document.querySelector(".raw-header-btn");
+    const closeBtn = document.getElementById("closeRawHeader");
+    const overlay = modal?.querySelector(".raw-header-overlay");
+    const content = document.getElementById("rawHeaderContent");
+
+    if (!modal || !rawHeaderBtn || !content) {
+        console.error("❌ Raw Header modal elements not found");
+        return;
+    }
+
+    console.log("✅ Raw Header modal connected");
+    console.log("📨 Headers:", headers);
+
+    // Button click
+    rawHeaderBtn.onclick = () => {
+
+        console.log("📨 RAW HEADERS BUTTON CLICKED");
+
+        const rawHeaderText =
+            buildRawHeaderText(headers);
+
+        content.innerHTML = `
+            <pre>${escapeHtml(rawHeaderText)}</pre>
+        `;
+
+        modal.classList.add("active");
+
+        lucide.createIcons();
+    };
+
+
+    // Close button
+    if (closeBtn) {
+        closeBtn.onclick = () => {
+            modal.classList.remove("active");
+        };
+    }
+
+
+    // Click outside
+    if (overlay) {
+        overlay.onclick = () => {
+            modal.classList.remove("active");
+        };
+    }
+
+
+    // ESC
+    document.addEventListener("keydown", (event) => {
+
+        if (
+            event.key === "Escape" &&
+            modal.classList.contains("active")
+        ) {
+            modal.classList.remove("active");
+        }
+
+    });
+
+}
+
+// =========================================================
+// HEADER ANALYSIS - DYNAMIC
+// =========================================================
+
+function renderHeaderAnalysis(email) {
+
+    const headers = email.headers || {};
+    const forensic = email.headerForensics || {};
+
+    const auth =
+        forensic.authentication_matrix || {};
+
+    const identity =
+        forensic.identity_analysis || {};
+
+    const anomalies =
+        forensic.anomalies || [];
+
+
+    console.log("🔍 AUTH:", auth);
+    console.log("🔍 IDENTITY:", identity);
+    console.log("🔍 ANOMALIES:", anomalies);
+
+
+    // =====================================================
+    // SPF / DKIM / DMARC
+    // =====================================================
+
+    const authCards =
+        document.querySelectorAll(
+            "#header-analysis .auth-card"
+        );
+
+    const authValues = [
+        auth.spf,
+        auth.dkim,
+        auth.dmarc
+    ];
+
+    authCards.forEach((card, index) => {
+
+        const status = String(
+            authValues[index] || "UNKNOWN"
+        ).toUpperCase();
+
+        const passed = status === "PASS";
+
+
+        // ---------------------------------------------
+        // STATUS ELEMENT
+        // ---------------------------------------------
+
+        const statusElement =
+            card.querySelector(
+                ".auth-top span:last-child"
+            );
+
+        if (statusElement) {
+
+            statusElement.classList.remove(
+                "pass",
+                "fail"
+            );
+
+            statusElement.classList.add(
+                passed ? "pass" : "fail"
+            );
+
+            statusElement.innerHTML = `
+                <i data-lucide="${passed ? "check" : "x"}"></i>
+                ${passed ? "PASS" : status}
+            `;
+        }
+
+
+        // ---------------------------------------------
+        // STATUS LINE
+        // ---------------------------------------------
+
+        // IMPORTANT:
+        // Existing line chahe fail-line ho
+        // ya success-line, dono ko find karega
+
+        const line =
+            card.querySelector(
+                ".fail-line, .success-line"
+            );
+
+        if (line) {
+
+            line.classList.remove(
+                "fail-line",
+                "success-line"
+            );
+
+            line.classList.add(
+                passed
+                    ? "success-line"
+                    : "fail-line"
+            );
+        }
+
+    });
+
+
+    // =====================================================
+    // FROM DOMAIN
+    // =====================================================
+
+    const fromDomain =
+        document.querySelector(
+            "#header-analysis .detail-item:nth-child(1) strong"
+        );
+
+    if (fromDomain) {
+
+        fromDomain.textContent =
+            identity.from_domain || "—";
+    }
+
+
+    // =====================================================
+    // REPLY-TO
+    // =====================================================
+
+    const replyTo =
+        document.querySelector(
+            "#header-analysis .detail-item:nth-child(2) strong"
+        );
+
+    if (replyTo) {
+
+        replyTo.textContent =
+            headers.replyTo ||
+            identity.reply_to_domain ||
+            "—";
+    }
+
+
+    // =====================================================
+    // FINDINGS
+    // =====================================================
+
+    const findingsList =
+        document.querySelector(
+            "#header-analysis .findings-list"
+        );
+
+    if (findingsList) {
+
+        const findings = [];
+
+
+        // ---------------------------------------------
+        // SPOOFING
+        // ---------------------------------------------
+
+        if (identity.is_spoofed === true) {
+
+            findings.push(
+                "Sender identity mismatch"
+            );
+        }
+
+
+        // ---------------------------------------------
+        // SPF
+        // ---------------------------------------------
+
+        if (
+            auth.spf &&
+            String(auth.spf).toUpperCase() !== "PASS"
+        ) {
+
+            findings.push(
+                `SPF authentication ${String(auth.spf).toLowerCase()}`
+            );
+        }
+
+
+        // ---------------------------------------------
+        // DKIM
+        // ---------------------------------------------
+
+        if (
+            auth.dkim &&
+            String(auth.dkim).toUpperCase() !== "PASS"
+        ) {
+
+            findings.push(
+                `DKIM authentication ${String(auth.dkim).toLowerCase()}`
+            );
+        }
+
+
+        // ---------------------------------------------
+        // DMARC
+        // ---------------------------------------------
+
+        if (
+            auth.dmarc &&
+            String(auth.dmarc).toUpperCase() !== "PASS"
+        ) {
+
+            findings.push(
+                `DMARC authentication ${String(auth.dmarc).toLowerCase()}`
+            );
+        }
+
+
+        // ---------------------------------------------
+        // ACTUAL BACKEND ANOMALIES
+        // ---------------------------------------------
+
+        anomalies.forEach(anomaly => {
+
+            if (!anomaly) return;
+
+            const text =
+                anomaly.details ||
+                anomaly.type ||
+                "Header anomaly detected";
+
+            findings.push(text);
+        });
+
+
+        // ---------------------------------------------
+        // NO FINDINGS
+        // ---------------------------------------------
+
+        if (!findings.length) {
+
+            findingsList.innerHTML = `
+                <div class="finding">
+                    <i data-lucide="circle-check"></i>
+                    <span>No suspicious header findings</span>
+                </div>
+            `;
+
+        } else {
+
+            findingsList.innerHTML =
+                findings.map(finding => `
+                    <div class="finding">
+                        <i data-lucide="circle-alert"></i>
+                        <span>
+                            ${escapeHtml(finding)}
+                        </span>
+                    </div>
+                `).join("");
+        }
+    }
+
+
+    // =====================================================
+    // REFRESH LUCIDE ICONS
+    // =====================================================
+
+    lucide.createIcons();
+}
+// =========================================================
+// BUILD RAW HEADER TEXT
+// =========================================================
+
+function buildRawHeaderText(headers) {
+
+    let output = "";
+
+    Object.entries(headers).forEach(
+        ([key, value]) => {
+
+            // -----------------------------------------
+            // NULL / EMPTY
+            // -----------------------------------------
+
+            if (
+                value === null ||
+                value === undefined
+            ) {
+                return;
+            }
+
+
+            // -----------------------------------------
+            // RECEIVED ARRAY
+            // -----------------------------------------
+
+            if (
+                key.toLowerCase() === "received" &&
+                Array.isArray(value)
+            ) {
+
+                value.forEach((received) => {
+
+                    if (
+                        typeof received === "object" &&
+                        received !== null
+                    ) {
+
+                        const from =
+                            received.from || "";
+
+                        const by =
+                            received.by || "";
+
+                        const ip =
+                            received.ip ||
+                            received.address ||
+                            "";
+
+                        const timestamp =
+                            received.timestamp ||
+                            received.date ||
+                            "";
+
+                        const forValue =
+                            received.for ||
+                            "";
+
+                        output += "Received:";
+
+                        if (from) {
+                            output += ` from ${from}`;
+                        }
+
+                        if (ip) {
+                            output += ` (${ip})`;
+                        }
+
+                        if (by) {
+                            output += `\n    by ${by}`;
+                        }
+
+                        if (forValue) {
+                            output += `\n    for ${forValue}`;
+                        }
+
+                        if (timestamp) {
+                            output += `\n    ${timestamp}`;
+                        }
+
+                        output += "\n\n";
+
+                    } else {
+
+                        output +=
+                            `Received: ${received}\n\n`;
+                    }
+                });
+
+                return;
+            }
+
+
+            // -----------------------------------------
+            // NORMAL ARRAY
+            // -----------------------------------------
+
+            if (Array.isArray(value)) {
+
+                output +=
+                    `${formatHeaderName(key)}:\n`;
+
+                value.forEach((item) => {
+
+                    if (
+                        typeof item === "object" &&
+                        item !== null
+                    ) {
+
+                        output +=
+                            `  ${JSON.stringify(
+                                item,
+                                null,
+                                2
+                            )}\n`;
+
+                    } else {
+
+                        output +=
+                            `  ${item}\n`;
+                    }
+                });
+
+                output += "\n";
+
+                return;
+            }
+
+
+            // -----------------------------------------
+            // OBJECT
+            // -----------------------------------------
+
+            if (
+                typeof value === "object" &&
+                value !== null
+            ) {
+
+                output +=
+                    `${formatHeaderName(key)}: `;
+
+                output +=
+                    JSON.stringify(
+                        value,
+                        null,
+                        2
+                    );
+
+                output += "\n\n";
+
+                return;
+            }
+
+
+            // -----------------------------------------
+            // NORMAL VALUE
+            // -----------------------------------------
+
+            output +=
+                `${formatHeaderName(key)}: ${value}\n`;
+        }
+    );
+
+    return output.trim();
+}
+
+
+// =========================================================
+// HEADER NAME FORMAT
+// =========================================================
+
+function formatHeaderName(key) {
+
+    return key
+        .replace(/([A-Z])/g, " $1")
+        .replace(/^./, char =>
+            char.toUpperCase()
+        );
+}
 
 // =========================================================
 // JOURNEY VALUE

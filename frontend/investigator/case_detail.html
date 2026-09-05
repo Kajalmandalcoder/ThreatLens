@@ -633,7 +633,7 @@
 
         <!-- ================= EMAIL JOURNEY ================= -->
 
-        <section class="journey-section" id="email-journey">
+        <section class="tab-panel journey-section" id="email-journey">
 
             <div class="journey-label">
                 MESSAGE TRACE
@@ -1012,6 +1012,48 @@
         </section>
 
     </section>
+
+    <!-- =========================================================
+     RAW EMAIL HEADERS MODAL
+     ========================================================= -->
+
+    <div class="raw-header-modal" id="rawHeaderModal">
+
+        <div class="raw-header-overlay"></div>
+
+        <div class="raw-header-dialog">
+
+            <div class="raw-header-modal-head">
+
+                <div>
+                    <div class="raw-header-label">
+                        FORENSIC EVIDENCE
+                    </div>
+
+                    <h2>Raw Email Headers</h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="raw-header-close"
+                    id="closeRawHeader"
+                >
+                    <i data-lucide="x"></i>
+                </button>
+
+            </div>
+
+
+            <div
+                class="raw-header-content"
+                id="rawHeaderContent"
+            >
+                <!-- JS will render database headers here -->
+            </div>
+
+        </div>
+
+    </div>
 
 </main>
 
