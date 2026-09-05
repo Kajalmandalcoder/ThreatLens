@@ -1162,86 +1162,6 @@ body {
     margin:18px 0 0;
 }
 
-/* INTELLIGENCE */
-
-.intel-card {
-    background:#101923;
-    border:1px solid #223544;
-    border-radius:10px;
-    padding:26px 28px;
-    margin-top:18px;
-}
-
-.intel-label {
-    color:#20d5e5;
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:2px;
-    margin-bottom:8px;
-}
-
-.intel-card h2 {
-    margin:0 0 28px;
-    color:#dce6ee;
-    font-size:22px;
-    font-weight:500;
-}
-
-.intel-grid {
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:25px 70px;
-}
-
-.intel-grid div {
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-}
-
-.intel-grid span {
-    color:#607486;
-    font-size:12px;
-}
-
-.intel-grid strong {
-    color:#cbd7df;
-    font-size:15px;
-    font-weight:600;
-}
-
-.danger {
-    color:#ff7077 !important;
-}
-
-
-/* BUTTONS */
-
-.intel-actions {
-    display:flex;
-    gap:12px;
-    margin-top:25px;
-}
-
-.intel-actions button {
-    display:flex;
-    align-items:center;
-    gap:9px;
-    padding:11px 16px;
-    background:#101b26;
-    color:#bac9d3;
-    border:1px solid #2a4050;
-    border-radius:7px;
-    font-size:14px;
-    font-weight:600;
-    cursor:pointer;
-}
-
-.intel-actions i {
-    width:17px;
-}
-
-
 /* DOMAIN */
 
 .domain-content {
@@ -2595,3 +2515,609 @@ body {
     box-shadow: 0 0 8px rgba(34, 197, 94, 0.35);
 }
 
+/* =========================================================
+   EMAIL EVIDENCE
+   ========================================================= */
+
+#email-evidence {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   EVIDENCE CARDS
+   ========================================================= */
+
+#email-evidence .evidence-card {
+    width: 100%;
+    min-width: 0;
+    min-height: 390px;
+    box-sizing: border-box;
+
+    padding: 26px;
+
+    background: #101923;
+    border: 1px solid #223242;
+    border-radius: 8px;
+
+    color: #dce5ed;
+}
+
+#email-evidence .metadata-card,
+#email-evidence .body-card {
+    margin: 0;
+}
+
+
+/* =========================================================
+   SECTION LABEL
+   ========================================================= */
+
+#email-evidence .section-label {
+    margin-bottom: 8px;
+
+    color: #3bd5ed;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+
+/* =========================================================
+   HEADINGS
+   ========================================================= */
+
+#email-evidence h2 {
+    margin: 0 0 28px;
+
+    color: #dce5ed;
+    font-size: 20px;
+    font-weight: 500;
+}
+
+
+/* =========================================================
+   MESSAGE METADATA
+   ========================================================= */
+
+#email-evidence .metadata-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    column-gap: 35px;
+    row-gap: 27px;
+}
+
+#email-evidence .meta-item {
+    min-width: 0;
+}
+
+#email-evidence .meta-item span {
+    display: block;
+    margin-bottom: 8px;
+
+    color: #637386;
+    font-size: 10px;
+    letter-spacing: 0.5px;
+}
+
+#email-evidence .meta-item strong {
+    display: block;
+
+    color: #d2dce5;
+    font-size: 12px;
+    font-weight: 600;
+
+    line-height: 1.5;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   EMAIL BODY PREVIEW
+   ========================================================= */
+
+#email-evidence .body-card {
+    position: relative;
+}
+
+#email-evidence .email-preview {
+    width: 100%;
+    box-sizing: border-box;
+
+    background: #111d28;
+
+    border: 1px solid #26394b;
+    border-radius: 7px;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   EMAIL HEADER
+   ========================================================= */
+
+#email-evidence .email-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    padding: 18px;
+
+    border-bottom: 1px solid #26394b;
+}
+
+#email-evidence .email-icon {
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(34, 211, 238, 0.12);
+}
+
+#email-evidence .email-icon svg {
+    width: 17px;
+    height: 17px;
+    color: #25cfe8;
+}
+
+#email-evidence .sender-info {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+#email-evidence .sender-info strong {
+    display: block;
+
+    max-width: 280px;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #dce5ed;
+
+    font-size: 12px;
+    font-weight: 600;
+}
+
+#email-evidence .sender-info span {
+    color: #68798a;
+    font-size: 10px;
+}
+
+#email-evidence .email-time {
+    margin-left: auto;
+
+    color: #68798a;
+    font-size: 10px;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   EMAIL CONTENT
+   ========================================================= */
+
+#email-evidence .email-content {
+    padding: 22px 18px;
+}
+
+#email-evidence .email-content h3 {
+    margin: 0 0 12px;
+
+    color: #dce5ed;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+#email-evidence .email-content p {
+    margin: 0;
+
+    color: #8291a0;
+
+    font-size: 11px;
+    line-height: 1.7;
+}
+
+
+/* =========================================================
+   ATTACHMENT
+   ========================================================= */
+
+#email-evidence .attachment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin: 0 18px;
+    padding: 14px 0;
+
+    border-top: 1px solid #26394b;
+}
+
+#email-evidence .attachment-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    min-width: 0;
+}
+
+#email-evidence .attachment-icon {
+    width: 28px;
+    height: 28px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#email-evidence .attachment-icon svg {
+    width: 17px;
+    height: 17px;
+
+    color: #f0a847;
+}
+
+#email-evidence .attachment-left > span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    color: #8b99a7;
+    font-size: 11px;
+}
+
+#email-evidence .file-size {
+    flex-shrink: 0;
+
+    color: #637386;
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   VIEW ORIGINAL EMAIL BUTTON
+   ========================================================= */
+
+#email-evidence .original-email-btn {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+
+    margin-top: 18px;
+
+    padding: 11px 15px;
+
+    background: transparent;
+
+    border: 1px solid #2a3c4d;
+    border-radius: 6px;
+
+    color: #b8c5d1;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+#email-evidence .original-email-btn svg {
+    width: 14px;
+    height: 14px;
+}
+
+#email-evidence .original-email-btn:hover {
+    color: #28cde7;
+    border-color: #28cde7;
+    background: rgba(40, 205, 231, 0.05);
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    #email-evidence {
+        grid-template-columns: 1fr;
+    }
+
+    #email-evidence .evidence-card {
+        min-height: auto;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    #email-evidence .evidence-card {
+        padding: 20px;
+    }
+
+    #email-evidence .metadata-grid {
+        grid-template-columns: 1fr;
+        row-gap: 20px;
+    }
+
+    #email-evidence .email-header {
+        padding: 14px;
+    }
+
+    #email-evidence .email-content {
+        padding: 18px 14px;
+    }
+
+    #email-evidence .attachment {
+        margin-left: 14px;
+        margin-right: 14px;
+    }
+
+}
+
+
+
+/* EMAIL EVIDENCE ONLY */
+#email-evidence[style*="display: block"] {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 16px !important;
+}
+
+#email-evidence[style*="display: block"] > .evidence-card {
+    width: calc(50% - 8px) !important;
+    flex: 0 0 calc(50% - 8px) !important;
+    margin: 0 !important;
+}
+
+/* =========================================================
+   IP INTELLIGENCE
+   ========================================================= */
+
+#ip-intelligence {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+#ip-intelligence .intel-label {
+    margin-bottom: 6px;
+}
+
+#ip-intelligence > h2 {
+    margin-bottom: 24px;
+}
+
+
+/* =========================================================
+   INTELLIGENCE GRID
+   ========================================================= */
+
+#ip-intelligence .intel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   INTELLIGENCE CARDS
+   ========================================================= */
+
+#ip-intelligence .intel-grid > div {
+    min-width: 0;
+    padding: 18px 20px;
+
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 10px;
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* =========================================================
+   CARD HOVER
+   ========================================================= */
+
+#ip-intelligence .intel-grid > div:hover {
+    background: rgba(0, 217, 255, 0.06);
+    border-color: #00d9ff;
+    box-shadow: 0 0 12px rgba(0, 217, 255, 0.18);
+    transform: translateY(-1px);
+}
+
+#ip-intelligence .intel-grid > div:hover strong {
+    color: #00d9ff;
+}
+
+
+/* =========================================================
+   LABEL
+   ========================================================= */
+
+#ip-intelligence .intel-grid span {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+
+    color: #7f8796;
+
+    transition: color 0.2s ease;
+}
+
+
+/* Label also becomes cyan on hover */
+
+#ip-intelligence .intel-grid > div:hover span {
+    color: #00d9ff;
+}
+
+
+/* =========================================================
+   VALUE
+   ========================================================= */
+
+#ip-intelligence .intel-grid strong {
+    font-size: 15px;
+    font-weight: 600;
+
+    color: #e8edf5;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    transition: color 0.2s ease;
+}
+
+
+/* =========================================================
+   IP SPECIFIC
+   ========================================================= */
+
+#ip-intelligence #intel-ip {
+    font-family: "Courier New", monospace;
+    letter-spacing: 0.02em;
+}
+
+
+/* =========================================================
+   RISK COLORS
+   ========================================================= */
+
+#ip-intelligence #intel-risk.safe {
+    color: #22c55e;
+}
+
+#ip-intelligence #intel-risk.warning {
+    color: #f59e0b;
+}
+
+#ip-intelligence #intel-risk.danger {
+    color: #ef4444;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
+
+#ip-intelligence .intel-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 18px;
+}
+
+#ip-intelligence .intel-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+
+    padding: 10px 15px;
+
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+
+    color: #cbd2de;
+
+    font-size: 12px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.15s ease;
+}
+
+
+/* =========================================================
+   BUTTON HOVER
+   ========================================================= */
+
+#ip-intelligence .intel-actions button:hover {
+    background: rgba(0, 217, 255, 0.06);
+    border-color: #00d9ff;
+    color: #00d9ff;
+    box-shadow: 0 0 10px rgba(0, 217, 255, 0.15);
+}
+
+#ip-intelligence .intel-actions button:active {
+    transform: translateY(1px);
+}
+
+#ip-intelligence .intel-actions button svg {
+    width: 14px;
+    height: 14px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    #ip-intelligence .intel-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    #ip-intelligence .intel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #ip-intelligence .intel-actions {
+        flex-wrap: wrap;
+    }
+
+}

@@ -661,6 +661,8 @@
 
         <!-- IP INTELLIGENCE -->
 
+        <!-- IP INTELLIGENCE -->
+
         <section class="tab-panel" id="ip-intelligence">
 
             <div class="intel-label">THREAT INTELLIGENCE</div>
@@ -669,55 +671,67 @@
             <div class="intel-grid">
 
                 <div>
-                    <span>ip</span>
-                    <strong>91.214.124.18</strong>
+                    <span>IP</span>
+                    <strong id="intel-ip">—</strong>
                 </div>
 
                 <div>
-                    <span>country</span>
-                    <strong>Netherlands</strong>
+                    <span>COUNTRY</span>
+                    <strong id="intel-country">—</strong>
                 </div>
 
                 <div>
-                    <span>city</span>
-                    <strong>Amsterdam</strong>
+                    <span>CITY</span>
+                    <strong id="intel-city">—</strong>
                 </div>
 
                 <div>
-                    <span>asn</span>
-                    <strong>AS9009</strong>
+                    <span>ASN</span>
+                    <strong id="intel-asn">—</strong>
                 </div>
 
                 <div>
-                    <span>provider</span>
-                    <strong>M247 Europe SRL</strong>
+                    <span>PROVIDER</span>
+                    <strong id="intel-provider">—</strong>
                 </div>
 
                 <div>
-                    <span>hosting</span>
-                    <strong>VPS hosting</strong>
+                    <span>HOSTING</span>
+                    <strong id="intel-hosting">—</strong>
                 </div>
 
                 <div>
-                    <span>reputation</span>
-                    <strong>Malicious reports</strong>
+                    <span>REPUTATION</span>
+                    <strong id="intel-reputation">—</strong>
                 </div>
 
                 <div>
-                    <span>risk</span>
-                    <strong class="danger">Critical</strong>
+                    <span>RISK</span>
+                    <strong id="intel-risk">—</strong>
                 </div>
 
             </div>
 
             <div class="intel-actions">
-                <button><i data-lucide="copy"></i> Copy IP</button>
-                <button><i data-lucide="search"></i> Investigate IP</button>
-                <button><i data-lucide="plus"></i> Add to IOC List</button>
+
+                <button id="copyIpBtn">
+                    <i data-lucide="copy"></i>
+                    Copy IP
+                </button>
+
+                <button id="investigateIpBtn">
+                    <i data-lucide="search"></i>
+                    Investigate IP
+                </button>
+
+                <button id="addIocBtn">
+                    <i data-lucide="plus"></i>
+                    Add to IOC List
+                </button>
+
             </div>
 
         </section>
-
 
         <!-- DOMAIN INTELLIGENCE -->
 

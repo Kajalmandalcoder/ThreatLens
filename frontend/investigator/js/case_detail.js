@@ -434,7 +434,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         // =========================
 
         renderEmailJourney(email);
-
+        renderIPIntelligence(email);
         lucide.createIcons();
     }
 
@@ -597,6 +597,325 @@ function renderEmailJourney(email) {
     console.log("✅ Email Journey rendered");
 }
 
+// =========================================================
+// IP INTELLIGENCE
+// =========================================================
+
+function renderIPIntelligence(email) {
+
+    console.log("🌐 Rendering IP Intelligence...");
+
+    const ipIntel =
+        email.ipIntelligence || {};
+
+    const routing =
+        ipIntel.routing_summary || {};
+
+    const origin =
+        ipIntel.origin_ip_data || {};
+
+    const signals =
+        ipIntel.signals || {};
+
+    console.log("🌐 IP Intelligence:", ipIntel);
+    console.log("🌐 Origin IP Data:", origin);
+
+
+    // =====================================================
+    // IP
+    // =====================================================
+
+    const ipElement =
+        document.getElementById("intel-ip");
+
+    if (ipElement) {
+        ipElement.textContent =
+            origin.ip ||
+            routing.origin_ip_candidate ||
+            "—";
+    }
+
+
+    // =====================================================
+    // COUNTRY
+    // =====================================================
+
+    const countryElement =
+        document.getElementById("intel-country");
+
+    if (countryElement) {
+        countryElement.textContent =
+            origin.country ||
+            "—";
+    }
+
+
+    // =====================================================
+    // CITY
+    // =====================================================
+
+    const cityElement =
+        document.getElementById("intel-city");
+
+    if (cityElement) {
+        cityElement.textContent =
+            origin.city ||
+            "—";
+    }
+
+
+    // =====================================================
+    // ASN
+    // =====================================================
+
+    const asnElement =
+        document.getElementById("intel-asn");
+
+    if (asnElement) {
+        asnElement.textContent =
+            origin.asn ||
+            "—";
+    }
+
+
+    // =====================================================
+    // PROVIDER / ISP
+    // =====================================================
+
+    const providerElement =
+        document.getElementById("intel-provider");
+
+    if (providerElement) {
+        providerElement.textContent =
+            origin.isp ||
+            "—";
+    }
+
+
+    // =====================================================
+    // HOSTING
+    // =====================================================
+
+    const hostingElement =
+        document.getElementById("intel-hosting");
+
+    if (hostingElement) {
+
+        if (origin.is_hosting === true) {
+            hostingElement.textContent =
+                "Yes";
+        } else if (origin.is_hosting === false) {
+            hostingElement.textContent =
+                "No";
+        } else {
+            hostingElement.textContent =
+                "—";
+        }
+    }
+
+
+    // =====================================================
+    // REPUTATION
+    // =====================================================
+
+    const reputationElement =
+        document.getElementById("intel-reputation");
+
+    if (reputationElement) {
+
+        if (origin.is_proxy === true) {
+
+            reputationElement.textContent =
+                "Proxy detected";
+
+        } else if (
+            origin.lookup_status === "success"
+        ) {
+
+            reputationElement.textContent =
+                "No malicious reputation data";
+
+        } else {
+
+            reputationElement.textContent =
+                "Unknown";
+        }
+    }
+
+
+    // =====================================================
+    // RISK
+    // =====================================================
+
+    const riskElement =
+        document.getElementById("intel-risk");
+
+    if (riskElement) {
+
+        let risk = "Low";
+
+        if (
+            signals.ip_origin_is_vpn_proxy === true
+        ) {
+
+            risk = "High";
+
+        } else if (
+            signals.ip_origin_is_hosting === true
+        ) {
+
+            risk = "Medium";
+        }
+
+        riskElement.textContent =
+            risk;
+
+        riskElement.classList.remove(
+            "danger",
+            "warning",
+            "safe"
+        );
+
+        if (risk === "High") {
+
+            riskElement.classList.add("danger");
+
+        } else if (risk === "Medium") {
+
+            riskElement.classList.add("warning");
+
+        } else {
+
+            riskElement.classList.add("safe");
+        }
+    }
+
+
+    // =====================================================
+    // COPY IP
+    // =====================================================
+
+    const copyBtn =
+        document.getElementById("copyIpBtn");
+
+    if (copyBtn) {
+
+        copyBtn.onclick = async () => {
+
+            const ip =
+                origin.ip ||
+                routing.origin_ip_candidate;
+
+            if (!ip) {
+                return;
+            }
+
+            try {
+
+                await navigator.clipboard.writeText(ip);
+
+                const original =
+                    copyBtn.innerHTML;
+
+                copyBtn.innerHTML = `
+                    <i data-lucide="check"></i>
+                    Copied
+                `;
+
+                lucide.createIcons();
+
+                setTimeout(() => {
+
+                    copyBtn.innerHTML =
+                        original;
+
+                    lucide.createIcons();
+
+                }, 1500);
+
+            } catch (error) {
+
+                console.error(
+                    "❌ Failed to copy IP:",
+                    error
+                );
+            }
+        };
+    }
+
+
+    // =====================================================
+    // INVESTIGATE IP
+    // =====================================================
+
+    const investigateBtn =
+        document.getElementById(
+            "investigateIpBtn"
+        );
+
+    if (investigateBtn) {
+
+        investigateBtn.onclick = () => {
+
+            const ip =
+                origin.ip ||
+                routing.origin_ip_candidate;
+
+            if (!ip) {
+                return;
+            }
+
+            console.log(
+                "🔎 Investigating IP:",
+                ip
+            );
+
+            // Future: dedicated IP investigation page
+            alert(
+                `Investigating IP: ${ip}`
+            );
+        };
+    }
+
+
+    // =====================================================
+    // ADD TO IOC
+    // =====================================================
+
+    const addIocBtn =
+        document.getElementById("addIocBtn");
+
+    if (addIocBtn) {
+
+        addIocBtn.onclick = () => {
+
+            const ip =
+                origin.ip ||
+                routing.origin_ip_candidate;
+
+            if (!ip) {
+                return;
+            }
+
+            console.log(
+                "➕ Adding IP to IOC list:",
+                ip
+            );
+
+            // Future: connect to IOC API
+            alert(
+                `${ip} added to IOC list`
+            );
+        };
+    }
+
+
+    lucide.createIcons();
+
+    console.log(
+        "✅ IP Intelligence rendered"
+    );
+}
 
 // =========================================================
 // JOURNEY LABEL
