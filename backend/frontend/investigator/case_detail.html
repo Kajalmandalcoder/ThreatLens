@@ -1,0 +1,1078 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ThreatLens - Case Details</title>
+
+    <link rel="stylesheet" href="css/case_detail.css">
+    <link rel="stylesheet" href="css/header.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+<!-- ================= NAVBAR ================= -->
+
+<!-- <header class="navbar">
+
+    <div class="logo-area">
+
+        <div class="logo-icon">
+            <i data-lucide="shield-check"></i>
+        </div>
+
+        <div>
+            <div class="logo-text">
+                Threat<span>Lens</span>
+            </div>
+
+            <div class="logo-subtitle">
+                Email Threat & Forensic Intelligence
+            </div>
+        </div>
+
+    </div>
+
+
+    <nav class="nav-menu">
+
+        <a href="dashboard.html">Dashboard</a>
+
+        <a href="cases.html" class="active">
+            Cases
+            <span class="case-count">24</span>
+        </a>
+
+        <a href="#">Campaigns</a>
+        <a href="#">Reports</a>
+
+    </nav>
+
+
+    <div class="nav-right">
+
+        <i data-lucide="search"></i>
+
+        <div class="notification">
+            <i data-lucide="bell"></i>
+            <span></span>
+        </div>
+
+        <div class="avatar">
+            JA
+        </div>
+
+    </div>
+
+</header> -->
+
+<div id="investigator-header"></div>
+
+
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+
+    <!-- BACK + ACTIONS -->
+
+    <div class="top-row">
+
+        <a href="dash_invest.html" class="back-btn">
+            <i data-lucide="arrow-left"></i>
+            Back to Cases
+        </a>
+
+
+        <div class="actions">
+
+            <button>
+                <i data-lucide="file-text"></i>
+                Generate Report
+            </button>
+
+            <button>
+                <i data-lucide="download"></i>
+                Export Evidence
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <!-- ================= CASE HEADER ================= -->
+
+    <section class="case-header">
+
+        <div class="case-main">
+
+            <div class="case-labels">
+
+                <span class="case-id">
+                    CASE-2026-001
+                </span>
+
+                <span class="status new">
+                    NEW
+                </span>
+
+                <span class="risk-label">
+                    CRITICAL RISK
+                </span>
+
+            </div>
+
+
+            <h1>
+                Verify Your Account Immediately
+            </h1>
+
+
+            <p class="from-line">
+
+                From:
+                <span>security@secure-bank-login.xyz</span>
+
+                <b>•</b>
+
+                Received:
+                31 Aug 2026, 10:42 AM
+
+            </p>
+
+        </div>
+
+
+        <!-- THREAT SCORE -->
+
+        <div class="threat-score">
+
+            <span>THREAT SCORE</span>
+
+            <div>
+                <strong>92</strong>
+                <small>/100</small>
+            </div>
+
+            <div class="score-line">
+                <span></span>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= SUMMARY CARDS ================= -->
+
+    <section class="summary-grid">
+
+
+        <div class="summary-card">
+
+            <span>THREAT SCORE</span>
+
+            <div class="big-score">
+                92
+                <small>/100</small>
+            </div>
+
+            <p class="critical-text">
+                CRITICAL RISK
+            </p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <span>THREAT TYPE</span>
+
+            <h2>Phishing</h2>
+
+            <p>AI classification</p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <span>CONFIDENCE</span>
+
+            <h2>97%</h2>
+
+            <p>High confidence signal</p>
+
+        </div>
+
+
+        <div class="summary-card">
+
+            <span>STATUS</span>
+
+            <h2 class="status-text">
+                New
+            </h2>
+
+            <p>Assigned to Jiya Arya</p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= TABS ================= -->
+
+    <div class="tabs-container">
+
+        <button class="tab active" data-tab="overview">
+            Overview
+        </button>
+
+        <button class="tab" data-tab="email-evidence">
+            Email Evidence
+        </button>
+
+        <button class="tab" data-tab="header-analysis">
+            Header Analysis
+        </button>
+
+        <button class="tab" data-tab="email-journey">
+            Email Journey
+        </button>
+
+        <button class="tab" data-tab="ip-intelligence">
+            IP Intelligence
+        </button>
+
+        <button class="tab" data-tab="domain-intelligence">
+            Domain Intelligence
+        </button>
+
+        <button class="tab" data-tab="campaign">
+            Campaign
+        </button>
+
+        <button class="tab" data-tab="report">
+            Report
+        </button>
+
+    </div>
+
+
+    <!-- ================= TAB CONTENT ================= -->
+
+    <section class="tab-content">
+
+
+        <!-- OVERVIEW -->
+
+        <div class="tab-panel active" id="overview">
+
+            <div class="content-grid">
+
+                <div class="content-card">
+
+                    <div class="section-label">
+                        ASSESSMENT
+                    </div>
+
+                    <h2>Key Findings</h2>
+
+                    <div class="finding">
+                        <i data-lucide="circle-alert"></i>
+                        <span>Suspicious sender identity</span>
+                    </div>
+
+                    <div class="finding">
+                        <i data-lucide="circle-alert"></i>
+                        <span>Payment redirection language detected</span>
+                    </div>
+
+                    <div class="finding">
+                        <i data-lucide="circle-alert"></i>
+                        <span>Authentication anomaly</span>
+                    </div>
+
+                    <div class="finding">
+                        <i data-lucide="circle-alert"></i>
+                        <span>Suspicious infrastructure indicators</span>
+                    </div>
+
+                </div>
+
+
+                <div class="content-card">
+
+                    <div class="section-label">
+                        RESPONSE PLAYBOOK
+                    </div>
+
+                    <h2>Recommended Actions</h2>
+
+                    <div class="action-item">
+                        <i data-lucide="check"></i>
+                        Do not respond to the sender
+                    </div>
+
+                    <div class="action-item">
+                        <i data-lucide="check"></i>
+                        Preserve the original email
+                    </div>
+
+                    <div class="action-item">
+                        <i data-lucide="check"></i>
+                        Search for related emails
+                    </div>
+
+                    <div class="action-item">
+                        <i data-lucide="check"></i>
+                        Block confirmed malicious indicators
+                    </div>
+
+                    <div class="action-item">
+                        <i data-lucide="check"></i>
+                        Escalate for investigation
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- EMAIL EVIDENCE -->
+
+        <!-- ================= EMAIL EVIDENCE ================= -->
+
+        <section class="tab-panel" id="email-evidence">
+
+            <!-- LEFT : MESSAGE METADATA -->
+            <div class="evidence-card metadata-card">
+
+                <div class="section-label">
+                    MESSAGE METADATA
+                </div>
+
+                <h2>Email Evidence</h2>
+
+                <div class="metadata-grid">
+
+                    <div class="meta-item">
+                        <span>From</span>
+                        <strong>security@secure-bank-login.xyz</strong>
+                    </div>
+
+                    <div class="meta-item">
+                        <span>To</span>
+                        <strong>victim@organization.com</strong>
+                    </div>
+
+                    <div class="meta-item">
+                        <span>Reply-To</span>
+                        <strong>security.verify@protonmail.com</strong>
+                    </div>
+
+                    <div class="meta-item">
+                        <span>Return-Path</span>
+                        <strong>bounce@payment-support.xyz</strong>
+                    </div>
+
+                    <div class="meta-item">
+                        <span>Subject</span>
+                        <strong>Verify Your Account Immediately</strong>
+                    </div>
+
+                    <div class="meta-item">
+                        <span>Message-ID</span>
+                        <strong>&lt;verify.001@secure-bank-login.xyz&gt;</strong>
+                    </div>
+
+                    <div class="meta-item">
+                        <span>Received Time</span>
+                        <strong>31 Aug 2026, 10:42 AM</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT : EMAIL BODY -->
+            <div class="evidence-card body-card">
+
+                <div class="section-label">
+                    CONTENT ANALYSIS
+                </div>
+
+                <h2>Email Body Preview</h2>
+
+
+                <div class="email-preview">
+
+                    <!-- EMAIL HEADER -->
+
+                    <div class="email-header">
+
+                        <div class="email-icon">
+                            <i data-lucide="mail"></i>
+                        </div>
+
+                        <div class="sender-info">
+                            <strong>
+                                security@secure-bank-login.xyz
+                            </strong>
+
+                            <span>
+                                to victim@organization.com
+                            </span>
+                        </div>
+
+                        <span class="email-time">
+                            10:42 AM
+                        </span>
+
+                    </div>
+
+
+                    <!-- EMAIL CONTENT -->
+
+                    <div class="email-content">
+
+                        <h3>
+                            Verify Your Account Immediately
+                        </h3>
+
+                        <p>
+                            Your account access will be restricted.
+                            Verify your identity within 24 hours to
+                            prevent suspension.
+                        </p>
+
+                    </div>
+
+
+                    <!-- ATTACHMENT -->
+
+                    <div class="attachment">
+
+                        <div class="attachment-left">
+
+                            <div class="attachment-icon">
+                                <i data-lucide="file-text"></i>
+                            </div>
+
+                            <span>
+                                Invoice_2026_08.pdf
+                            </span>
+
+                        </div>
+
+                        <span class="file-size">
+                            24 KB
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ORIGINAL EMAIL BUTTON -->
+
+                <button class="original-email-btn">
+
+                    View Original Email
+
+                    <i data-lucide="external-link"></i>
+
+                </button>
+
+            </div>
+
+        </section>
+
+        <!-- HEADER ANALYSIS -->
+
+        <!-- ================= HEADER ANALYSIS ================= -->
+
+        <section class="tab-panel" id="header-analysis">
+
+            <!-- AUTHENTICATION STATUS -->
+
+            <div class="auth-status-grid">
+
+                <div class="auth-card">
+                    <div class="auth-top">
+                        <span>SPF</span>
+                        <span class="fail">
+                            <i data-lucide="x"></i>
+                            FAIL
+                        </span>
+                    </div>
+                    <div class="fail-line"></div>
+                </div>
+
+                <div class="auth-card">
+                    <div class="auth-top">
+                        <span>DKIM</span>
+                        <span class="fail">
+                            <i data-lucide="x"></i>
+                            FAIL
+                        </span>
+                    </div>
+                    <div class="fail-line"></div>
+                </div>
+
+                <div class="auth-card">
+                    <div class="auth-top">
+                        <span>DMARC</span>
+                        <span class="fail">
+                            <i data-lucide="x"></i>
+                            FAIL
+                        </span>
+                    </div>
+                    <div class="fail-line"></div>
+                </div>
+
+            </div>
+
+
+            <!-- DETAILS + FINDINGS -->
+
+            <div class="analysis-grid">
+
+                <!-- HEADER DETAILS -->
+
+                <div class="analysis-card">
+
+                    <div class="section-label">
+                        IDENTITY CHECK
+                    </div>
+
+                    <h2>Header Details</h2>
+
+                    <div class="header-details">
+
+                        <div class="detail-item">
+                            <span>From Domain</span>
+                            <strong>secure-bank-login.xyz</strong>
+                        </div>
+
+                        <div class="detail-item">
+                            <span>Reply-To</span>
+                            <strong>security.verify@protonmail.com</strong>
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <!-- FINDINGS -->
+
+                <div class="analysis-card findings-card">
+
+                    <div class="section-label">
+                        ANALYSIS
+                    </div>
+
+                    <h2>Findings</h2>
+
+                    <div class="findings-list">
+
+                        <div class="finding">
+                            <i data-lucide="circle-alert"></i>
+                            <span>Sender identity mismatch</span>
+                        </div>
+
+                        <div class="finding">
+                            <i data-lucide="circle-alert"></i>
+                            <span>SPF authentication failed</span>
+                        </div>
+
+                        <div class="finding">
+                            <i data-lucide="circle-alert"></i>
+                            <span>DMARC authentication failed</span>
+                        </div>
+
+                        <div class="finding">
+                            <i data-lucide="circle-alert"></i>
+                            <span>Suspicious Reply-To address</span>
+                        </div>
+
+                    </div>
+
+                    <button class="raw-header-btn">
+                        View Raw Headers
+                        <i data-lucide="external-link"></i>
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- EMAIL JOURNEY -->
+
+        <section class="tab-panel" id="email-journey">
+
+            <div class="journey-label">
+                MESSAGE TRACE
+            </div>
+
+            <h2>Probable Email Infrastructure Path</h2>
+
+            <!-- PATH -->
+            <div class="journey-path">
+
+                <div class="journey-node active">
+                    <span class="node-label">SOURCE</span>
+                    <strong>91.214.124.18</strong>
+                    <i data-lucide="chevron-right"></i>
+                </div>
+
+                <div class="journey-line"></div>
+
+                <div class="journey-node">
+                    <span class="node-label">RELAY</span>
+                    <strong>mail.secure-bank-login.xyz</strong>
+                    <i data-lucide="chevron-right"></i>
+                </div>
+
+                <div class="journey-line"></div>
+
+                <div class="journey-node">
+                    <span class="node-label">DESTINATION</span>
+                    <strong>victim@organization.com</strong>
+                    <i data-lucide="chevron-right"></i>
+                </div>
+
+            </div>
+
+
+            <!-- NODE INTELLIGENCE -->
+
+            <div class="node-intelligence">
+
+                <div class="node-title">
+                    <span class="live-dot"></span>
+                    <span>Node intelligence</span>
+                    <strong>SOURCE</strong>
+                </div>
+
+                <div class="node-details">
+
+                    <div>
+                        <span>ip</span>
+                        <strong>91.214.124.18</strong>
+                    </div>
+
+                    <div>
+                        <span>hostname</span>
+                        <strong>unknown</strong>
+                    </div>
+
+                    <div>
+                        <span>provider</span>
+                        <strong>M247 Europe</strong>
+                    </div>
+
+                    <div>
+                        <span>asn</span>
+                        <strong>AS9009</strong>
+                    </div>
+
+                    <div>
+                        <span>location</span>
+                        <strong>Amsterdam, NL</strong>
+                    </div>
+
+                    <div>
+                        <span>timestamp</span>
+                        <strong>10:41:52 AM</strong>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <p class="journey-note">
+                Infrastructure location represents the observed email infrastructure
+                and does not prove the physical location or identity of an attacker.
+            </p>
+
+        </section>
+
+
+        <!-- IP INTELLIGENCE -->
+
+        <section class="tab-panel" id="ip-intelligence">
+
+            <div class="intel-label">THREAT INTELLIGENCE</div>
+            <h2>IP Intelligence</h2>
+
+            <div class="intel-grid">
+
+                <div>
+                    <span>ip</span>
+                    <strong>91.214.124.18</strong>
+                </div>
+
+                <div>
+                    <span>country</span>
+                    <strong>Netherlands</strong>
+                </div>
+
+                <div>
+                    <span>city</span>
+                    <strong>Amsterdam</strong>
+                </div>
+
+                <div>
+                    <span>asn</span>
+                    <strong>AS9009</strong>
+                </div>
+
+                <div>
+                    <span>provider</span>
+                    <strong>M247 Europe SRL</strong>
+                </div>
+
+                <div>
+                    <span>hosting</span>
+                    <strong>VPS hosting</strong>
+                </div>
+
+                <div>
+                    <span>reputation</span>
+                    <strong>Malicious reports</strong>
+                </div>
+
+                <div>
+                    <span>risk</span>
+                    <strong class="danger">Critical</strong>
+                </div>
+
+            </div>
+
+            <div class="intel-actions">
+                <button><i data-lucide="copy"></i> Copy IP</button>
+                <button><i data-lucide="search"></i> Investigate IP</button>
+                <button><i data-lucide="plus"></i> Add to IOC List</button>
+            </div>
+
+        </section>
+
+
+        <!-- DOMAIN INTELLIGENCE -->
+
+        <section class="tab-panel domain-cards" id="domain-intelligence">
+
+            <div class="intel-label">THREAT INTELLIGENCE</div>
+            <h2>Domain Intelligence</h2>
+
+            <div class="domain-content">
+
+                <div class="intel-grid">
+
+                    <div>
+                        <span>domainAge</span>
+                        <strong>12 days</strong>
+                    </div>
+
+                    <div>
+                        <span>registrar</span>
+                        <strong>NameCheap, Inc.</strong>
+                    </div>
+
+                    <div>
+                        <span>dns</span>
+                        <strong>Active</strong>
+                    </div>
+
+                    <div>
+                        <span>mx</span>
+                        <strong>mail.secure-bank-login.xyz</strong>
+                    </div>
+
+                    <div>
+                        <span>hosting</span>
+                        <strong>Cloud VPS</strong>
+                    </div>
+
+                    <div>
+                        <span>lookalike</span>
+                        <strong>Very high</strong>
+                    </div>
+
+                    <div>
+                        <span>brand</span>
+                        <strong>SecureBank</strong>
+                    </div>
+
+                </div>
+
+                <div class="risk-box">
+
+                    <div class="risk-circle">
+                        <strong>94%</strong>
+                        <span>risk score</span>
+                    </div>
+
+                    <h3>Lookalike risk</h3>
+                    <p>High confidence malicious domain</p>
+
+                    <div class="risk-bar">
+                        <span></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CAMPAIGN -->
+
+        <section class="tab-panel campaign-section" id="campaign">
+
+            <!-- LEFT : CAMPAIGN GRAPH -->
+            <div class="campaign-card">
+
+                <div class="section-label">RELATIONSHIP GRAPH</div>
+                <h2>Campaign Correlation</h2>
+
+                <div class="campaign-graph">
+
+                    <!-- CONNECTION LINES -->
+                    <svg class="graph-lines" viewBox="0 0 800 500">
+                        <line x1="170" y1="120" x2="400" y2="255"/>
+                        <line x1="630" y1="120" x2="400" y2="255"/>
+                        <line x1="400" y1="310" x2="270" y2="420"/>
+                    </svg>
+
+
+                    <!-- NODE 1 -->
+                    <div class="graph-node node-one">
+
+                        <div class="node-icon">
+                            <i data-lucide="file-text"></i>
+                        </div>
+
+                        <strong>CASE-2026-002</strong>
+                        <span>Similar Domain</span>
+
+                    </div>
+
+
+                    <!-- NODE 2 -->
+                    <div class="graph-node node-two">
+
+                        <div class="node-icon orange">
+                            <i data-lucide="network"></i>
+                        </div>
+
+                        <strong>Suspicious IP</strong>
+                        <span>Same IP</span>
+
+                    </div>
+
+
+                    <!-- CURRENT CASE -->
+                    <div class="graph-node current-node">
+
+                        <div class="node-icon">
+                            <i data-lucide="fingerprint"></i>
+                        </div>
+
+                        <small>CURRENT CASE</small>
+
+                        <strong>CASE-2026-001</strong>
+
+                    </div>
+
+
+                    <!-- NODE 3 -->
+                    <div class="graph-node node-three">
+
+                        <div class="node-icon orange">
+                            <i data-lucide="file-text"></i>
+                        </div>
+
+                        <strong>CASE-2026-004</strong>
+                        <span>Similar Content</span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- RIGHT : CAMPAIGN SIGNAL -->
+            <div class="campaign-card signal-card">
+
+                <div class="section-label">MATCH ANALYSIS</div>
+                <h2>Campaign Signal</h2>
+
+                <div class="score-area">
+
+                    <div class="score">87<span>%</span></div>
+
+                    <p>Campaign Correlation Score</p>
+
+                    <div class="score-bar">
+                        <div></div>
+                    </div>
+
+                </div>
+
+                <div class="campaign-result">
+
+                    <span class="status-dot"></span>
+                    <span>Possible Related Campaign</span>
+
+                </div>
+
+                <div class="signal-types">
+
+                    <span>
+                        <i></i>
+                        Similar Domain
+                    </span>
+
+                    <span>
+                        <i></i>
+                        Same IP
+                    </span>
+
+                    <span>
+                        <i></i>
+                        Similar Content
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- REPORT -->
+
+        <section class="tab-panel report-card" id="report">
+
+            <div class="report-head">
+
+                <div>
+                    <div class="section-label">FORENSIC REPORT</div>
+
+                    <h1>Threat Investigation Report</h1>
+
+                    <p class="report-info">
+                        CASE-2026-001 · Generated 31 Aug 2026
+                    </p>
+                </div>
+
+                <i data-lucide="file-text"></i>
+
+            </div>
+
+
+            <div class="report-stats">
+
+                <div class="report-stat">
+                    <span>THREAT CLASSIFICATION</span>
+                    <strong>Phishing</strong>
+                </div>
+
+                <div class="report-stat">
+                    <span>RISK SCORE</span>
+                    <strong>92 / 100</strong>
+                </div>
+
+                <div class="report-stat">
+                    <span>CONFIDENCE</span>
+                    <strong>94%</strong>
+                </div>
+
+            </div>
+
+
+            <div class="report-list">
+
+                <div>
+                    <i data-lucide="check"></i>
+                    Case Information
+                </div>
+
+                <div>
+                    <i data-lucide="check"></i>
+                    Threat Classification
+                </div>
+
+                <div>
+                    <i data-lucide="check"></i>
+                    Email Authentication
+                </div>
+
+                <div>
+                    <i data-lucide="check"></i>
+                    Key Findings
+                </div>
+
+                <div>
+                    <i data-lucide="check"></i>
+                    IP Intelligence
+                </div>
+
+                <div>
+                    <i data-lucide="check"></i>
+                    Domain Intelligence
+                </div>
+
+                <div>
+                    <i data-lucide="check"></i>
+                    Email Journey
+                </div>
+
+                <div>
+                    <i data-lucide="check"></i>
+                    Campaign Correlation
+                </div>
+
+                <div>
+                    <i data-lucide="check"></i>
+                    Recommended Actions
+                </div>
+
+            </div>
+
+
+            <button class="generate-btn">
+                <i data-lucide="file-text"></i>
+                Generate Report
+            </button>
+
+        </section>
+
+    </section>
+
+</main>
+
+
+<!-- ================= JAVASCRIPT ================= -->
+<script src="js/header.js"></script>
+<script src="js/case_detail.js"></script>
+
+</body>
+</html>
