@@ -139,87 +139,39 @@ const emailSchema = new mongoose.Schema(
     // ========================================================
     // ATTACHMENT INTELLIGENCE
     // ========================================================
-    // ========================================================
-// ATTACHMENT INTELLIGENCE
-// ========================================================
 
-attachmentIntelligence: {
-  summary: {
-    total_attachments: { type: Number, default: 0 },
-    has_high_risk_files: { type: Boolean, default: false },
-    has_executable_types: { type: Boolean, default: false },
-    has_macros_or_scripts: { type: Boolean, default: false },
-    max_attachment_risk_score: { type: Number, default: 0 },
-    overall_status: {
-      type: String,
-      default: "LOW"
-    }
-  },
-
-  attachments: [
-    {
-      filename: String,
-      contentType: String,
-      size: Number,
-
-      // NEW: detected extension
-      extension: String,
-
-      // NEW: actual file type vs declared MIME
-      file_type_detection: {
-        detected_type: String,
-        detected_mime_type: String,
-        declared_mime_type: String,
-        extension_matches_content: Boolean
+    attachmentIntelligence: {
+      summary: {
+        total_attachments: { type: Number, default: 0 },
+        has_high_risk_files: { type: Boolean, default: false },
+        has_executable_types: { type: Boolean, default: false },
+        has_macros_or_scripts: { type: Boolean, default: false },
+        max_attachment_risk_score: { type: Number, default: 0 },
+        overall_status: { type: String, default: "LOW" } // LOW | MEDIUM | HIGH | CRITICAL
       },
-
-      // Hashes
-      hashes: {
-        md5: String,
-        sha256: String
-      },
-
-      // NEW: entropy analysis
-      entropy_analysis: {
-        entropy: Number,
-        indicator: String
-      },
-
-      // Risk
-      risk_score: Number,
-
-      risk_level: String, // LOW | MEDIUM | HIGH | CRITICAL
-
-      // Explainable indicators
-      indicators: [String],
-
-      // NEW: explainable risk factors
-      risk_factors: [
+      attachments: [
         {
-          reason: String,
-          score: Number,
-          value: mongoose.Schema.Types.Mixed,
-          explanation: String
+          filename: String,
+          contentType: String,
+          size: Number,
+          hashes: {
+            md5: String,
+            sha256: String
+          },
+          risk_score: Number,
+          risk_level: String, // LOW | MEDIUM | HIGH | CRITICAL
+          indicators: [String],
+          structural_analysis: {
+            is_executable: Boolean,
+            is_archive: Boolean,
+            has_macro: Boolean,
+            has_embedded_javascript: Boolean,
+            has_double_extension: Boolean,
+            extension_mime_mismatch: Boolean
+          }
         }
-      ],
-
-      // Structural analysis
-      structural_analysis: {
-        is_executable: Boolean,
-        is_archive: Boolean,
-        has_macro: Boolean,
-        has_embedded_javascript: Boolean,
-        has_double_extension: Boolean,
-        extension_mime_mismatch: Boolean,
-
-        // NEW
-        embedded_objects: Boolean,
-        nested_archives: Boolean,
-        suspicious_internal_files: [String]
-      }
-    }
-  ]
-},
+      ]
+    },
 
     // ========================================================
     // DOMAIN & IP INTELLIGENCE
