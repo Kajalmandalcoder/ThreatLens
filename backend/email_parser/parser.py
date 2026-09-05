@@ -4,113 +4,11 @@ from bs4 import BeautifulSoup
 import re
 import json
 import sys
-import base64
 sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
 from pathlib import Path
 from urllib.parse import urlparse
 
-def parse_email_journey(received_headers):
-
-    journey = []
-
-    for index, received in enumerate(received_headers, start=1):
-
-        hop = {
-            "hop_id": index,
-            "from": None,
-            "by": None,
-            "ip": None,
-            "timestamp": None
-        }
-
-        # -----------------------------
-        # Extract FROM server
-        # -----------------------------
-
-        from_match = re.search(
-            r'\bfrom\s+([^\s(]+)',
-            received,
-            re.IGNORECASE
-        )
-
-        if from_match:
-            from_server = from_match.group(1)
-
-            # Don't treat IP address as server name
-            if not re.fullmatch(r'[0-9a-fA-F:.]+', from_server):
-                hop["from"] = from_server
-
-
-        # -----------------------------
-        # Extract BY server
-        # -----------------------------
-
-        by_match = re.search(
-            r'\bby\s+([^\s;]+)',
-            received,
-            re.IGNORECASE
-        )
-
-        if by_match:
-            by_server = by_match.group(1)
-
-            # Don't treat IP address as server name
-            if not re.fullmatch(r'[0-9a-fA-F:.]+', by_server):
-                hop["by"] = by_server
-
-
-        # -----------------------------
-        # Extract IP address
-        # -----------------------------
-
-        # IP inside [ ]
-        ip_match = re.search(
-            r'\[([0-9a-fA-F:.]+)\]',
-            received
-        )
-
-        if ip_match:
-            hop["ip"] = ip_match.group(1)
-
-
-        # If IP is not inside [ ], check FROM
-        if hop["ip"] is None:
-
-            if from_match:
-                candidate = from_match.group(1)
-
-                if re.fullmatch(r'[0-9a-fA-F:.]+', candidate):
-                    hop["ip"] = candidate
-
-
-        # If still no IP, check BY
-        if hop["ip"] is None:
-
-            if by_match:
-                candidate = by_match.group(1)
-
-                if re.fullmatch(r'[0-9a-fA-F:.]+', candidate):
-                    hop["ip"] = candidate
-
-
-        # -----------------------------
-        # Extract timestamp
-        # -----------------------------
-
-        timestamp_match = re.search(
-            r'([A-Z][a-z]{2},\s+\d{1,2}\s+[A-Z][a-z]{2}\s+\d{4}\s+'
-            r'\d{2}:\d{2}:\d{2}\s+[+-]\d{4})',
-            received
-        )
-
-        if timestamp_match:
-            hop["timestamp"] = timestamp_match.group(1)
-
-
-        journey.append(hop)
-
-    return journey
 
 def parse_email(file_path):
 
@@ -136,14 +34,6 @@ def parse_email(file_path):
         "replyTo": msg.get("Reply-To"),
         "returnPath": msg.get("Return-Path"),
         "received": msg.get_all("Received", [])
-    }
-
-    # ---------------------------------
-    # EMAIL JOURNEY
-    # ---------------------------------
-
-    email_journey = {
-        "hops": parse_email_journey(headers["received"])
     }
 
     # ---------------------------------
@@ -225,16 +115,14 @@ def parse_email(file_path):
 
         if filename:
 
-            payload = part.get_payload(decode=True)
-
-            # Convert binary payload to Base64 string for JSON safety
-            encoded_content = base64.b64encode(payload).decode("utf-8") if payload else ""
+            payload = part.get_payload(
+                decode=True
+            )
 
             attachment = {
                 "filename": filename,
                 "contentType": part.get_content_type(),
-                "size": len(payload) if payload else 0,
-                "content": encoded_content
+                "size": len(payload) if payload else 0
             }
 
             attachments.append(attachment)
@@ -253,13 +141,10 @@ def parse_email(file_path):
 
         "links": links,
 
-        "attachments": attachments,
-
-        "emailJourney": email_journey
+        "attachments": attachments
     }
 
     return result
-
 
 
 # =================================
@@ -268,22 +153,62 @@ def parse_email(file_path):
 
 if __name__ == "__main__":
 
+    # Check whether .eml file was provided
     if len(sys.argv) < 2:
-        print(json.dumps({"error": "No .eml file provided"}, indent=4))
+
+        print(
+            json.dumps(
+                {
+                    "error": "No .eml file provided"
+                },
+                indent=4
+            )
+        )
+
         sys.exit(1)
 
+    # Get file path from command line
     file_path = Path(sys.argv[1])
 
+    # Check file exists
     if not file_path.exists():
-        print(json.dumps({"error": f"File not found: {file_path}"}, indent=4))
+
+        print(
+            json.dumps(
+                {
+                    "error": f"File not found: {file_path}"
+                },
+                indent=4
+            )
+        )
+
         sys.exit(1)
 
+    # Parse email
     try:
+
         result = parse_email(file_path)
-        formatted_json = json.dumps(result, ensure_ascii=False, indent=4)
+
+        # Convert result to formatted JSON
+        formatted_json = json.dumps(
+            result,
+            ensure_ascii=False,
+            indent=4
+        )
+
+        # Print formatted JSON
         sys.stdout.write(formatted_json)
         sys.stdout.write("\n")
 
     except Exception as e:
-        print(json.dumps({"error": str(e)}, indent=4))
+
+        print(
+            json.dumps(
+                {
+                    "error": str(e)
+                },
+                indent=4
+            )
+        )
+
         sys.exit(1)

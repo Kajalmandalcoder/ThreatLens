@@ -35,6 +35,11 @@ async function analyzeEmail(req, res) {
     const parsedEmail = await parseEmailWithPython(req.file.path);
     console.log("✅ Python parser completed");
 
+    console.log(
+      "📍 Email Journey:",
+      JSON.stringify(parsedEmail.emailJourney, null, 2)
+    );
+
     // 2. ML Threat Prediction
     let mlResult = null;
     try {

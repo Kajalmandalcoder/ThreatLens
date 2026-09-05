@@ -1,0 +1,12 @@
+beautifulsoup4==4.15.0
+# Project folder mein terminal open karke:
+# python -m pip install -r requirements.txt
+# //Team member ka flow
+
+# Unko .venv copy nahi karna. Woh apne PC par:
+
+# python -m venv .venv
+
+# phir activate karke:
+
+# python -m pip install -r requirements.txt

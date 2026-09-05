@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>ThreatLens - Analysis History</title>
+
+    <link rel="stylesheet" href="css/analysis_history.css">
+    <link rel="stylesheet" href="css/header.css">
+
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+    <div id="header"></div>
+
+
+<!-- ================= MAIN ================= -->
+
+<main class="container">
+
+    <!-- HEADER -->
+
+    <section class="page-header">
+
+        <div class="header-left">
+
+            <div class="eyebrow">
+                <i data-lucide="shield"></i>
+                SAVED SAFETY REPORTS
+            </div>
+
+            <h1>Analysis history</h1>
+
+            <p>
+                Review your previously analyzed emails.
+            </p>
+
+        </div>
+
+
+        <!-- SEARCH -->
+
+        <div class="search-box">
+
+            <i data-lucide="search"></i>
+
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Search subject or file name"
+            >
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FILTER BAR ================= -->
+
+    <div class="filter-bar">
+
+        <div class="filters">
+
+            <button class="filter active" data-filter="all">
+                All
+            </button>
+
+            <button class="filter" data-filter="Safe">
+                Safe
+            </button>
+
+            <button class="filter" data-filter="Suspicious">
+                Suspicious
+            </button>
+
+            <button class="filter" data-filter="High Risk">
+                High Risk
+            </button>
+
+            <button class="filter" data-filter="Critical">
+                Critical
+            </button>
+
+        </div>
+
+
+        <button class="sort-btn">
+            Newest first
+            <i data-lucide="chevron-down"></i>
+        </button>
+
+    </div>
+
+
+    <!-- ================= HISTORY LIST ================= -->
+
+    <section class="history-list" id="historyList">
+
+
+        <!-- CARD 1 -->
+
+        <div class="history-card" data-risk="High Risk">
+
+            <div class="mail-icon">
+                <i data-lucide="mail"></i>
+            </div>
+
+
+            <div class="email-details">
+
+                <h3>
+                    Verify Your Account Immediately
+                </h3>
+
+                <div class="email-meta">
+
+                    <span>
+                        account-verification.eml
+                    </span>
+
+                    <b>•</b>
+
+                    <span>
+                        Today, 10:42 AM
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="risk high">
+                <span></span>
+                High Risk
+            </div>
+
+
+            <div class="score">
+                <strong>92</strong>
+                <span>/100</span>
+            </div>
+
+
+            <button class="view-btn">
+                View
+                <i data-lucide="arrow-right"></i>
+            </button>
+
+        </div>
+
+
+        <!-- CARD 2 -->
+
+        <div class="history-card" data-risk="Critical">
+
+            <div class="mail-icon">
+                <i data-lucide="mail"></i>
+            </div>
+
+
+            <div class="email-details">
+
+                <h3>
+                    Invoice Payment Required
+                </h3>
+
+                <div class="email-meta">
+
+                    <span>
+                        invoice-march.eml
+                    </span>
+
+                    <b>•</b>
+
+                    <span>
+                        Yesterday
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="risk critical">
+                <span></span>
+                Critical
+            </div>
+
+
+            <div class="score">
+                <strong>96</strong>
+                <span>/100</span>
+            </div>
+
+
+            <button class="view-btn">
+                View
+                <i data-lucide="arrow-right"></i>
+            </button>
+
+        </div>
+
+
+        <!-- CARD 3 -->
+
+        <div class="history-card" data-risk="Safe">
+
+            <div class="mail-icon">
+                <i data-lucide="mail"></i>
+            </div>
+
+
+            <div class="email-details">
+
+                <h3>
+                    Team Meeting Invitation
+                </h3>
+
+                <div class="email-meta">
+
+                    <span>
+                        team-sync.eml
+                    </span>
+
+                    <b>•</b>
+
+                    <span>
+                        29 August
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="risk safe">
+                <span></span>
+                Safe
+            </div>
+
+
+            <div class="score">
+                <strong>12</strong>
+                <span>/100</span>
+            </div>
+
+
+            <button class="view-btn">
+                View
+                <i data-lucide="arrow-right"></i>
+            </button>
+
+        </div>
+
+
+        <!-- CARD 4 -->
+
+        <div class="history-card" data-risk="High Risk">
+
+            <div class="mail-icon">
+                <i data-lucide="mail"></i>
+            </div>
+
+
+            <div class="email-details">
+
+                <h3>
+                    Password Reset Required
+                </h3>
+
+                <div class="email-meta">
+
+                    <span>
+                        password-reset.eml
+                    </span>
+
+                    <b>•</b>
+
+                    <span>
+                        28 August
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="risk high">
+                <span></span>
+                High Risk
+            </div>
+
+
+            <div class="score">
+                <strong>89</strong>
+                <span>/100</span>
+            </div>
+
+
+            <a href="analysis_result.html" class="view-btn">
+                View
+                <i data-lucide="arrow-right"></i>
+            </a>
+
+        </div>
+
+
+        <!-- CARD 5 -->
+
+        <div class="history-card" data-risk="Suspicious">
+
+            <div class="mail-icon">
+                <i data-lucide="mail"></i>
+            </div>
+
+
+            <div class="email-details">
+
+                <h3>
+                    Document Shared With You
+                </h3>
+
+                <div class="email-meta">
+
+                    <span>
+                        shared-document.eml
+                    </span>
+
+                    <b>•</b>
+
+                    <span>
+                        27 August
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="risk suspicious">
+                <span></span>
+                Suspicious
+            </div>
+
+
+            <div class="score">
+                <strong>67</strong>
+                <span>/100</span>
+            </div>
+
+
+            <button class="view-btn">
+                View
+                <i data-lucide="arrow-right"></i>
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- ================= FOOTER ================= -->
+
+<footer>
+
+    <div>
+        <i data-lucide="lock"></i>
+        Your emails are analyzed securely and never shared.
+    </div>
+
+    <div>
+        © 2024 ThreatLens · Privacy · Terms
+    </div>
+
+</footer>
+
+
+<script src="js/analysis_history.js"></script>
+<script src="js/header.js"></script>
+
+</body>
+</html>
