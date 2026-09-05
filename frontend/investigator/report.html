@@ -1,0 +1,1284 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>ThreatLens | Investigation Report</title>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Report CSS -->
+    <link rel="stylesheet" href="css/report.css">
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+         ===================================================== -->
+
+    <header class="report-header">
+
+        <div class="brand">
+
+            <div class="brand-icon">
+                <i data-lucide="shield-check"></i>
+            </div>
+
+            <div class="brand-text">
+                <strong>Threat<span>Lens</span></strong>
+                <small>SOC INVESTIGATION PLATFORM</small>
+            </div>
+
+        </div>
+
+
+        <div class="header-right">
+
+            <div class="analyst-status">
+                <span class="status-dot"></span>
+                ANALYST CONSOLE
+            </div>
+
+            <span class="header-separator">|</span>
+
+            <span id="report-time">UTC --:--:--</span>
+
+            <div class="profile-circle">
+                AR
+            </div>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="report-container">
+
+
+        <!-- =================================================
+             BREADCRUMB
+             ================================================= -->
+
+        <div class="breadcrumb">
+            CASES
+            <span>›</span>
+            EMAIL ANALYSIS
+            <span>›</span>
+            FINAL REPORT
+        </div>
+
+
+
+        <!-- =================================================
+             REPORT TITLE
+             ================================================= -->
+
+        <section class="report-title-section">
+
+            <div>
+
+                <div class="section-kicker">
+                    FINAL INVESTIGATION REPORT
+                </div>
+
+                <h1>
+                    Email Threat Assessment
+                </h1>
+
+                <div class="case-meta">
+
+                    <span id="case-id">
+                        CASE-2026---------
+                    </span>
+
+                    <span class="meta-separator">|</span>
+
+                    <span id="analysis-date">
+                        Analyzed --
+                    </span>
+
+                    <span
+                        id="top-verdict"
+                        class="status-badge warning"
+                    >
+                        ANALYZING
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="report-actions">
+
+                <button id="backCaseBtn">
+                    <i data-lucide="arrow-left"></i>
+                    Back to Case
+                </button>
+
+                <button id="exportReportBtn">
+                    <i data-lucide="download"></i>
+                    Export Report
+                </button>
+
+                <button id="printReportBtn">
+                    <i data-lucide="printer"></i>
+                    Print
+                </button>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             EXECUTIVE SUMMARY
+             ================================================= -->
+
+        <section class="report-section executive-section">
+
+            <div class="section-heading">
+
+                <div class="heading-icon">
+                    <i data-lucide="shield-alert"></i>
+                </div>
+
+                <div>
+                    <small>SECTION 01 / EXECUTIVE SUMMARY</small>
+                    <h2>Executive Summary</h2>
+                </div>
+
+            </div>
+
+
+            <div class="executive-grid">
+
+
+                <!-- LEFT -->
+
+                <div class="executive-main">
+
+                    <div class="verdict-line">
+
+                        <span>Verdict:</span>
+
+                        <strong
+                            id="executive-verdict"
+                            class="warning-text"
+                        >
+                            ANALYZING
+                        </strong>
+
+                    </div>
+
+
+                    <p id="executive-description">
+                        Analyzing email intelligence and threat
+                        indicators...
+                    </p>
+
+
+                    <div class="score-area">
+
+                        <div class="score-label-row">
+
+                            <span>
+                                COMPOSITE THREAT SCORE
+                            </span>
+
+                            <strong>
+                                <span id="composite-score">
+                                    0
+                                </span>
+                                <small>/ 100</small>
+                            </strong>
+
+                        </div>
+
+
+                        <div class="score-bar">
+
+                            <div
+                                id="composite-score-fill"
+                                class="score-fill"
+                            ></div>
+
+                        </div>
+
+
+                        <div class="score-scale">
+
+                            <span>LOW</span>
+                            <span>MEDIUM</span>
+                            <span>HIGH</span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- RIGHT -->
+
+                <div class="executive-stats">
+
+                    <div class="exec-stat">
+
+                        <span>THREAT LEVEL</span>
+
+                        <strong
+                            id="threat-level"
+                            class="warning-text"
+                        >
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exec-stat">
+
+                        <span>ML CONFIDENCE</span>
+
+                        <strong id="ml-confidence">
+                            NOT AVAILABLE
+                        </strong>
+
+                    </div>
+
+
+                    <div class="exec-stat">
+
+                        <span>RECOMMENDED ACTION</span>
+
+                        <strong
+                            id="recommended-action"
+                            class="cyan-text"
+                        >
+                            REVIEW
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             ANALYSIS OVERVIEW
+             ================================================= -->
+
+        <section class="report-section">
+
+            <div class="section-heading">
+
+                <div class="heading-icon">
+                    <i data-lucide="activity"></i>
+                </div>
+
+                <div>
+                    <small>SECTION 02 / SIGNALS</small>
+                    <h2>Analysis Overview</h2>
+                </div>
+
+            </div>
+
+
+            <div class="overview-grid">
+
+
+                <div class="overview-card">
+
+                    <div class="overview-icon">
+                        <i data-lucide="brain"></i>
+                    </div>
+
+                    <span>ML ANALYSIS</span>
+
+                    <strong id="overview-ml">
+                        N/A
+                    </strong>
+
+                    <small id="overview-ml-status">
+                        NOT AVAILABLE
+                    </small>
+
+                </div>
+
+
+
+                <div class="overview-card">
+
+                    <div class="overview-icon">
+                        <i data-lucide="shield"></i>
+                    </div>
+
+                    <span>HEADER FORENSICS</span>
+
+                    <strong id="overview-header-score">
+                        0
+                    </strong>
+
+                    <small id="overview-header-status">
+                        LOW RISK
+                    </small>
+
+                </div>
+
+
+
+                <div class="overview-card">
+
+                    <div class="overview-icon">
+                        <i data-lucide="network"></i>
+                    </div>
+
+                    <span>IP INTELLIGENCE</span>
+
+                    <strong id="overview-ip-score">
+                        --
+                    </strong>
+
+                    <small id="overview-ip-status">
+                        --
+                    </small>
+
+                </div>
+
+
+
+                <div class="overview-card">
+
+                    <div class="overview-icon">
+                        <i data-lucide="globe"></i>
+                    </div>
+
+                    <span>DOMAIN INTELLIGENCE</span>
+
+                    <strong id="overview-domain-score">
+                        --
+                    </strong>
+
+                    <small id="overview-domain-status">
+                        --
+                    </small>
+
+                </div>
+
+
+
+                <div class="overview-card">
+
+                    <div class="overview-icon">
+                        <i data-lucide="link"></i>
+                    </div>
+
+                    <span>URL INTELLIGENCE</span>
+
+                    <strong id="overview-url-score">
+                        --
+                    </strong>
+
+                    <small id="overview-url-status">
+                        --
+                    </small>
+
+                </div>
+
+
+
+                <div class="overview-card">
+
+                    <div class="overview-icon">
+                        <i data-lucide="paperclip"></i>
+                    </div>
+
+                    <span>ATTACHMENT INTELLIGENCE</span>
+
+                    <strong id="overview-attachment-score">
+                        --
+                    </strong>
+
+                    <small id="overview-attachment-status">
+                        --
+                    </small>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             KEY FINDINGS + EMAIL
+             ================================================= -->
+
+        <div class="two-column">
+
+
+            <!-- KEY FINDINGS -->
+
+            <section class="report-section">
+
+                <div class="section-heading">
+
+                    <div class="heading-icon">
+                        <i data-lucide="list-checks"></i>
+                    </div>
+
+                    <div>
+                        <small>SECTION 03 / OBSERVATIONS</small>
+                        <h2>Key Findings</h2>
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="key-findings"
+                    class="findings-list"
+                >
+
+                    <div class="finding-row">
+
+                        <div class="finding-icon info">
+                            <i data-lucide="loader"></i>
+                        </div>
+
+                        <span>
+                            Analyzing threat indicators...
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- EMAIL & SENDER -->
+
+            <section class="report-section">
+
+                <div class="section-heading">
+
+                    <div class="heading-icon">
+                        <i data-lucide="mail"></i>
+                    </div>
+
+                    <div>
+                        <small>SECTION 04 / MESSAGE</small>
+                        <h2>Email & Sender</h2>
+                    </div>
+
+                </div>
+
+
+                <div class="email-info-grid">
+
+
+                    <div>
+
+                        <span>FROM DOMAIN</span>
+
+                        <strong id="report-from-domain">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>SUBJECT</span>
+
+                        <strong
+                            id="report-subject"
+                            class="truncate"
+                        >
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>REPLY-TO</span>
+
+                        <strong id="report-reply">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>DATE</span>
+
+                        <strong id="report-date">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>RETURN-PATH</span>
+
+                        <strong id="report-return">
+                            —
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>TOTAL URLS</span>
+
+                        <strong id="report-total-urls">
+                            0
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span>ATTACHMENTS</span>
+
+                        <strong id="report-total-attachments">
+                            0
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+
+        <!-- =================================================
+             HEADER AUTHENTICATION
+             ================================================= -->
+
+        <section class="report-section">
+
+            <div class="section-heading">
+
+                <div class="heading-icon">
+                    <i data-lucide="shield-check"></i>
+                </div>
+
+                <div>
+                    <small>SECTION 05 / AUTHENTICATION</small>
+                    <h2>Header Authentication</h2>
+                </div>
+
+            </div>
+
+
+            <div class="auth-grid">
+
+
+                <div class="auth-card">
+
+                    <div class="auth-top">
+
+                        <span>SPF</span>
+
+                        <i
+                            id="spf-icon"
+                            data-lucide="x"
+                        ></i>
+
+                    </div>
+
+                    <strong id="report-spf">
+                        MISSING
+                    </strong>
+
+                    <div
+                        id="spf-line"
+                        class="auth-line warning-line"
+                    ></div>
+
+                </div>
+
+
+
+                <div class="auth-card">
+
+                    <div class="auth-top">
+
+                        <span>DKIM</span>
+
+                        <i
+                            id="dkim-icon"
+                            data-lucide="check"
+                        ></i>
+
+                    </div>
+
+                    <strong id="report-dkim">
+                        PASS
+                    </strong>
+
+                    <div
+                        id="dkim-line"
+                        class="auth-line success-line"
+                    ></div>
+
+                </div>
+
+
+
+                <div class="auth-card">
+
+                    <div class="auth-top">
+
+                        <span>DMARC</span>
+
+                        <i
+                            id="dmarc-icon"
+                            data-lucide="x"
+                        ></i>
+
+                    </div>
+
+                    <strong id="report-dmarc">
+                        MISSING
+                    </strong>
+
+                    <div
+                        id="dmarc-line"
+                        class="auth-line warning-line"
+                    ></div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             URL INTELLIGENCE
+             ================================================= -->
+
+        <section class="report-section">
+
+            <div class="section-heading">
+
+                <div class="heading-icon">
+                    <i data-lucide="link"></i>
+                </div>
+
+                <div>
+                    <small>SECTION 06 / EXTRACTED INDICATORS</small>
+                    <h2>URL Intelligence</h2>
+                </div>
+
+            </div>
+
+
+            <div class="url-summary-bar">
+
+                <div>
+                    <span>TOTAL URLS</span>
+                    <strong id="report-url-total">0</strong>
+                </div>
+
+                <div>
+                    <span>CRITICAL</span>
+                    <strong id="report-url-critical">0</strong>
+                </div>
+
+                <div>
+                    <span>HIGH</span>
+                    <strong id="report-url-high">0</strong>
+                </div>
+
+                <div>
+                    <span>MEDIUM</span>
+                    <strong id="report-url-medium">0</strong>
+                </div>
+
+                <div>
+                    <span>LOW</span>
+                    <strong id="report-url-low">0</strong>
+                </div>
+
+                <div>
+                    <span>MAX SCORE</span>
+                    <strong id="report-url-max">0</strong>
+                </div>
+
+            </div>
+
+
+            <div
+                id="report-url-list"
+                class="report-url-list"
+            >
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             DOMAIN + IP
+             ================================================= -->
+
+        <div class="two-column">
+
+
+            <!-- DOMAIN -->
+
+            <section class="report-section">
+
+                <div class="section-heading">
+
+                    <div class="heading-icon">
+                        <i data-lucide="globe"></i>
+                    </div>
+
+                    <div>
+                        <small>SECTION 07 / REPUTATION</small>
+                        <h2>Domain Intelligence</h2>
+                    </div>
+
+                </div>
+
+
+                <div class="intel-list">
+
+
+                    <div>
+                        <span>From Domain</span>
+                        <strong id="domain-from-report">—</strong>
+                    </div>
+
+
+                    <div>
+                        <span>Reply-To</span>
+                        <strong id="domain-reply-report">—</strong>
+                    </div>
+
+
+                    <div>
+                        <span>Return-Path</span>
+                        <strong id="domain-return-report">—</strong>
+                    </div>
+
+
+                    <div>
+                        <span>Body Domains</span>
+                        <strong
+                            id="domain-body-report"
+                            class="truncate"
+                        >
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>From ↔ Reply-To</span>
+                        <strong id="domain-reply-match-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>From ↔ Return-Path</span>
+                        <strong id="domain-return-match-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>Body Domain</span>
+                        <strong id="domain-body-match-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>Lookalike Domain</span>
+                        <strong id="domain-lookalike-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>MX Record</span>
+                        <strong id="domain-mx-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>Domain Risk</span>
+                        <strong
+                            id="domain-risk-report"
+                            class="warning-text"
+                        >
+                            —
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+
+            <!-- IP -->
+
+            <section class="report-section">
+
+                <div class="section-heading">
+
+                    <div class="heading-icon">
+                        <i data-lucide="network"></i>
+                    </div>
+
+                    <div>
+                        <small>SECTION 08 / NETWORK</small>
+                        <h2>IP Intelligence</h2>
+                    </div>
+
+                </div>
+
+
+                <div class="intel-list">
+
+
+                    <div>
+                        <span>Origin IP</span>
+
+                        <strong
+                            id="ip-origin-report"
+                            class="mono"
+                        >
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>Country</span>
+
+                        <strong id="ip-country-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>City</span>
+
+                        <strong id="ip-city-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>ASN</span>
+
+                        <strong id="ip-asn-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>Provider</span>
+
+                        <strong id="ip-provider-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>Hosting</span>
+
+                        <strong id="ip-hosting-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>Proxy / VPN</span>
+
+                        <strong id="ip-proxy-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>Public Origin</span>
+
+                        <strong id="ip-public-origin-report">
+                            —
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>Extracted IPs</span>
+
+                        <strong id="ip-total-report">
+                            0
+                        </strong>
+                    </div>
+
+
+                    <div>
+                        <span>IP Risk</span>
+
+                        <strong
+                            id="ip-risk-report"
+                            class="warning-text"
+                        >
+                            —
+                        </strong>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+
+        <!-- =================================================
+             ATTACHMENT INTELLIGENCE
+             ================================================= -->
+
+        <section class="report-section">
+
+            <div class="section-heading">
+
+                <div class="heading-icon">
+                    <i data-lucide="paperclip"></i>
+                </div>
+
+                <div>
+                    <small>SECTION 09 / FILE ANALYSIS</small>
+                    <h2>Attachment Intelligence</h2>
+                </div>
+
+            </div>
+
+
+            <div class="attachment-summary">
+
+                <div>
+                    <span>TOTAL</span>
+                    <strong id="report-attachment-total">
+                        0
+                    </strong>
+                </div>
+
+                <div>
+                    <span>HIGH RISK</span>
+                    <strong id="report-attachment-high">
+                        NO
+                    </strong>
+                </div>
+
+                <div>
+                    <span>EXECUTABLE</span>
+                    <strong id="report-attachment-executable">
+                        NO
+                    </strong>
+                </div>
+
+                <div>
+                    <span>MACROS / SCRIPTS</span>
+                    <strong id="report-attachment-scripts">
+                        NO
+                    </strong>
+                </div>
+
+                <div>
+                    <span>MAX SCORE</span>
+                    <strong id="report-attachment-score">
+                        0
+                    </strong>
+                </div>
+
+                <div>
+                    <span>STATUS</span>
+                    <strong
+                        id="report-attachment-status"
+                        class="safe-text"
+                    >
+                        LOW
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div
+                id="report-attachment-list"
+                class="report-attachment-list"
+            >
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             FINAL RISK + ACTION
+             ================================================= -->
+
+        <div class="two-column final-row">
+
+
+            <!-- FINAL RISK -->
+
+            <section class="report-section final-risk-section">
+
+                <div class="section-heading">
+
+                    <div class="heading-icon">
+                        <i data-lucide="shield-alert"></i>
+                    </div>
+
+                    <div>
+                        <small>SECTION 10 / DECISION</small>
+                        <h2>Final Risk Assessment</h2>
+                    </div>
+
+                </div>
+
+
+                <div class="final-risk-content">
+
+                    <div class="final-risk-main">
+
+                        <span>OVERALL RISK</span>
+
+                        <strong
+                            id="final-risk"
+                            class="warning-text"
+                        >
+                            MEDIUM
+                        </strong>
+
+                    </div>
+
+
+                    <div
+                        id="final-score-circle"
+                        class="score-circle"
+                    >
+
+                        <strong id="final-score">
+                            0
+                        </strong>
+
+                        <span>/100</span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="final-module-grid">
+
+                    <div>
+                        <span>ML</span>
+                        <strong id="final-ml">N/A</strong>
+                    </div>
+
+                    <div>
+                        <span>HEADER</span>
+                        <strong id="final-header">LOW</strong>
+                    </div>
+
+                    <div>
+                        <span>IP</span>
+                        <strong id="final-ip">MEDIUM</strong>
+                    </div>
+
+                    <div>
+                        <span>DOMAIN</span>
+                        <strong id="final-domain">MEDIUM</strong>
+                    </div>
+
+                    <div>
+                        <span>URL</span>
+                        <strong id="final-url">MEDIUM</strong>
+                    </div>
+
+                    <div>
+                        <span>ATTACHMENTS</span>
+                        <strong id="final-attachments">LOW</strong>
+                    </div>
+
+                </div>
+
+
+                <p
+                    id="final-conclusion"
+                    class="final-conclusion"
+                >
+                    Assessment generated from available email
+                    intelligence signals.
+                </p>
+
+            </section>
+
+
+
+            <!-- RECOMMENDED ACTION -->
+
+            <section class="report-section">
+
+                <div class="section-heading">
+
+                    <div class="heading-icon">
+                        <i data-lucide="clipboard-check"></i>
+                    </div>
+
+                    <div>
+                        <small>SECTION 11 / RESPONSE</small>
+                        <h2>Recommended Action</h2>
+                    </div>
+
+                </div>
+
+
+                <div class="primary-action">
+
+                    <div class="action-icon">
+                        <i data-lucide="shield-check"></i>
+                    </div>
+
+                    <div>
+
+                        <span>PRIMARY RECOMMENDATION</span>
+
+                        <strong id="primary-action">
+                            REVIEW EMAIL
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    id="recommended-actions"
+                    class="action-list"
+                >
+
+                    <div>
+                        <span>01</span>
+                        Quarantine the email if policy requires
+                    </div>
+
+                    <div>
+                        <span>02</span>
+                        Investigate suspicious domains
+                    </div>
+
+                    <div>
+                        <span>03</span>
+                        Monitor extracted IP indicators
+                    </div>
+
+                    <div>
+                        <span>04</span>
+                        Review similar emails from sender
+                    </div>
+
+                    <div>
+                        <span>05</span>
+                        Block indicators if malicious activity
+                        is confirmed
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+
+        <!-- =================================================
+             FOOTER
+             ================================================= -->
+
+        <footer class="report-footer">
+
+            <span>
+                THREATLENS // INVESTIGATION REPORT
+            </span>
+
+            <span>
+                CASE <span id="footer-case-id">--------</span>
+                // CONFIDENTIAL
+            </span>
+
+        </footer>
+
+
+    </main>
+
+
+    <!-- Report JS -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="js/report.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,1759 @@
+/* =========================================================
+   THREATLENS — INVESTIGATION REPORT
+   ========================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    background: #07121c;
+    color: #dce5ee;
+
+    font-family:
+        Inter,
+        "Segoe UI",
+        Arial,
+        sans-serif;
+
+    font-size: 12px;
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+.report-header {
+    height: 54px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 22px;
+
+    background: #08141f;
+
+    border-bottom: 1px solid #172b3a;
+
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+}
+
+.brand-icon {
+    width: 27px;
+    height: 27px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 217, 255, 0.08);
+
+    border: 1px solid rgba(0, 217, 255, 0.25);
+
+    border-radius: 6px;
+
+    color: #00d9ff;
+}
+
+.brand-icon svg {
+    width: 15px;
+    height: 15px;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-text strong {
+    color: #e8edf5;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    line-height: 14px;
+}
+
+.brand-text strong span {
+    color: #00d9ff;
+}
+
+.brand-text small {
+    margin-top: 2px;
+
+    color: #526b7d;
+
+    font-size: 7px;
+    font-weight: 600;
+
+    letter-spacing: 0.14em;
+}
+
+
+/* =========================================================
+   HEADER RIGHT
+   ========================================================= */
+
+.header-right {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    color: #536b7c;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+}
+
+.analyst-status {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.status-dot {
+    width: 5px;
+    height: 5px;
+
+    background: #22c55e;
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 7px rgba(34, 197, 94, 0.8);
+}
+
+.header-separator {
+    color: #29404f;
+}
+
+.profile-circle {
+    width: 23px;
+    height: 23px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: 4px;
+
+    background: #123044;
+
+    border: 1px solid #1c526b;
+
+    border-radius: 50%;
+
+    color: #61cbe2;
+
+    font-size: 7px;
+    font-weight: 700;
+}
+
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
+
+.report-container {
+    width: calc(100% - 44px);
+
+    max-width: 1450px;
+
+    margin: 0 auto;
+
+    padding: 20px 0 30px;
+}
+
+
+/* =========================================================
+   BACKGROUND GRID
+   ========================================================= */
+
+body::before {
+    content: "";
+
+    position: fixed;
+    inset: 54px 0 0;
+
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.018) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.018) 1px,
+            transparent 1px
+        );
+
+    background-size: 60px 60px;
+
+    z-index: -1;
+}
+
+
+/* =========================================================
+   BREADCRUMB
+   ========================================================= */
+
+.breadcrumb {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 10px;
+
+    color: #506879;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+}
+
+.breadcrumb span {
+    color: #294252;
+}
+
+
+/* =========================================================
+   REPORT TITLE
+   ========================================================= */
+
+.report-title-section {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+    gap: 20px;
+
+    margin-bottom: 20px;
+}
+
+.section-kicker {
+    margin-bottom: 3px;
+
+    color: #4fd9f5;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 0.14em;
+}
+
+.report-title-section h1 {
+    margin: 0;
+
+    color: #e6edf5;
+
+    font-size: 25px;
+    font-weight: 600;
+
+    letter-spacing: -0.02em;
+}
+
+.case-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    margin-top: 7px;
+
+    color: #657c8d;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 8px;
+}
+
+.meta-separator {
+    color: #29404f;
+}
+
+
+/* =========================================================
+   STATUS BADGE
+   ========================================================= */
+
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+
+    padding: 3px 7px;
+
+    border: 1px solid;
+
+    border-radius: 4px;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 7px;
+    font-weight: 700;
+
+    letter-spacing: 0.08em;
+}
+
+.status-badge.warning {
+    color: #f59e0b;
+
+    border-color: rgba(245, 158, 11, 0.55);
+
+    background: rgba(245, 158, 11, 0.07);
+}
+
+.status-badge.danger {
+    color: #ef4444;
+
+    border-color: rgba(239, 68, 68, 0.55);
+
+    background: rgba(239, 68, 68, 0.07);
+}
+
+.status-badge.safe {
+    color: #22c55e;
+
+    border-color: rgba(34, 197, 94, 0.55);
+
+    background: rgba(34, 197, 94, 0.07);
+}
+
+
+/* =========================================================
+   REPORT ACTIONS
+   ========================================================= */
+
+.report-actions {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.report-actions button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    background: #0b1b27;
+
+    border: 1px solid #1b3445;
+
+    border-radius: 5px;
+
+    color: #9fb1bf;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        border-color 0.2s ease,
+        color 0.2s ease,
+        background 0.2s ease;
+}
+
+.report-actions button:hover {
+    background: rgba(0, 217, 255, 0.05);
+
+    border-color: #00d9ff;
+
+    color: #00d9ff;
+}
+
+.report-actions svg {
+    width: 12px;
+    height: 12px;
+}
+
+
+/* =========================================================
+   COMMON REPORT SECTION
+   ========================================================= */
+
+.report-section {
+    position: relative;
+    overflow: hidden;
+
+    margin-bottom: 14px;
+
+    padding: 15px 16px;
+
+    background: #0b1b27;
+
+    border: 1px solid #193244;
+
+    border-radius: 7px;
+}
+
+.report-section::before {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.016) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.016) 1px,
+            transparent 1px
+        );
+
+    background-size: 60px 60px;
+
+    opacity: 0.5;
+}
+
+.report-section > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   SECTION HEADING
+   ========================================================= */
+
+.section-heading {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 12px;
+}
+
+.heading-icon {
+    width: 24px;
+    height: 24px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 217, 255, 0.06);
+
+    border: 1px solid rgba(0, 217, 255, 0.18);
+
+    border-radius: 5px;
+
+    color: #00c9ed;
+}
+
+.heading-icon svg {
+    width: 13px;
+    height: 13px;
+}
+
+.section-heading small {
+    display: block;
+
+    margin-bottom: 1px;
+
+    color: #4c6879;
+
+    font-size: 7px;
+    font-weight: 600;
+
+    letter-spacing: 0.13em;
+}
+
+.section-heading h2 {
+    margin: 0;
+
+    color: #dce6ee;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   EXECUTIVE SUMMARY
+   ========================================================= */
+
+.executive-section {
+    padding: 16px;
+}
+
+.executive-grid {
+    display: grid;
+
+    grid-template-columns: minmax(0, 2.1fr) minmax(180px, 0.9fr);
+
+    border: 1px solid #193548;
+
+    border-radius: 5px;
+
+    overflow: hidden;
+}
+
+.executive-main {
+    padding: 15px 16px;
+}
+
+.verdict-line {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+
+    color: #9fb0bc;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.verdict-line strong {
+    font-size: 12px;
+}
+
+.warning-text {
+    color: #f59e0b !important;
+}
+
+.danger-text {
+    color: #ef4444 !important;
+}
+
+.safe-text {
+    color: #22c55e !important;
+}
+
+.cyan-text {
+    color: #00d9ff !important;
+}
+
+.executive-main p {
+    max-width: 850px;
+
+    margin: 10px 0 14px;
+
+    color: #738897;
+
+    font-size: 9px;
+    line-height: 1.65;
+}
+
+
+/* =========================================================
+   SCORE
+   ========================================================= */
+
+.score-label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 5px;
+
+    color: #536b7b;
+
+    font-size: 7px;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+}
+
+.score-label-row strong {
+    color: #f59e0b;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 10px;
+}
+
+.score-label-row strong small {
+    color: #526979;
+
+    font-size: 7px;
+}
+
+.score-bar {
+    width: 100%;
+    height: 3px;
+
+    background: #172b37;
+
+    border-radius: 5px;
+
+    overflow: hidden;
+}
+
+.score-fill {
+    width: 0;
+    height: 100%;
+
+    background: #f59e0b;
+
+    transition: width 0.4s ease;
+}
+
+.score-scale {
+    display: flex;
+    justify-content: space-between;
+
+    margin-top: 4px;
+
+    color: #3f5868;
+
+    font-size: 6px;
+}
+
+
+/* =========================================================
+   EXECUTIVE STATS
+   ========================================================= */
+
+.executive-stats {
+    padding: 14px 16px;
+
+    border-left: 1px solid #193548;
+
+    background: rgba(4, 13, 21, 0.25);
+}
+
+.exec-stat {
+    margin-bottom: 12px;
+}
+
+.exec-stat:last-child {
+    margin-bottom: 0;
+}
+
+.exec-stat span {
+    display: block;
+
+    margin-bottom: 3px;
+
+    color: #50697a;
+
+    font-size: 7px;
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+}
+
+.exec-stat strong {
+    color: #dce7ef;
+
+    font-size: 11px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   ANALYSIS OVERVIEW
+   ========================================================= */
+
+.overview-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+
+    gap: 7px;
+}
+
+.overview-card {
+    min-width: 0;
+
+    padding: 10px;
+
+    background: rgba(9, 27, 39, 0.8);
+
+    border: 1px solid #193548;
+
+    border-radius: 5px;
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+.overview-card:hover {
+    border-color: #00aeca;
+
+    background: rgba(0, 217, 255, 0.035);
+}
+
+.overview-icon {
+    width: 16px;
+    height: 16px;
+
+    margin-bottom: 6px;
+
+    color: #00bddd;
+}
+
+.overview-icon svg {
+    width: 13px;
+    height: 13px;
+}
+
+.overview-card > span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #536c7c;
+
+    font-size: 7px;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+}
+
+.overview-card > strong {
+    display: block;
+
+    color: #dce6ee;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 13px;
+}
+
+.overview-card > small {
+    display: inline-block;
+
+    margin-top: 5px;
+
+    padding: 2px 5px;
+
+    border: 1px solid rgba(34, 197, 94, 0.35);
+
+    border-radius: 3px;
+
+    color: #22c55e;
+
+    background: rgba(34, 197, 94, 0.045);
+
+    font-size: 6px;
+    font-weight: 700;
+
+    letter-spacing: 0.06em;
+}
+
+
+/* =========================================================
+   TWO COLUMN
+   ========================================================= */
+
+.two-column {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 14px;
+}
+
+.two-column > .report-section {
+    min-width: 0;
+}
+
+
+/* =========================================================
+   KEY FINDINGS
+   ========================================================= */
+
+.findings-list {
+    border-top: 1px solid #193244;
+}
+
+.finding-row {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    min-height: 31px;
+
+    padding: 6px 0;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+
+    color: #8398a6;
+
+    font-size: 8px;
+}
+
+.finding-icon {
+    width: 16px;
+    height: 16px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+}
+
+.finding-icon svg {
+    width: 9px;
+    height: 9px;
+}
+
+.finding-icon.info {
+    color: #f59e0b;
+
+    background: rgba(245, 158, 11, 0.08);
+
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.finding-icon.success {
+    color: #22c55e;
+
+    background: rgba(34, 197, 94, 0.08);
+
+    border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+
+/* =========================================================
+   EMAIL INFORMATION
+   ========================================================= */
+
+.email-info-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    column-gap: 22px;
+}
+
+.email-info-grid > div {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    min-height: 28px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.email-info-grid span {
+    color: #536c7c;
+
+    font-size: 7px;
+}
+
+.email-info-grid strong {
+    min-width: 0;
+
+    color: #b9c8d2;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    text-align: right;
+}
+
+
+/* =========================================================
+   TRUNCATE
+   ========================================================= */
+
+.truncate {
+    overflow: hidden;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   AUTHENTICATION
+   ========================================================= */
+
+.auth-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+.auth-card {
+    padding: 10px 11px;
+
+    background: rgba(7, 23, 34, 0.8);
+
+    border: 1px solid #193548;
+
+    border-radius: 5px;
+}
+
+.auth-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 7px;
+}
+
+.auth-top span {
+    color: #617786;
+
+    font-size: 7px;
+    font-weight: 600;
+}
+
+.auth-top svg {
+    width: 11px;
+    height: 11px;
+}
+
+.auth-card:nth-child(1) .auth-top svg,
+.auth-card:nth-child(3) .auth-top svg {
+    color: #f59e0b;
+}
+
+.auth-card:nth-child(2) .auth-top svg {
+    color: #22c55e;
+}
+
+.auth-card > strong {
+    font-family: "Courier New", monospace;
+
+    font-size: 9px;
+}
+
+.auth-card:nth-child(1) > strong,
+.auth-card:nth-child(3) > strong {
+    color: #f59e0b;
+}
+
+.auth-card:nth-child(2) > strong {
+    color: #22c55e;
+}
+
+.auth-line {
+    width: 100%;
+    height: 2px;
+
+    margin-top: 8px;
+
+    border-radius: 5px;
+}
+
+.warning-line {
+    background: #f59e0b;
+
+    box-shadow:
+        0 0 6px rgba(245, 158, 11, 0.25);
+}
+
+.success-line {
+    background: #22c55e;
+
+    box-shadow:
+        0 0 6px rgba(34, 197, 94, 0.25);
+}
+
+
+/* =========================================================
+   URL SUMMARY
+   ========================================================= */
+
+.url-summary-bar {
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+
+    gap: 7px;
+
+    margin-bottom: 9px;
+}
+
+.url-summary-bar > div {
+    padding: 8px 9px;
+
+    background: rgba(7, 23, 34, 0.75);
+
+    border: 1px solid #193548;
+
+    border-radius: 4px;
+}
+
+.url-summary-bar span {
+    display: block;
+
+    color: #526b7b;
+
+    font-size: 6px;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+}
+
+.url-summary-bar strong {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #d7e2e9;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   URL LIST
+   ========================================================= */
+
+.report-url-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 7px;
+}
+
+.url-report-card {
+    padding: 10px 11px;
+
+    background: rgba(7, 23, 34, 0.8);
+
+    border: 1px solid #193548;
+
+    border-radius: 5px;
+}
+
+.url-report-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+}
+
+.url-report-value {
+    min-width: 0;
+
+    color: #57c9df;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 8px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.url-risk-badge {
+    flex-shrink: 0;
+
+    padding: 2px 6px;
+
+    border: 1px solid;
+
+    border-radius: 3px;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 6px;
+    font-weight: 700;
+}
+
+.url-risk-badge.low {
+    color: #22c55e;
+
+    border-color: rgba(34, 197, 94, 0.4);
+}
+
+.url-risk-badge.medium {
+    color: #f59e0b;
+
+    border-color: rgba(245, 158, 11, 0.4);
+}
+
+.url-risk-badge.high,
+.url-risk-badge.critical {
+    color: #ef4444;
+
+    border-color: rgba(239, 68, 68, 0.4);
+}
+
+.url-details {
+    display: grid;
+
+    grid-template-columns:
+        repeat(5, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-top: 9px;
+
+    padding-top: 8px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.url-details span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #506979;
+
+    font-size: 6px;
+}
+
+.url-details strong {
+    color: #9fb3c0;
+
+    font-size: 7px;
+    font-weight: 600;
+}
+
+.url-indicators {
+    display: flex;
+    flex-wrap: wrap;
+
+    gap: 6px;
+
+    margin-top: 8px;
+}
+
+.url-indicator {
+    color: #c89435;
+
+    font-size: 7px;
+}
+
+
+/* =========================================================
+   INTELLIGENCE LIST
+   ========================================================= */
+
+.intel-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    column-gap: 24px;
+}
+
+.intel-list > div {
+    min-width: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    min-height: 27px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.intel-list span {
+    color: #536c7b;
+
+    font-size: 7px;
+}
+
+.intel-list strong {
+    min-width: 0;
+
+    color: #b7c6d0;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 7px;
+    font-weight: 600;
+
+    text-align: right;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.mono {
+    font-family: "Courier New", monospace !important;
+}
+
+
+/* =========================================================
+   ATTACHMENT SUMMARY
+   ========================================================= */
+
+.attachment-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+
+    gap: 7px;
+
+    margin-bottom: 9px;
+}
+
+.attachment-summary > div {
+    padding: 8px 9px;
+
+    background: rgba(7, 23, 34, 0.75);
+
+    border: 1px solid #193548;
+
+    border-radius: 4px;
+}
+
+.attachment-summary span {
+    display: block;
+
+    color: #536b7b;
+
+    font-size: 6px;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+}
+
+.attachment-summary strong {
+    display: block;
+
+    margin-top: 3px;
+
+    color: #cdd9e1;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   ATTACHMENT LIST
+   ========================================================= */
+
+.report-attachment-list {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+.attachment-report-card {
+    min-width: 0;
+
+    padding: 10px 11px;
+
+    background: rgba(7, 23, 34, 0.8);
+
+    border: 1px solid #193548;
+
+    border-radius: 5px;
+}
+
+.attachment-name {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    min-width: 0;
+
+    color: #b9cad4;
+
+    font-size: 8px;
+    font-weight: 600;
+}
+
+.attachment-name svg {
+    width: 12px;
+    height: 12px;
+
+    flex-shrink: 0;
+
+    color: #00bddb;
+}
+
+.attachment-name span {
+    overflow: hidden;
+
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.attachment-meta {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 8px;
+
+    margin-top: 9px;
+
+    padding-top: 8px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.045);
+}
+
+.attachment-meta span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #4f6878;
+
+    font-size: 6px;
+}
+
+.attachment-meta strong {
+    color: #9eb1bd;
+
+    font-size: 7px;
+    font-weight: 600;
+}
+
+.attachment-hash {
+    margin-top: 8px;
+
+    color: #516a7a;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 6px;
+
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   FINAL RISK
+   ========================================================= */
+
+.final-risk-section {
+    border-color: rgba(245, 158, 11, 0.25);
+
+    background: #0d181d;
+}
+
+.final-risk-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding-bottom: 11px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.final-risk-main span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #536b7a;
+
+    font-size: 7px;
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+}
+
+.final-risk-main strong {
+    display: block;
+
+    font-size: 17px;
+}
+
+.score-circle {
+    width: 48px;
+    height: 48px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-direction: column;
+
+    border: 2px solid #806322;
+
+    border-radius: 50%;
+
+    background: rgba(245, 158, 11, 0.025);
+
+    box-shadow:
+        0 0 10px rgba(245, 158, 11, 0.07);
+}
+
+.score-circle strong {
+    color: #f59e0b;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 12px;
+}
+
+.score-circle span {
+    color: #657785;
+
+    font-size: 6px;
+}
+
+.final-module-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap: 7px;
+
+    margin-top: 10px;
+}
+
+.final-module-grid > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 5px 6px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.final-module-grid span {
+    color: #506877;
+
+    font-size: 6px;
+}
+
+.final-module-grid strong {
+    color: #f59e0b;
+
+    font-size: 7px;
+}
+
+.final-conclusion {
+    margin: 11px 0 0;
+
+    color: #718693;
+
+    font-size: 7px;
+    line-height: 1.6;
+}
+
+
+/* =========================================================
+   RECOMMENDED ACTION
+   ========================================================= */
+
+.primary-action {
+    display: flex;
+    align-items: center;
+
+    gap: 9px;
+
+    padding: 11px;
+
+    margin-bottom: 8px;
+
+    background: rgba(0, 217, 255, 0.045);
+
+    border: 1px solid rgba(0, 217, 255, 0.2);
+
+    border-radius: 5px;
+}
+
+.action-icon {
+    width: 24px;
+    height: 24px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    color: #22c55e;
+}
+
+.action-icon svg {
+    width: 14px;
+    height: 14px;
+}
+
+.primary-action span {
+    display: block;
+
+    margin-bottom: 2px;
+
+    color: #537080;
+
+    font-size: 6px;
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+}
+
+.primary-action strong {
+    color: #22c55e;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 9px;
+}
+
+.action-list > div {
+    display: flex;
+    align-items: center;
+
+    min-height: 28px;
+
+    border-bottom: 1px solid rgba(255, 255, 255, 0.045);
+
+    color: #7d919e;
+
+    font-size: 7px;
+}
+
+.action-list > div span {
+    width: 27px;
+
+    color: #4c6676;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 6px;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.report-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 10px 2px 0;
+
+    color: #354c5b;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 6px;
+
+    letter-spacing: 0.08em;
+}
+
+
+/* =========================================================
+   HOVER EFFECTS
+   ========================================================= */
+
+.report-section {
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.report-section:hover {
+    border-color: #1d4053;
+}
+
+
+/* =========================================================
+   SCROLLBAR
+   ========================================================= */
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-track {
+    background: #07121c;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #1c3748;
+
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #28556a;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    .overview-grid {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .url-summary-bar {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+    .attachment-summary {
+        grid-template-columns:
+            repeat(3, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 800px) {
+
+    .report-container {
+        width: calc(100% - 24px);
+    }
+
+    .report-title-section {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .two-column {
+        grid-template-columns: 1fr;
+    }
+
+    .executive-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .executive-stats {
+        border-left: 0;
+        border-top: 1px solid #193548;
+    }
+
+    .overview-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .url-details {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .attachment-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 560px) {
+
+    .report-header {
+        padding: 0 12px;
+    }
+
+    .header-right {
+        display: none;
+    }
+
+    .report-title-section h1 {
+        font-size: 21px;
+    }
+
+    .report-actions {
+        width: 100%;
+    }
+
+    .report-actions button {
+        flex: 1;
+    }
+
+    .overview-grid,
+    .auth-grid,
+    .email-info-grid,
+    .intel-list,
+    .report-attachment-list {
+        grid-template-columns: 1fr;
+    }
+
+    .url-summary-bar,
+    .attachment-summary {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .final-module-grid {
+        grid-template-columns:
+            repeat(2, minmax(0, 1fr));
+    }
+
+    .report-footer {
+        flex-direction: column;
+        align-items: flex-start;
+
+        gap: 5px;
+    }
+
+}

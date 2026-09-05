@@ -1,5 +1,22 @@
 document.addEventListener("DOMContentLoaded", async () => {
 
+    const reportBtn = document.getElementById("reportBtn");
+
+    if (reportBtn) {
+        reportBtn.addEventListener("click", () => {
+
+            const params = new URLSearchParams(window.location.search);
+            const emailId = params.get("id");
+
+            if (!emailId) {
+                alert("Case ID not found");
+                return;
+            }
+
+            window.location.href = `report.html?id=${emailId}`;
+        });
+    }
+    
     console.log("🔥 CASE DETAIL JS LOADED");
 
     lucide.createIcons();
