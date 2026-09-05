@@ -1162,98 +1162,6 @@ body {
     margin:18px 0 0;
 }
 
-/* DOMAIN */
-
-.domain-content {
-    display:grid;
-    grid-template-columns:1fr 330px;
-    gap:35px;
-    align-items:center;
-}
-
-.domain-card .intel-grid {
-    gap:25px 65px;
-}
-
-.risk-box {
-    border-left:1px solid #263b49;
-    padding-left:45px;
-    text-align:center;
-}
-
-.risk-circle {
-    width:145px;
-    height:145px;
-    margin:auto;
-    border:10px solid #ef686f;
-    border-radius:50%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-}
-
-.risk-circle strong {
-    color:#ef686f;
-    font-size:28px;
-}
-
-.risk-circle span {
-    color:#718392;
-    font-size:12px;
-    margin-top:3px;
-}
-
-.risk-box h3 {
-    color:#cbd6df;
-    font-size:16px;
-    margin:18px 0 5px;
-}
-
-.risk-box p {
-    color:#65798a;
-    font-size:12px;
-    margin:0 0 20px;
-}
-
-.risk-bar {
-    height:7px;
-    background:#263541;
-    border-radius:10px;
-}
-
-.risk-bar span {
-    display:block;
-    width:94%;
-    height:100%;
-    background:#ef686f;
-    border-radius:10px;
-}
-
-
-/* MOBILE */
-
-@media(max-width:800px) {
-
-    .intel-grid {
-        grid-template-columns:1fr;
-        gap:18px;
-    }
-
-    .domain-content {
-        grid-template-columns:1fr;
-    }
-
-    .risk-box {
-        border-left:0;
-        border-top:1px solid #263b49;
-        padding:25px 0 0;
-    }
-
-    .intel-actions {
-        flex-wrap:wrap;
-    }
-}
-
 /* REPORT */
 .report-card{
     max-width:1100px;
@@ -2904,14 +2812,80 @@ body {
 #ip-intelligence {
     width: 100%;
     box-sizing: border-box;
+
+    position: relative;
+    overflow: hidden;
+
+    padding: 28px 32px;
+
+    background: #0d1722;
+
+    border: 1px solid #1d3041;
+    border-radius: 12px;
 }
+
+
+/* =========================================================
+   SUBTLE BACKGROUND GRID
+   ========================================================= */
+
+#ip-intelligence::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 60px 60px;
+
+    opacity: 0.5;
+}
+
+
+/* =========================================================
+   CONTENT ABOVE GRID
+   ========================================================= */
+
+#ip-intelligence > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 #ip-intelligence .intel-label {
     margin-bottom: 6px;
+
+    color: #4fd9f5;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
 }
 
 #ip-intelligence > h2 {
-    margin-bottom: 24px;
+    margin: 0 0 20px;
+
+    color: #e8edf5;
+
+    font-size: 21px;
+    font-weight: 600;
 }
 
 
@@ -2921,8 +2895,11 @@ body {
 
 #ip-intelligence .intel-grid {
     display: grid;
+
     grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 14px;
+
+    gap: 12px;
+
     width: 100%;
     box-sizing: border-box;
 }
@@ -2934,15 +2911,19 @@ body {
 
 #ip-intelligence .intel-grid > div {
     min-width: 0;
-    padding: 18px 20px;
 
-    background: rgba(255, 255, 255, 0.025);
+    padding: 14px 16px;
+
+    background: rgba(13, 23, 34, 0.82);
+
     border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 10px;
+
+    border-radius: 9px;
 
     display: flex;
     flex-direction: column;
-    gap: 8px;
+
+    gap: 6px;
 
     transition:
         background 0.2s ease,
@@ -2957,14 +2938,14 @@ body {
    ========================================================= */
 
 #ip-intelligence .intel-grid > div:hover {
-    background: rgba(0, 217, 255, 0.06);
-    border-color: #00d9ff;
-    box-shadow: 0 0 12px rgba(0, 217, 255, 0.18);
-    transform: translateY(-1px);
-}
+    background: rgba(0, 217, 255, 0.055);
 
-#ip-intelligence .intel-grid > div:hover strong {
-    color: #00d9ff;
+    border-color: #00d9ff;
+
+    box-shadow:
+        0 0 12px rgba(0, 217, 255, 0.16);
+
+    transform: translateY(-1px);
 }
 
 
@@ -2973,18 +2954,16 @@ body {
    ========================================================= */
 
 #ip-intelligence .intel-grid span {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    color: #718194;
 
-    color: #7f8796;
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
 
     transition: color 0.2s ease;
 }
-
-
-/* Label also becomes cyan on hover */
 
 #ip-intelligence .intel-grid > div:hover span {
     color: #00d9ff;
@@ -2996,16 +2975,20 @@ body {
    ========================================================= */
 
 #ip-intelligence .intel-grid strong {
-    font-size: 15px;
-    font-weight: 600;
-
     color: #e8edf5;
+
+    font-size: 13px;
+    font-weight: 600;
 
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 
     transition: color 0.2s ease;
+}
+
+#ip-intelligence .intel-grid > div:hover strong {
+    color: #00d9ff;
 }
 
 
@@ -3036,6 +3019,21 @@ body {
 }
 
 
+/* Keep risk status color during hover */
+
+#ip-intelligence .intel-grid > div:hover #intel-risk.safe {
+    color: #22c55e;
+}
+
+#ip-intelligence .intel-grid > div:hover #intel-risk.warning {
+    color: #f59e0b;
+}
+
+#ip-intelligence .intel-grid > div:hover #intel-risk.danger {
+    color: #ef4444;
+}
+
+
 /* =========================================================
    ACTION BUTTONS
    ========================================================= */
@@ -3043,26 +3041,30 @@ body {
 #ip-intelligence .intel-actions {
     display: flex;
     align-items: center;
-    gap: 10px;
 
-    margin-top: 18px;
+    gap: 8px;
+
+    margin-top: 14px;
 }
 
 #ip-intelligence .intel-actions button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
 
-    padding: 10px 15px;
+    gap: 6px;
 
-    background: rgba(255, 255, 255, 0.025);
+    padding: 8px 12px;
+
+    background: rgba(13, 23, 34, 0.82);
+
     border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 8px;
+
+    border-radius: 7px;
 
     color: #cbd2de;
 
-    font-size: 12px;
+    font-size: 10px;
     font-weight: 600;
 
     cursor: pointer;
@@ -3082,9 +3084,13 @@ body {
 
 #ip-intelligence .intel-actions button:hover {
     background: rgba(0, 217, 255, 0.06);
+
     border-color: #00d9ff;
+
     color: #00d9ff;
-    box-shadow: 0 0 10px rgba(0, 217, 255, 0.15);
+
+    box-shadow:
+        0 0 10px rgba(0, 217, 255, 0.15);
 }
 
 #ip-intelligence .intel-actions button:active {
@@ -3092,8 +3098,8 @@ body {
 }
 
 #ip-intelligence .intel-actions button svg {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
 }
 
 
@@ -3112,6 +3118,10 @@ body {
 
 @media (max-width: 700px) {
 
+    #ip-intelligence {
+        padding: 22px;
+    }
+
     #ip-intelligence .intel-grid {
         grid-template-columns: 1fr;
     }
@@ -3120,4 +3130,1134 @@ body {
         flex-wrap: wrap;
     }
 
+}
+
+
+/* =========================================================
+   DOMAIN INTELLIGENCE
+   ========================================================= */
+
+#domain-intelligence {
+    width: 100%;
+    box-sizing: border-box;
+
+    position: relative;
+    overflow: hidden;
+
+    padding: 28px 32px;
+
+    background: #0d1722;
+
+    border: 1px solid #1d3041;
+    border-radius: 12px;
+}
+
+
+/* =========================================================
+   SUBTLE BACKGROUND GRID
+   ========================================================= */
+
+#domain-intelligence::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 60px 60px;
+
+    opacity: 0.5;
+}
+
+
+/* =========================================================
+   CONTENT ABOVE GRID
+   ========================================================= */
+
+#domain-intelligence > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+#domain-intelligence .intel-label {
+    margin-bottom: 6px;
+
+    color: #4fd9f5;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+#domain-intelligence > h2 {
+    margin: 0 0 20px;
+
+    color: #e8edf5;
+
+    font-size: 21px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   DOMAIN GRID
+   ========================================================= */
+
+#domain-intelligence .domain-intel-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* =========================================================
+   DOMAIN CARDS
+   ========================================================= */
+
+#domain-intelligence .domain-card {
+    min-width: 0;
+
+    padding: 14px 16px;
+
+    background: rgba(13, 23, 34, 0.82);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    border-radius: 9px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* =========================================================
+   CARD HOVER
+   ========================================================= */
+
+#domain-intelligence .domain-card:hover {
+    background: rgba(0, 217, 255, 0.055);
+
+    border-color: #00d9ff;
+
+    box-shadow:
+        0 0 12px rgba(0, 217, 255, 0.18);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   LABEL
+   ========================================================= */
+
+#domain-intelligence .domain-card span {
+    color: #718194;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+
+    transition: color 0.2s ease;
+}
+
+#domain-intelligence .domain-card:hover span {
+    color: #00d9ff;
+}
+
+
+/* =========================================================
+   VALUE
+   ========================================================= */
+
+#domain-intelligence .domain-card strong {
+    color: #e8edf5;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    transition: color 0.2s ease;
+}
+
+#domain-intelligence .domain-card:hover strong {
+    color: #00d9ff;
+}
+
+
+/* =========================================================
+   STATUS COLORS
+   ========================================================= */
+
+#domain-intelligence .domain-card strong.safe {
+    color: #22c55e;
+}
+
+#domain-intelligence .domain-card strong.warning {
+    color: #f59e0b;
+}
+
+#domain-intelligence .domain-card strong.danger {
+    color: #ef4444;
+}
+
+
+/* =========================================================
+   RISK HOVER PRESERVATION
+   ========================================================= */
+
+#domain-intelligence .domain-card:hover strong.safe {
+    color: #22c55e;
+}
+
+#domain-intelligence .domain-card:hover strong.warning {
+    color: #f59e0b;
+}
+
+#domain-intelligence .domain-card:hover strong.danger {
+    color: #ef4444;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    #domain-intelligence .domain-intel-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+}
+
+
+@media (max-width: 700px) {
+
+    #domain-intelligence {
+        padding: 22px;
+    }
+
+    #domain-intelligence .domain-intel-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* =========================================================
+   URL INTELLIGENCE
+   ========================================================= */
+
+#url-intelligence {
+    width: 100%;
+    box-sizing: border-box;
+
+    position: relative;
+    overflow: hidden;
+
+    padding: 28px 32px;
+
+    background: #0d1722;
+
+    border: 1px solid #1d3041;
+    border-radius: 12px;
+}
+
+
+/* =========================================================
+   BACKGROUND GRID
+   ========================================================= */
+
+#url-intelligence::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 60px 60px;
+
+    opacity: 0.5;
+}
+
+
+#url-intelligence > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+#url-intelligence .intel-label {
+    margin-bottom: 6px;
+
+    color: #4fd9f5;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+#url-intelligence > h2 {
+    margin: 0 0 20px;
+
+    color: #e8edf5;
+
+    font-size: 21px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   URL GRID
+   ========================================================= */
+
+#url-intelligence .url-intel-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   CARDS
+   ========================================================= */
+
+#url-intelligence .url-card {
+    min-width: 0;
+
+    padding: 14px 16px;
+
+    background: rgba(13, 23, 34, 0.82);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    border-radius: 9px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 6px;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+#url-intelligence .url-card:hover {
+    background: rgba(0, 217, 255, 0.055);
+
+    border-color: #00d9ff;
+
+    box-shadow:
+        0 0 12px rgba(0, 217, 255, 0.18);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   FULL URL
+   ========================================================= */
+
+#url-intelligence .url-full {
+    grid-column: span 4;
+}
+
+
+/* =========================================================
+   LABEL
+   ========================================================= */
+
+#url-intelligence .url-card span {
+    color: #718194;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+#url-intelligence .url-card:hover span {
+    color: #00d9ff;
+}
+
+
+/* =========================================================
+   VALUE
+   ========================================================= */
+
+#url-intelligence .url-card strong {
+    color: #e8edf5;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#url-intelligence .url-card:hover strong {
+    color: #00d9ff;
+}
+
+
+/* =========================================================
+   URL VALUE
+   ========================================================= */
+
+#url-intelligence #url-value,
+#url-intelligence #url-hostname,
+#url-intelligence #url-domain {
+    font-family: "Courier New", monospace;
+}
+
+
+/* =========================================================
+   STATUS COLORS
+   ========================================================= */
+
+#url-intelligence strong.safe {
+    color: #22c55e;
+}
+
+#url-intelligence strong.warning {
+    color: #f59e0b;
+}
+
+#url-intelligence strong.danger {
+    color: #ef4444;
+}
+
+
+#url-intelligence .url-card:hover strong.safe {
+    color: #22c55e;
+}
+
+#url-intelligence .url-card:hover strong.warning {
+    color: #f59e0b;
+}
+
+#url-intelligence .url-card:hover strong.danger {
+    color: #ef4444;
+}
+
+
+/* =========================================================
+   INDICATORS
+   ========================================================= */
+
+#url-intelligence .url-indicators {
+    margin-top: 16px;
+
+    padding: 16px;
+
+    background: rgba(13, 23, 34, 0.82);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    border-radius: 9px;
+}
+
+#url-intelligence .url-subtitle {
+    margin-bottom: 10px;
+
+    color: #718194;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+}
+
+
+#url-intelligence #url-indicator-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+
+#url-intelligence .url-indicator {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+
+    color: #cbd2de;
+
+    font-size: 11px;
+}
+
+
+#url-intelligence .url-indicator svg {
+    width: 13px;
+    height: 13px;
+
+    color: #f59e0b;
+}
+
+
+#url-intelligence .url-empty {
+    color: #718194;
+
+    font-size: 11px;
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+#url-intelligence .url-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-top: 12px;
+}
+
+
+#url-intelligence .url-summary > div {
+    padding: 12px 14px;
+
+    background: rgba(13, 23, 34, 0.82);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+#url-intelligence .url-summary span {
+    color: #718194;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 0.07em;
+}
+
+
+#url-intelligence .url-summary strong {
+    color: #e8edf5;
+
+    font-size: 13px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    #url-intelligence .url-intel-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #url-intelligence .url-full {
+        grid-column: span 2;
+    }
+
+    #url-intelligence .url-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    #url-intelligence {
+        padding: 22px;
+    }
+
+    #url-intelligence .url-intel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #url-intelligence .url-full {
+        grid-column: span 1;
+    }
+
+    #url-intelligence .url-summary {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* =========================================================
+   ATTACHMENT INTELLIGENCE
+   ========================================================= */
+
+#attach-intelligence {
+    width: 100%;
+    box-sizing: border-box;
+
+    position: relative;
+    overflow: hidden;
+
+    padding: 28px 32px;
+
+    background: #0d1722;
+
+    border: 1px solid #1d3041;
+    border-radius: 12px;
+}
+
+
+/* =========================================================
+   BACKGROUND GRID
+   ========================================================= */
+
+#attach-intelligence::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+
+    pointer-events: none;
+
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 60px 60px;
+
+    opacity: 0.5;
+}
+
+
+#attach-intelligence > * {
+    position: relative;
+    z-index: 1;
+}
+
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+
+#attach-intelligence .intel-label {
+    margin-bottom: 6px;
+
+    color: #4fd9f5;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+}
+
+#attach-intelligence > h2 {
+    margin: 0 0 20px;
+
+    color: #e8edf5;
+
+    font-size: 21px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   SUMMARY
+   ========================================================= */
+
+#attach-intelligence .attachment-summary {
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, minmax(0, 1fr));
+
+    gap: 10px;
+
+    margin-bottom: 14px;
+}
+
+
+#attach-intelligence .attachment-summary > div {
+    min-width: 0;
+
+    padding: 12px 14px;
+
+    background: rgba(13, 23, 34, 0.82);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    border-radius: 8px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+#attach-intelligence .attachment-summary span {
+    color: #718194;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 0.07em;
+}
+
+
+#attach-intelligence .attachment-summary strong {
+    color: #e8edf5;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   STATUS COLORS
+   ========================================================= */
+
+#attach-intelligence strong.safe,
+#attach-intelligence .attachment-risk.safe {
+    color: #22c55e;
+}
+
+#attach-intelligence strong.warning,
+#attach-intelligence .attachment-risk.warning {
+    color: #f59e0b;
+}
+
+#attach-intelligence strong.danger,
+#attach-intelligence .attachment-risk.danger {
+    color: #ef4444;
+}
+
+
+/* =========================================================
+   ATTACHMENT LIST
+   ========================================================= */
+
+#attach-intelligence .attachment-list {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   ATTACHMENT CARD
+   ========================================================= */
+
+#attach-intelligence .attachment-card {
+    padding: 16px;
+
+    background: rgba(13, 23, 34, 0.82);
+
+    border: 1px solid rgba(255, 255, 255, 0.07);
+
+    border-radius: 9px;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+
+#attach-intelligence .attachment-card:hover {
+    background: rgba(0, 217, 255, 0.045);
+
+    border-color: #00d9ff;
+
+    box-shadow:
+        0 0 12px rgba(0, 217, 255, 0.14);
+}
+
+
+/* =========================================================
+   ATTACHMENT HEADER
+   ========================================================= */
+
+#attach-intelligence .attachment-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    margin-bottom: 14px;
+}
+
+
+#attach-intelligence .attachment-title {
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    min-width: 0;
+}
+
+
+#attach-intelligence .attachment-icon {
+    width: 32px;
+    height: 32px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 217, 255, 0.06);
+
+    border: 1px solid rgba(0, 217, 255, 0.15);
+
+    border-radius: 7px;
+}
+
+
+#attach-intelligence .attachment-icon svg {
+    width: 15px;
+    height: 15px;
+
+    color: #4fd9f5;
+}
+
+
+#attach-intelligence .attachment-title > div:last-child {
+    min-width: 0;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 4px;
+}
+
+
+#attach-intelligence .attachment-title span {
+    color: #718194;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 0.08em;
+}
+
+
+#attach-intelligence .attachment-title strong {
+    color: #e8edf5;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   RISK BADGE
+   ========================================================= */
+
+#attach-intelligence .attachment-risk {
+    flex-shrink: 0;
+
+    padding: 5px 9px;
+
+    background: rgba(255, 255, 255, 0.025);
+
+    border: 1px solid currentColor;
+
+    border-radius: 5px;
+
+    font-size: 9px;
+    font-weight: 700;
+
+    letter-spacing: 0.07em;
+}
+
+
+/* =========================================================
+   ATTACHMENT DATA GRID
+   ========================================================= */
+
+#attach-intelligence .attachment-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+
+    gap: 10px;
+}
+
+
+#attach-intelligence .attachment-grid > div {
+    min-width: 0;
+
+    padding: 10px 12px;
+
+    background: rgba(255, 255, 255, 0.018);
+
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    border-radius: 7px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+#attach-intelligence .attachment-grid span,
+#attach-intelligence .attachment-hash span,
+#attach-intelligence .attachment-indicators > span {
+    color: #718194;
+
+    font-size: 8px;
+    font-weight: 600;
+
+    letter-spacing: 0.07em;
+}
+
+
+#attach-intelligence .attachment-grid strong {
+    color: #dce3ec;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   HASHES
+   ========================================================= */
+
+#attach-intelligence .attachment-hash {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+
+    margin-top: 10px;
+}
+
+
+#attach-intelligence .attachment-hash > div {
+    min-width: 0;
+
+    padding: 10px 12px;
+
+    background: rgba(255, 255, 255, 0.018);
+
+    border: 1px solid rgba(255, 255, 255, 0.05);
+
+    border-radius: 7px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+#attach-intelligence .attachment-hash strong {
+    color: #9eabbc;
+
+    font-family: "Courier New", monospace;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* =========================================================
+   INDICATORS
+   ========================================================= */
+
+#attach-intelligence .attachment-indicators {
+    margin-top: 10px;
+
+    padding: 10px 12px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+
+#attach-intelligence .indicator {
+    display: flex;
+    align-items: center;
+
+    gap: 7px;
+
+    margin-top: 7px;
+
+    color: #cbd2de;
+
+    font-size: 10px;
+}
+
+
+#attach-intelligence .indicator svg {
+    width: 12px;
+    height: 12px;
+
+    color: #f59e0b;
+}
+
+
+#attach-intelligence .no-indicator {
+    margin-top: 7px;
+
+    color: #718194;
+
+    font-size: 10px;
+}
+
+
+/* =========================================================
+   EMPTY
+   ========================================================= */
+
+#attach-intelligence .attachment-empty {
+    min-height: 100px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    color: #718194;
+
+    font-size: 11px;
+}
+
+
+#attach-intelligence .attachment-empty svg {
+    width: 15px;
+    height: 15px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+    #attach-intelligence .attachment-summary {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    #attach-intelligence .attachment-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    #attach-intelligence {
+        padding: 22px;
+    }
+
+    #attach-intelligence .attachment-summary {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #attach-intelligence .attachment-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #attach-intelligence .attachment-hash {
+        grid-template-columns: 1fr;
+    }
+
+    #attach-intelligence .attachment-header {
+        align-items: flex-start;
+    }
 }

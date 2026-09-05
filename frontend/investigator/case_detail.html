@@ -733,74 +733,231 @@
 
         </section>
 
-        <!-- DOMAIN INTELLIGENCE -->
+        <!-- =========================================================
+            DOMAIN INTELLIGENCE
+        ========================================================= -->
 
-        <section class="tab-panel domain-cards" id="domain-intelligence">
+        <section class="tab-panel" id="domain-intelligence">
 
             <div class="intel-label">THREAT INTELLIGENCE</div>
             <h2>Domain Intelligence</h2>
 
-            <div class="domain-content">
+            <div class="domain-intel-grid">
 
-                <div class="intel-grid">
-
-                    <div>
-                        <span>domainAge</span>
-                        <strong>12 days</strong>
-                    </div>
-
-                    <div>
-                        <span>registrar</span>
-                        <strong>NameCheap, Inc.</strong>
-                    </div>
-
-                    <div>
-                        <span>dns</span>
-                        <strong>Active</strong>
-                    </div>
-
-                    <div>
-                        <span>mx</span>
-                        <strong>mail.secure-bank-login.xyz</strong>
-                    </div>
-
-                    <div>
-                        <span>hosting</span>
-                        <strong>Cloud VPS</strong>
-                    </div>
-
-                    <div>
-                        <span>lookalike</span>
-                        <strong>Very high</strong>
-                    </div>
-
-                    <div>
-                        <span>brand</span>
-                        <strong>SecureBank</strong>
-                    </div>
-
+                <div class="domain-card">
+                    <span>FROM DOMAIN</span>
+                    <strong id="domain-from">—</strong>
                 </div>
 
-                <div class="risk-box">
+                <div class="domain-card">
+                    <span>REPLY-TO DOMAIN</span>
+                    <strong id="domain-reply">—</strong>
+                </div>
 
-                    <div class="risk-circle">
-                        <strong>94%</strong>
-                        <span>risk score</span>
-                    </div>
+                <div class="domain-card">
+                    <span>RETURN-PATH DOMAIN</span>
+                    <strong id="domain-return">—</strong>
+                </div>
 
-                    <h3>Lookalike risk</h3>
-                    <p>High confidence malicious domain</p>
+                <div class="domain-card">
+                    <span>BODY DOMAIN</span>
+                    <strong id="domain-body">—</strong>
+                </div>
 
-                    <div class="risk-bar">
-                        <span></span>
-                    </div>
+                <div class="domain-card">
+                    <span>FROM ↔ REPLY-TO</span>
+                    <strong id="domain-reply-match">—</strong>
+                </div>
 
+                <div class="domain-card">
+                    <span>FROM ↔ RETURN-PATH</span>
+                    <strong id="domain-return-match">—</strong>
+                </div>
+
+                <div class="domain-card">
+                    <span>BODY DOMAIN MATCH</span>
+                    <strong id="domain-body-match">—</strong>
+                </div>
+
+                <div class="domain-card">
+                    <span>LOOKALIKE DOMAIN</span>
+                    <strong id="domain-lookalike">—</strong>
+                </div>
+
+                <div class="domain-card">
+                    <span>MX RECORD</span>
+                    <strong id="domain-mx">—</strong>
+                </div>
+
+                <div class="domain-card">
+                    <span>DOMAIN RISK</span>
+                    <strong id="domain-risk">—</strong>
                 </div>
 
             </div>
 
         </section>
 
+        <!-- =========================================================
+            URL INTELLIGENCE
+        ========================================================= -->
+
+        <section class="tab-panel" id="url-intelligence">
+
+            <div class="intel-label">THREAT INTELLIGENCE</div>
+            <h2>URL Intelligence</h2>
+
+            <div class="url-intel-grid">
+
+                <div class="url-card url-full">
+                    <span>URL</span>
+                    <strong id="url-value">—</strong>
+                </div>
+
+                <div class="url-card">
+                    <span>HOSTNAME</span>
+                    <strong id="url-hostname">—</strong>
+                </div>
+
+                <div class="url-card">
+                    <span>REGISTERED DOMAIN</span>
+                    <strong id="url-domain">—</strong>
+                </div>
+
+                <div class="url-card">
+                    <span>RISK SCORE</span>
+                    <strong id="url-score">—</strong>
+                </div>
+
+                <div class="url-card">
+                    <span>RISK LEVEL</span>
+                    <strong id="url-risk">—</strong>
+                </div>
+
+                <div class="url-card">
+                    <span>URL LENGTH</span>
+                    <strong id="url-length">—</strong>
+                </div>
+
+                <div class="url-card">
+                    <span>HTTPS</span>
+                    <strong id="url-https">—</strong>
+                </div>
+
+                <div class="url-card">
+                    <span>SHORTENER</span>
+                    <strong id="url-shortener">—</strong>
+                </div>
+
+                <div class="url-card">
+                    <span>HEX ENCODING</span>
+                    <strong id="url-hex">—</strong>
+                </div>
+
+                <div class="url-card">
+                    <span>SENDER MISMATCH</span>
+                    <strong id="url-sender-mismatch">—</strong>
+                </div>
+
+            </div>
+
+
+            <div class="url-indicators">
+
+                <div class="url-subtitle">DETECTION INDICATORS</div>
+
+                <div id="url-indicator-list">
+                    <span class="url-empty">No indicators detected</span>
+                </div>
+
+            </div>
+
+
+            <div class="url-summary">
+
+                <div>
+                    <span>TOTAL URLS</span>
+                    <strong id="url-total">0</strong>
+                </div>
+
+                <div>
+                    <span>CRITICAL</span>
+                    <strong id="url-critical">0</strong>
+                </div>
+
+                <div>
+                    <span>HIGH</span>
+                    <strong id="url-high">0</strong>
+                </div>
+
+                <div>
+                    <span>MEDIUM</span>
+                    <strong id="url-medium">0</strong>
+                </div>
+
+                <div>
+                    <span>LOW</span>
+                    <strong id="url-low">0</strong>
+                </div>
+
+                <div>
+                    <span>OVERALL STATUS</span>
+                    <strong id="url-overall-risk">—</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- =========================================================
+            ATTACHMENT INTELLIGENCE
+        ========================================================= -->
+
+        <section class="tab-panel" id="attach-intelligence">
+
+        <div class="intel-label">THREAT INTELLIGENCE</div>
+        <h2>Attachment Intelligence</h2>
+
+        <div class="attachment-summary">
+
+            <div>
+                <span>TOTAL ATTACHMENTS</span>
+                <strong id="attachment-total">0</strong>
+            </div>
+
+            <div>
+                <span>HIGH RISK FILES</span>
+                <strong id="attachment-high-risk">No</strong>
+            </div>
+
+            <div>
+                <span>EXECUTABLE TYPES</span>
+                <strong id="attachment-executable">No</strong>
+            </div>
+
+            <div>
+                <span>MACROS / SCRIPTS</span>
+                <strong id="attachment-scripts">No</strong>
+            </div>
+
+            <div>
+                <span>MAX RISK SCORE</span>
+                <strong id="attachment-max-score">0</strong>
+            </div>
+
+            <div>
+                <span>OVERALL STATUS</span>
+                <strong id="attachment-overall-risk">—</strong>
+            </div>
+
+        </div>
+
+
+        <div class="attachment-list" id="attachment-list">
+            <!-- Dynamic attachments -->
+        </div>
+
+    </section>
 
         <!-- CAMPAIGN -->
 

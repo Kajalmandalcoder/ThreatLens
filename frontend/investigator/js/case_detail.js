@@ -435,8 +435,463 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         renderEmailJourney(email);
         renderIPIntelligence(email);
+        renderDomainIntelligence(email);
+        renderURLIntelligence(email);
+        renderAttachmentIntelligence(email);
         lucide.createIcons();
     }
+
+    function renderAttachmentIntelligence(email) {
+
+    console.log("📎 Rendering Attachment Intelligence...");
+
+    const attachmentIntel =
+        email.attachmentIntelligence || {};
+
+    const summary =
+        attachmentIntel.summary || {};
+
+    const attachments =
+        attachmentIntel.attachments || [];
+
+
+    const setText = (id, value) => {
+
+        const element = document.getElementById(id);
+
+        if (element) {
+            element.textContent =
+                value !== undefined && value !== null
+                    ? value
+                    : "—";
+        }
+    };
+
+
+    // =====================================================
+    // SUMMARY
+    // =====================================================
+
+    setText(
+        "attachment-total",
+        summary.total_attachments ?? 0
+    );
+
+    setText(
+        "attachment-high-risk",
+        summary.has_high_risk_files ? "Yes" : "No"
+    );
+
+    setText(
+        "attachment-executable",
+        summary.has_executable_types ? "Yes" : "No"
+    );
+
+    setText(
+        "attachment-scripts",
+        summary.has_macros_or_scripts ? "Yes" : "No"
+    );
+
+    setText(
+        "attachment-max-score",
+        summary.max_attachment_risk_score ?? 0
+    );
+
+    setText(
+        "attachment-overall-risk",
+        summary.overall_status || "—"
+    );
+
+
+    // =====================================================
+    // OVERALL STATUS COLOR
+    // =====================================================
+
+    const overallRisk =
+        document.getElementById("attachment-overall-risk");
+
+    if (overallRisk) {
+
+        overallRisk.classList.remove(
+            "safe",
+            "warning",
+            "danger"
+        );
+
+        const status =
+            (summary.overall_status || "").toUpperCase();
+
+        if (
+            status === "CRITICAL" ||
+            status === "HIGH"
+        ) {
+            overallRisk.classList.add("danger");
+
+        } else if (status === "MEDIUM") {
+
+            overallRisk.classList.add("warning");
+
+        } else {
+
+            overallRisk.classList.add("safe");
+        }
+    }
+
+
+    // =====================================================
+    // ATTACHMENT CARDS
+    // =====================================================
+
+    const list =
+        document.getElementById("attachment-list");
+
+    if (!list) return;
+
+    list.innerHTML = "";
+
+
+    if (attachments.length === 0) {
+
+        list.innerHTML = `
+            <div class="attachment-empty">
+                <i data-lucide="paperclip"></i>
+                <span>No attachments found</span>
+            </div>
+        `;
+
+        lucide.createIcons();
+
+        return;
+    }
+
+
+    attachments.forEach((attachment, index) => {
+
+        const structural =
+            attachment.structural_analysis || {};
+
+        const hashes =
+            attachment.hashes || {};
+
+        const indicators =
+            attachment.indicators || [];
+
+
+        const riskLevel =
+            (attachment.risk_level || "LOW").toUpperCase();
+
+
+        let riskClass = "safe";
+
+        if (
+            riskLevel === "HIGH" ||
+            riskLevel === "CRITICAL"
+        ) {
+            riskClass = "danger";
+
+        } else if (riskLevel === "MEDIUM") {
+
+            riskClass = "warning";
+        }
+
+
+        const sizeKB =
+            attachment.size
+                ? `${(attachment.size / 1024).toFixed(1)} KB`
+                : "—";
+
+
+        const card =
+            document.createElement("div");
+
+        card.className = "attachment-card";
+
+
+        card.innerHTML = `
+
+            <div class="attachment-header">
+
+                <div class="attachment-title">
+
+                    <div class="attachment-icon">
+                        <i data-lucide="file"></i>
+                    </div>
+
+                    <div>
+                        <span>ATTACHMENT ${index + 1}</span>
+                        <strong title="${attachment.filename || ""}">
+                            ${attachment.filename || "Unknown"}
+                        </strong>
+                    </div>
+
+                </div>
+
+                <div class="attachment-risk ${riskClass}">
+                    ${riskLevel}
+                </div>
+
+            </div>
+
+
+            <div class="attachment-grid">
+
+                <div>
+                    <span>CONTENT TYPE</span>
+                    <strong title="${attachment.contentType || ""}">
+                        ${attachment.contentType || "—"}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>SIZE</span>
+                    <strong>${sizeKB}</strong>
+                </div>
+
+                <div>
+                    <span>RISK SCORE</span>
+                    <strong>${attachment.risk_score ?? 0}</strong>
+                </div>
+
+                <div>
+                    <span>EXECUTABLE</span>
+                    <strong>
+                        ${structural.is_executable ? "Yes" : "No"}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>ARCHIVE</span>
+                    <strong>
+                        ${structural.is_archive ? "Yes" : "No"}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>MACRO</span>
+                    <strong>
+                        ${structural.has_macro ? "Detected" : "No"}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>EMBEDDED JS</span>
+                    <strong>
+                        ${structural.has_embedded_javascript ? "Detected" : "No"}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>DOUBLE EXTENSION</span>
+                    <strong>
+                        ${structural.has_double_extension ? "Detected" : "No"}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="attachment-hash">
+
+                <div>
+                    <span>SHA-256</span>
+
+                    <strong title="${hashes.sha256 || ""}">
+                        ${hashes.sha256 || "—"}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>MD5</span>
+
+                    <strong title="${hashes.md5 || ""}">
+                        ${hashes.md5 || "—"}
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="attachment-indicators">
+
+                <span>INDICATORS</span>
+
+                ${
+                    indicators.length
+                        ? indicators.map(
+                            indicator => `
+                                <div class="indicator">
+                                    <i data-lucide="alert-triangle"></i>
+                                    ${indicator}
+                                </div>
+                            `
+                        ).join("")
+                        : `<div class="no-indicator">
+                            No suspicious indicators
+                           </div>`
+                }
+
+            </div>
+        `;
+
+
+        list.appendChild(card);
+    });
+
+
+    lucide.createIcons();
+
+    console.log("✅ Attachment Intelligence rendered");
+}
+
+    function renderURLIntelligence(email) {
+
+    console.log("🔗 Rendering URL Intelligence...");
+
+    const urlIntel = email.urlIntelligence || {};
+    const summary = urlIntel.summary || {};
+    const urls = urlIntel.urls || [];
+
+    const firstUrl = urls[0] || {};
+    const components = firstUrl.components || {};
+    const features = firstUrl.features || {};
+
+    const setText = (id, value) => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = value ?? "—";
+    };
+
+    setText("url-value", firstUrl.url || "—");
+    setText("url-hostname", firstUrl.hostname || "—");
+    setText("url-domain", firstUrl.registered_domain || "—");
+    setText("url-score", firstUrl.risk_score ?? "—");
+    setText("url-risk", firstUrl.risk_level || "—");
+
+    setText(
+        "url-length",
+        features.url_length !== undefined
+            ? `${features.url_length} chars`
+            : "—"
+    );
+
+    setText(
+        "url-https",
+        components.scheme === "https" ? "Yes" : "No"
+    );
+
+    setText(
+        "url-shortener",
+        features.is_shortener === true ? "Detected" : "No"
+    );
+
+    setText(
+        "url-hex",
+        features.has_hex_encoding === true ? "Detected" : "No"
+    );
+
+    setText(
+        "url-sender-mismatch",
+        features.is_sender_mismatch === true ? "Mismatch" : "No"
+    );
+
+
+    // Risk color
+    const riskElement = document.getElementById("url-risk");
+
+    if (riskElement) {
+
+        riskElement.classList.remove(
+            "safe",
+            "warning",
+            "danger"
+        );
+
+        const risk = (firstUrl.risk_level || "").toUpperCase();
+
+        if (risk === "CRITICAL" || risk === "HIGH") {
+            riskElement.classList.add("danger");
+
+        } else if (risk === "MEDIUM") {
+            riskElement.classList.add("warning");
+
+        } else {
+            riskElement.classList.add("safe");
+        }
+    }
+
+
+    // Summary
+    setText("url-total", summary.total_urls ?? 0);
+    setText("url-critical", summary.critical_risk_urls ?? 0);
+    setText("url-high", summary.high_risk_urls ?? 0);
+    setText("url-medium", summary.medium_risk_urls ?? 0);
+    setText("url-low", summary.low_risk_urls ?? 0);
+    setText("url-overall-risk", summary.overall_status || "—");
+
+
+    // Overall risk color
+    const overallElement =
+        document.getElementById("url-overall-risk");
+
+    if (overallElement) {
+
+        overallElement.classList.remove(
+            "safe",
+            "warning",
+            "danger"
+        );
+
+        const status =
+            (summary.overall_status || "").toUpperCase();
+
+        if (status === "CRITICAL" || status === "HIGH") {
+            overallElement.classList.add("danger");
+
+        } else if (status === "MEDIUM") {
+            overallElement.classList.add("warning");
+
+        } else {
+            overallElement.classList.add("safe");
+        }
+    }
+
+
+    // Indicators
+    const indicatorList =
+        document.getElementById("url-indicator-list");
+
+    if (indicatorList) {
+
+        indicatorList.innerHTML = "";
+
+        const indicators = firstUrl.indicators || [];
+
+        if (indicators.length === 0) {
+
+            indicatorList.innerHTML =
+                `<span class="url-empty">No indicators detected</span>`;
+
+        } else {
+
+            indicators.forEach(indicator => {
+
+                const item = document.createElement("div");
+
+                item.className = "url-indicator";
+
+                item.innerHTML = `
+                    <i data-lucide="alert-triangle"></i>
+                    <span>${indicator}</span>
+                `;
+
+                indicatorList.appendChild(item);
+            });
+        }
+    }
+
+    lucide.createIcons();
+
+    console.log("✅ URL Intelligence rendered");
+}
 
     // =========================================================
 // EMAIL JOURNEY
@@ -915,6 +1370,258 @@ function renderIPIntelligence(email) {
     console.log(
         "✅ IP Intelligence rendered"
     );
+}
+
+function renderDomainIntelligence(email) {
+
+    console.log("🌐 Rendering Domain Intelligence...");
+
+    const domainIntel = email.domainIntelligence || {};
+
+    const domains = domainIntel.domains || {};
+    const alignment = domainIntel.identity_alignment || {};
+    const lookalike = domainIntel.lookalike_analysis || {};
+    const dnsHealth = domainIntel.dns_health || {};
+    const signals = domainIntel.signals || {};
+
+    /* =====================================================
+       BASIC DOMAINS
+    ===================================================== */
+
+    const fromElement = document.getElementById("domain-from");
+    if (fromElement) {
+        fromElement.textContent = domains.from_domain || "—";
+    }
+
+    const replyElement = document.getElementById("domain-reply");
+    if (replyElement) {
+        replyElement.textContent = domains.reply_to_domain || "—";
+    }
+
+    const returnElement = document.getElementById("domain-return");
+    if (returnElement) {
+        returnElement.textContent = domains.return_path_domain || "—";
+    }
+
+
+    /* =====================================================
+       BODY DOMAIN
+    ===================================================== */
+
+    const bodyElement = document.getElementById("domain-body");
+
+    if (bodyElement) {
+
+        const bodyDomains = domainIntel.body_domains || [];
+
+        bodyElement.textContent =
+            bodyDomains.length > 0
+                ? bodyDomains.join(", ")
+                : "—";
+    }
+
+
+    /* =====================================================
+       FROM ↔ REPLY-TO
+    ===================================================== */
+
+    const replyMatchElement =
+        document.getElementById("domain-reply-match");
+
+    if (replyMatchElement) {
+
+        if (alignment.from_matches_reply_to === true) {
+
+            replyMatchElement.textContent = "Aligned";
+
+            replyMatchElement.classList.remove("danger", "warning");
+            replyMatchElement.classList.add("safe");
+
+        } else if (alignment.from_matches_reply_to === false) {
+
+            replyMatchElement.textContent = "Mismatch";
+
+            replyMatchElement.classList.remove("safe", "warning");
+            replyMatchElement.classList.add("danger");
+
+        } else {
+
+            replyMatchElement.textContent = "Unknown";
+            replyMatchElement.classList.add("warning");
+        }
+    }
+
+
+    /* =====================================================
+       FROM ↔ RETURN-PATH
+    ===================================================== */
+
+    const returnMatchElement =
+        document.getElementById("domain-return-match");
+
+    if (returnMatchElement) {
+
+        if (alignment.from_matches_return_path === true) {
+
+            returnMatchElement.textContent = "Aligned";
+
+            returnMatchElement.classList.remove("danger", "warning");
+            returnMatchElement.classList.add("safe");
+
+        } else if (alignment.from_matches_return_path === false) {
+
+            returnMatchElement.textContent = "Mismatch";
+
+            returnMatchElement.classList.remove("safe", "warning");
+            returnMatchElement.classList.add("danger");
+
+        } else {
+
+            returnMatchElement.textContent = "Unknown";
+            returnMatchElement.classList.add("warning");
+        }
+    }
+
+
+    /* =====================================================
+       BODY DOMAIN MATCH
+    ===================================================== */
+
+    const bodyMatchElement =
+        document.getElementById("domain-body-match");
+
+    if (bodyMatchElement) {
+
+        if (alignment.from_matches_body_links === true) {
+
+            bodyMatchElement.textContent = "Match";
+
+            bodyMatchElement.classList.remove("danger", "warning");
+            bodyMatchElement.classList.add("safe");
+
+        } else if (alignment.from_matches_body_links === false) {
+
+            bodyMatchElement.textContent = "Mismatch";
+
+            bodyMatchElement.classList.remove("safe", "warning");
+            bodyMatchElement.classList.add("danger");
+
+        } else {
+
+            bodyMatchElement.textContent = "Unknown";
+            bodyMatchElement.classList.add("warning");
+        }
+    }
+
+
+    /* =====================================================
+       LOOKALIKE
+    ===================================================== */
+
+    const lookalikeElement =
+        document.getElementById("domain-lookalike");
+
+    if (lookalikeElement) {
+
+        if (lookalike.is_lookalike === true) {
+
+            lookalikeElement.textContent =
+                lookalike.matched_brand
+                    ? `Yes — ${lookalike.matched_brand}`
+                    : "Detected";
+
+            lookalikeElement.classList.remove("safe", "warning");
+            lookalikeElement.classList.add("danger");
+
+        } else {
+
+            lookalikeElement.textContent = "No";
+
+            lookalikeElement.classList.remove("danger", "warning");
+            lookalikeElement.classList.add("safe");
+        }
+    }
+
+
+    /* =====================================================
+       MX RECORD
+    ===================================================== */
+
+    const mxElement =
+        document.getElementById("domain-mx");
+
+    if (mxElement) {
+
+        if (dnsHealth.from_has_mx === true) {
+
+            mxElement.textContent = "Healthy";
+
+            mxElement.classList.remove("danger", "warning");
+            mxElement.classList.add("safe");
+
+        } else if (dnsHealth.from_has_mx === false) {
+
+            mxElement.textContent = "Missing";
+
+            mxElement.classList.remove("safe", "warning");
+            mxElement.classList.add("danger");
+
+        } else {
+
+            mxElement.textContent = "Unknown";
+            mxElement.classList.add("warning");
+        }
+    }
+
+
+    /* =====================================================
+       DOMAIN RISK
+    ===================================================== */
+
+    const riskElement =
+        document.getElementById("domain-risk");
+
+    if (riskElement) {
+
+        let risk = "Low";
+
+        if (
+            signals.is_brand_lookalike === true ||
+            signals.reply_to_mismatch === true ||
+            signals.return_path_mismatch === true
+        ) {
+            risk = "High";
+
+        } else if (
+            signals.body_domain_mismatch === true ||
+            signals.from_missing_mx === true
+        ) {
+            risk = "Medium";
+        }
+
+        riskElement.textContent = risk;
+
+        riskElement.classList.remove(
+            "safe",
+            "warning",
+            "danger"
+        );
+
+        if (risk === "High") {
+            riskElement.classList.add("danger");
+
+        } else if (risk === "Medium") {
+            riskElement.classList.add("warning");
+
+        } else {
+            riskElement.classList.add("safe");
+        }
+    }
+
+
+    console.log("✅ Domain Intelligence rendered");
+
+    lucide.createIcons();
 }
 
 // =========================================================
