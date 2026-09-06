@@ -120,21 +120,16 @@ document.addEventListener("DOMContentLoaded", () => {
             return "—";
         }
 
-
         const date =
             new Date(value);
-
 
         if (
             Number.isNaN(
                 date.getTime()
             )
         ) {
-
             return String(value);
-
         }
-
 
         return date.toLocaleDateString(
             "en-US",
@@ -146,47 +141,47 @@ document.addEventListener("DOMContentLoaded", () => {
         );
 
     }
+
+
     function normalizeRelationType(type) {
 
-            const value =
-                String(type || "")
-                    .trim()
-                    .toLowerCase();
+        const value =
+            String(type || "")
+                .trim()
+                .toLowerCase();
 
-            if (value === "attachment") {
-                return "attachment";
-            }
+        switch (value) {
 
-            if (value === "hash") {
-                return "hash";
-            }
-
-            if (value === "sender") {
+            case "sender":
                 return "sender";
-            }
 
-            if (value === "domain") {
+            case "domain":
                 return "domain";
-            }
 
-            if (value === "url") {
+            case "url":
                 return "url";
-            }
 
-            if (value === "ip") {
+            case "ip":
                 return "ip";
-            }
 
-            if (value === "content") {
+            case "content":
                 return "content";
-            }
 
-            if (value === "subject") {
+            case "subject":
                 return "subject";
-            }
 
-            return "unknown";
+            case "hash":
+                return "hash";
+
+            case "attachment":
+                return "attachment";
+
+            default:
+                return "unknown";
+
         }
+
+    }
 
 
     function formatMatchValue(value) {
@@ -196,9 +191,7 @@ document.addEventListener("DOMContentLoaded", () => {
             value === undefined ||
             value === ""
         ) {
-
             return "—";
-
         }
 
 
@@ -210,11 +203,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 value.subject_similarity ??
                 value.subjectSimilarity;
 
-
             const body =
                 value.body_similarity ??
                 value.bodySimilarity;
-
 
             const strongest =
                 value.strongest_similarity ??
@@ -289,6 +280,64 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    function getMatchLabel(match) {
+
+        return (
+            match?.label ||
+            match?.name ||
+            match?.type ||
+            "Shared indicator"
+        );
+
+    }
+
+
+    function getIndicatorColor(type) {
+
+        const normalized =
+            normalizeRelationType(
+                type
+            );
+
+        const colors = {
+
+            sender:
+                "#24d8ca",
+
+            domain:
+                "#a78bfa",
+
+            url:
+                "#f59e0b",
+
+            ip:
+                "#60a5fa",
+
+            content:
+                "#38bdf8",
+
+            subject:
+                "#38bdf8",
+
+            hash:
+                "#fb923c",
+
+            attachment:
+                "#fb923c",
+
+            unknown:
+                "#648299"
+
+        };
+
+        return (
+            colors[normalized] ||
+            colors.unknown
+        );
+
+    }
+
+
     /* =========================================================
        FETCH ALL CLUSTERS
        ========================================================= */
@@ -337,7 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================================
-       FETCH PARTICULAR EMAIL GRAPH
+       FETCH ONE EMAIL'S CORRELATION GRAPH
        ========================================================= */
 
     async function fetchEmailGraph(
@@ -384,7 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     /* =========================================================
-       BUILD RELATIONS INSIDE ONE CLUSTER
+       BUILD RELATIONS FOR ONE CLUSTER
        ========================================================= */
 
     async function buildClusterRelations(
@@ -401,12 +450,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
         const memberIds =
             new Set(
-                members.map(
-                    email =>
-                        String(
-                            email.id
-                        )
-                )
+                members
+                    .map(
+                        email =>
+                            String(
+                                email?.id ||
+                                email?._id ||
+                                ""
+                            )
+                    )
+                    .filter(Boolean)
             );
 
 
@@ -419,7 +472,15 @@ document.addEventListener("DOMContentLoaded", () => {
             members.map(
                 async email => {
 
-                    if (!email?.id) {
+                    const source =
+                        String(
+                            email?.id ||
+                            email?._id ||
+                            ""
+                        );
+
+
+                    if (!source) {
                         return;
                     }
 
@@ -428,7 +489,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         const graph =
                             await fetchEmailGraph(
-                                email.id
+                                source
                             );
 
 
@@ -443,41 +504,28 @@ document.addEventListener("DOMContentLoaded", () => {
                         related.forEach(
                             relation => {
 
-                                const source =
-                                    String(
-                                        email.id
-                                    );
-
-
                                 const target =
                                     String(
-                                        relation.id
+                                        relation?.id ||
+                                        relation?._id ||
+                                        ""
                                     );
 
 
-                                /*
-                                 * Only keep relations
-                                 * inside this cluster.
-                                 */
+                                if (
+                                    !target ||
+                                    target === source
+                                ) {
+                                    return;
+                                }
+
 
                                 if (
                                     !memberIds.has(
                                         target
                                     )
                                 ) {
-
                                     return;
-
-                                }
-
-
-                                if (
-                                    source ===
-                                    target
-                                ) {
-
-                                    return;
-
                                 }
 
 
@@ -490,42 +538,101 @@ document.addEventListener("DOMContentLoaded", () => {
                                         .join("::");
 
 
+                                const relationScore =
+                                    Number(
+                                        relation?.correlationScore ??
+                                        relation?.score ??
+                                        0
+                                    );
+
+
+                                const relationMatches =
+                                    Array.isArray(
+                                        relation?.matches
+                                    )
+                                        ? relation.matches
+                                        : [];
+
+
                                 if (
-                                    relationMap.has(
+                                    !relationMap.has(
                                         key
                                     )
                                 ) {
 
-                                    return;
+                                    relationMap.set(
+                                        key,
+                                        {
+                                            source,
+                                            target,
+                                            score:
+                                                relationScore,
+                                            matches:
+                                                [
+                                                    ...relationMatches
+                                                ]
+                                        }
+                                    );
+
+                                } else {
+
+                                    const existing =
+                                        relationMap.get(
+                                            key
+                                        );
+
+
+                                    existing.score =
+                                        Math.max(
+                                            existing.score,
+                                            relationScore
+                                        );
+
+
+                                    existing.matches.push(
+                                        ...relationMatches
+                                    );
+
+
+                                    /*
+                                     * Keep one match
+                                     * per indicator type.
+                                     */
+
+                                    const seen =
+                                        new Set();
+
+
+                                    existing.matches =
+                                        existing.matches.filter(
+                                            match => {
+
+                                                const type =
+                                                    normalizeRelationType(
+                                                        match?.type
+                                                    );
+
+
+                                                if (
+                                                    seen.has(
+                                                        type
+                                                    )
+                                                ) {
+                                                    return false;
+                                                }
+
+
+                                                seen.add(
+                                                    type
+                                                );
+
+
+                                                return true;
+
+                                            }
+                                        );
 
                                 }
-
-
-                                relationMap.set(
-                                    key,
-                                    {
-
-                                        source,
-
-                                        target,
-
-                                        score:
-                                            Number(
-                                                relation
-                                                    .correlationScore ||
-                                                0
-                                            ),
-
-                                        matches:
-                                            Array.isArray(
-                                                relation.matches
-                                            )
-                                                ? relation.matches
-                                                : []
-
-                                    }
-
-                                );
 
                             }
                         );
@@ -534,7 +641,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         console.warn(
                             "Could not fetch relation for",
-                            email.id,
+                            source,
                             error
                         );
 
@@ -553,211 +660,145 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
 
+    /* =========================================================
+       DYNAMIC NODE POSITION
+       ========================================================= */
 
-    //    NODE POSITIONS
     function getNodePosition(
-    index,
-    total
-) {
+        index,
+        total
+    ) {
 
-    if (total === 1) {
+        if (
+            total <= 0
+        ) {
+
+            return {
+                x: 50,
+                y: 50
+            };
+
+        }
+
+
+        /*
+         * Automatically choose the number
+         * of columns from the cluster size.
+         */
+
+        let columns;
+
+        if (total <= 2) {
+
+            columns = total;
+
+        } else if (total <= 6) {
+
+            columns = 2;
+
+        } else if (total <= 12) {
+
+            columns = 3;
+
+        } else if (total <= 20) {
+
+            columns = 4;
+
+        } else {
+
+            columns = 5;
+
+        }
+
+
+        const rows =
+            Math.ceil(
+                total /
+                columns
+            );
+
+
+        const paddingX = 15;
+        const paddingY = 16;
+
+
+        const usableWidth =
+            100 -
+            paddingX * 2;
+
+
+        const usableHeight =
+            100 -
+            paddingY * 2;
+
+
+        const column =
+            index %
+            columns;
+
+
+        const row =
+            Math.floor(
+                index /
+                columns
+            );
+
+
+        const x =
+            columns === 1
+                ? 50
+                : paddingX +
+                  (
+                      column /
+                      (
+                          columns - 1
+                      )
+                  ) *
+                  usableWidth;
+
+
+        const y =
+            rows === 1
+                ? 50
+                : paddingY +
+                  (
+                      row /
+                      (
+                          rows - 1
+                      )
+                  ) *
+                  usableHeight;
+
 
         return {
-            x: 50,
-            y: 50
+            x,
+            y
         };
 
     }
 
 
-    if (total === 2) {
-
-        return [
-            {
-                x: 32,
-                y: 50
-            },
-            {
-                x: 68,
-                y: 50
-            }
-        ][index];
-
-    }
-
-
-    if (total === 3) {
-
-        return [
-            {
-                x: 25,
-                y: 35
-            },
-            {
-                x: 75,
-                y: 35
-            },
-            {
-                x: 50,
-                y: 72
-            }
-        ][index];
-
-    }
-
-
-    if (total === 4) {
-
-        return [
-            {
-                x: 28,
-                y: 30
-            },
-            {
-                x: 72,
-                y: 30
-            },
-            {
-                x: 28,
-                y: 70
-            },
-            {
-                x: 72,
-                y: 70
-            }
-        ][index];
-
-    }
-
-
-    if (total === 5) {
-
-        return [
-            {
-                x: 50,
-                y: 20
-            },
-            {
-                x: 24,
-                y: 42
-            },
-            {
-                x: 76,
-                y: 42
-            },
-            {
-                x: 32,
-                y: 76
-            },
-            {
-                x: 68,
-                y: 76
-            }
-        ][index];
-
-    }
-
-
-    if (total === 6) {
-
-        return [
-            {
-                x: 28,
-                y: 20
-            },
-            {
-                x: 72,
-                y: 20
-            },
-            {
-                x: 20,
-                y: 50
-            },
-            {
-                x: 80,
-                y: 50
-            },
-            {
-                x: 28,
-                y: 80
-            },
-            {
-                x: 72,
-                y: 80
-            }
-        ][index];
-
-    }
-
-
-    /*
-     * 7–9 emails:
-     * clean 3 × 3 layout
-     */
-
-    const positions = [
-
-        {
-            x: 22,
-            y: 20
-        },
-
-        {
-            x: 50,
-            y: 20
-        },
-
-        {
-            x: 78,
-            y: 20
-        },
-
-        {
-            x: 22,
-            y: 50
-        },
-
-        {
-            x: 50,
-            y: 50
-        },
-
-        {
-            x: 78,
-            y: 50
-        },
-
-        {
-            x: 22,
-            y: 80
-        },
-
-        {
-            x: 50,
-            y: 80
-        },
-
-        {
-            x: 78,
-            y: 80
-        }
-
-    ];
-
-
-    return positions[index];
-
-}
-
-
     /* =========================================================
-       DRAW ONE CLUSTER
+       RENDER ONE CLUSTER
        ========================================================= */
 
     function renderCluster(
         cluster,
         relations
     ) {
+
+        if (!clustersGrid) {
+            return;
+        }
+
+
+        const members =
+            Array.isArray(
+                cluster.emails
+            )
+                ? cluster.emails
+                : [];
+
 
         const card =
             document.createElement(
@@ -769,33 +810,35 @@ document.addEventListener("DOMContentLoaded", () => {
             "cluster-card";
 
 
-        const members =
-            Array.isArray(
-                cluster.emails
-            )
-                ? cluster.emails
-                : [];
-
-
         card.innerHTML = `
 
             <div class="cluster-card-head">
 
                 <div class="cluster-title">
 
-                    <span class="cluster-dot"></span>
+                    <span
+                        class="cluster-dot">
+                    </span>
 
                     <strong>
                         ${escapeHtml(
-                            cluster.clusterId
+                            cluster.clusterId ||
+                            "Campaign"
                         )}
                     </strong>
 
                 </div>
 
-                <span class="cluster-count">
+                <span
+                    class="cluster-count">
+
                     ${members.length}
-                    email${members.length === 1 ? "" : "s"}
+                    email${
+                        members.length === 1
+                            ? ""
+                            : "s"
+                    }
+
                 </span>
 
             </div>
@@ -809,6 +852,11 @@ document.addEventListener("DOMContentLoaded", () => {
             card.querySelector(
                 ".cluster-map"
             );
+
+
+        if (!map) {
+            return;
+        }
 
 
         const svg =
@@ -832,11 +880,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /*
-         * Create small case nodes
+         * Create nodes.
          */
 
         members.forEach(
             (email, index) => {
+
+                const id =
+                    String(
+                        email?.id ||
+                        email?._id ||
+                        ""
+                    );
+
+
+                if (!id) {
+                    return;
+                }
+
 
                 const position =
                     getNodePosition(
@@ -845,10 +906,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     );
 
 
-                const id =
-                    String(
-                        email.id
-                    );
+                if (!position) {
+                    return;
+                }
 
 
                 positions[id] =
@@ -869,6 +929,10 @@ document.addEventListener("DOMContentLoaded", () => {
                     "cluster-node";
 
 
+                node.dataset.caseId =
+                    id;
+
+
                 node.style.left =
                     `${position.x}%`;
 
@@ -877,31 +941,63 @@ document.addEventListener("DOMContentLoaded", () => {
                     `${position.y}%`;
 
 
+                const relationTypes =
+                    relations
+                        .filter(
+                            relation =>
+                                relation.source === id ||
+                                relation.target === id
+                        )
+                        .flatMap(
+                            relation =>
+                                (
+                                    relation.matches ||
+                                    []
+                                ).map(
+                                    match =>
+                                        normalizeRelationType(
+                                            match?.type
+                                        )
+                                )
+                        );
+
+
+                const primaryType =
+                    relationTypes[0] ||
+                    "unknown";
+
+
+                node.dataset.relationType =
+                    primaryType;
+
+
+                const subject =
+                    email?.subject ||
+                    "No subject";
+
+
                 node.innerHTML = `
 
                     <span
                         class="cluster-node-title">
+
                         ${escapeHtml(
-                            email.subject ||
-                            "No subject"
+                            subject
                         )}
+
                     </span>
 
                     <span
                         class="cluster-node-id">
+
                         ${escapeHtml(
-                            email.id ||
-                            ""
+                            id
                         )}
+
                     </span>
 
                 `;
 
-
-                /*
-                 * Click node ->
-                 * show complete connection info.
-                 */
 
                 node.addEventListener(
                     "click",
@@ -917,8 +1013,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
                         openDrawer(
                             email,
-                            nodeRelations,
-                            members
+                            nodeRelations
                         );
 
                     }
@@ -934,126 +1029,193 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
         /*
-         * Set SVG dimensions
+         * Draw SVG after the card is in the DOM,
+         * so width/height are real.
          */
-
-        const width =
-            map.clientWidth ||
-            360;
-
-
-        const height =
-            map.clientHeight ||
-            230;
-
-
-        svg.setAttribute(
-            "viewBox",
-            `0 0 ${width} ${height}`
-        );
-
-
-        /*
-         * Draw edges
-         */
-
-        relations.forEach(
-            relation => {
-
-                const from =
-                    positions[
-                        relation.source
-                    ];
-
-
-                const to =
-                    positions[
-                        relation.target
-                    ];
-
-
-                if (
-                    !from ||
-                    !to
-                ) {
-
-                    return;
-
-                }
-
-
-                const line =
-                    document.createElementNS(
-                        "http://www.w3.org/2000/svg",
-                        "line"
-                    );
-
-
-                const relationType =
-                    normalizeRelationType(
-                        relation.matches?.[0]?.type
-                    );
-
-                line.classList.add(
-                    "cluster-edge",
-                    relationType
-                );
-
-                line.setAttribute(
-                    "x1",
-                    (
-                        from.x *
-                        width /
-                        100
-                    )
-                );
-
-
-                line.setAttribute(
-                    "y1",
-                    (
-                        from.y *
-                        height /
-                        100
-                    )
-                );
-
-
-                line.setAttribute(
-                    "x2",
-                    (
-                        to.x *
-                        width /
-                        100
-                    )
-                );
-
-
-                line.setAttribute(
-                    "y2",
-                    (
-                        to.y *
-                        height /
-                        100
-                    )
-                );
-
-
-                svg.appendChild(
-                    line
-                );
-
-            }
-        );
-
 
         clustersGrid.appendChild(
             card
         );
 
+
+        requestAnimationFrame(
+            () => {
+
+                const width =
+                    map.clientWidth ||
+                    400;
+
+
+                const height =
+                    map.clientHeight ||
+                    300;
+
+
+                svg.setAttribute(
+                    "viewBox",
+                    `0 0 ${width} ${height}`
+                );
+
+
+                svg.setAttribute(
+                    "width",
+                    width
+                );
+
+
+                svg.setAttribute(
+                    "height",
+                    height
+                );
+
+
+                /*
+                 * Draw every indicator type
+                 * between connected cases.
+                 */
+                                relations.forEach(
+                    relation => {
+
+                        const from =
+                            positions[
+                                relation.source
+                            ];
+
+                        const to =
+                            positions[
+                                relation.target
+                            ];
+
+                        if (
+                            !from ||
+                            !to
+                        ) {
+                            return;
+                        }
+
+                        const matches =
+                            Array.isArray(
+                                relation.matches
+                            )
+                                ? relation.matches
+                                : [];
+
+                        const strongestMatch =
+                            matches.reduce(
+                                (
+                                    strongest,
+                                    match
+                                ) => {
+
+                                    const strength =
+                                        Number(
+                                            match?.strength ??
+                                            match?.score ??
+                                            0
+                                        );
+
+                                    if (!strongest) {
+
+                                        return {
+                                            ...match,
+                                            __strength:
+                                                strength
+                                        };
+
+                                    }
+
+                                    return (
+                                        strength >
+                                        strongest.__strength
+                                    )
+                                        ? {
+                                            ...match,
+                                            __strength:
+                                                strength
+                                        }
+                                        : strongest;
+
+                                },
+                                null
+                            );
+
+                        const type =
+                            normalizeRelationType(
+                                strongestMatch?.type ||
+                                "unknown"
+                            );
+
+                        const line =
+                            document.createElementNS(
+                                "http://www.w3.org/2000/svg",
+                                "line"
+                            );
+
+                        line.classList.add(
+                            "cluster-edge",
+                            type
+                        );
+
+                        line.setAttribute(
+                            "x1",
+                            from.x *
+                            width /
+                            100
+                        );
+
+                        line.setAttribute(
+                            "y1",
+                            from.y *
+                            height /
+                            100
+                        );
+
+                        line.setAttribute(
+                            "x2",
+                            to.x *
+                            width /
+                            100
+                        );
+
+                        line.setAttribute(
+                            "y2",
+                            to.y *
+                            height /
+                            100
+                        );
+
+                        line.dataset.score =
+                            String(
+                                Number(
+                                    relation.score ||
+                                    0
+                                )
+                            );
+
+                        line.dataset.type =
+                            type;
+
+                        line.setAttribute(
+                            "stroke",
+                            getIndicatorColor(
+                                type
+                            )
+                        );
+
+                        svg.appendChild(
+                            line
+                        );
+
+                    }
+                );
+
+            }
+        );
+
     }
 
 
+             
     /* =========================================================
        DRAWER
        ========================================================= */
@@ -1068,151 +1230,286 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
 
-        drawerCaseId.textContent =
-            email.id ||
-            "—";
-
-
-        drawerSubject.textContent =
-            email.subject ||
-            "—";
-
-
-        drawerDate.textContent =
-            formatDate(
-                email.date
+        const emailId =
+            String(
+                email?.id ||
+                email?._id ||
+                "—"
             );
 
 
-        drawerMatchCount.textContent =
-            relations.length;
+        const subject =
+            email?.subject ||
+            "No subject";
 
 
-        if (
-            relations.length === 0
-        ) {
-
-            drawerScore.textContent =
-                "—";
+        const date =
+            email?.date ||
+            email?.createdAt ||
+            null;
 
 
-            drawerMatches.innerHTML = `
+        if (drawerCaseId) {
 
-                <div class="match-row">
+            drawerCaseId.textContent =
+                emailId;
 
-                    <strong>
-                        No direct relationship details
-                    </strong>
+        }
 
-                    <small>
-                        This email is part of the campaign
-                        cluster, but no direct pairwise
-                        relationship was returned.
-                    </small>
 
-                </div>
+        if (drawerSubject) {
 
-            `;
+            drawerSubject.textContent =
+                subject;
+
+        }
+
+
+        if (drawerDate) {
+
+            drawerDate.textContent =
+                formatDate(
+                    date
+                );
+
+        }
+
+
+        const safeRelations =
+            Array.isArray(
+                relations
+            )
+                ? relations
+                : [];
+
+
+        if (drawerMatchCount) {
+
+            drawerMatchCount.textContent =
+                safeRelations.length;
+
+        }
+
+
+        if (!safeRelations.length) {
+
+            if (drawerScore) {
+
+                drawerScore.textContent =
+                    "—";
+
+            }
+
+
+            if (drawerMatches) {
+
+                drawerMatches.innerHTML = `
+
+                    <div class="match-row">
+
+                        <strong>
+                            No direct relationship details
+                        </strong>
+
+                        <small>
+                            This email belongs to the
+                            campaign cluster, but no
+                            direct pairwise relationship
+                            was returned.
+                        </small>
+
+                    </div>
+
+                `;
+
+            }
 
         } else {
 
             const strongest =
                 Math.max(
-                    ...relations.map(
+                    ...safeRelations.map(
                         relation =>
                             Number(
-                                relation.score || 0
+                                relation.score ||
+                                0
                             )
                     )
                 );
 
 
-            drawerScore.textContent =
-                `${strongest}%`;
+            if (drawerScore) {
+
+                drawerScore.textContent =
+                    `${strongest}%`;
+
+            }
 
 
-            drawerMatches.innerHTML =
-                relations.map(
-                    relation => {
+            if (drawerMatches) {
 
-                        const currentId =
-                            String(
-                                email.id
-                            );
+                drawerMatches.innerHTML =
+                    safeRelations
+                        .map(
+                            relation => {
 
-
-                        const otherId =
-                            relation.source ===
-                                currentId
-                                ? relation.target
-                                : relation.source;
+                                const currentId =
+                                    emailId;
 
 
-                        const matchText =
-                            relation.matches
-                                .map(
+                                const otherId =
+                                    relation.source ===
+                                        currentId
+                                        ? relation.target
+                                        : relation.source;
+
+
+                                const matches =
+                                    Array.isArray(
+                                        relation.matches
+                                    )
+                                        ? relation.matches
+                                        : [];
+
+
+                                /*
+                                 * Remove duplicate
+                                 * indicator types.
+                                 */
+
+                                const uniqueMatches =
+                                    [];
+
+
+                                const seenTypes =
+                                    new Set();
+
+
+                                matches.forEach(
                                     match => {
 
-                                        const label =
-                                            match.label ||
-                                            match.type ||
-                                            "Match";
-
-
-                                        const value =
-                                            formatMatchValue(
-                                                match.value ??
-                                                match.currentValue ??
-                                                match.relatedValue
+                                        const type =
+                                            normalizeRelationType(
+                                                match?.type
                                             );
 
 
-                                        return `
-                                            ${escapeHtml(
-                                                label
-                                            )}
-                                            ·
-                                            ${escapeHtml(
-                                                value
-                                            )}
-                                        `;
+                                        if (
+                                            seenTypes.has(
+                                                type
+                                            )
+                                        ) {
+                                            return;
+                                        }
+
+
+                                        seenTypes.add(
+                                            type
+                                        );
+
+
+                                        uniqueMatches.push(
+                                            match
+                                        );
 
                                     }
-                                )
-                                .join(
-                                    "<br>"
                                 );
 
 
-                        return `
+                                const basis =
+                                    uniqueMatches
+                                        .map(
+                                            match => {
 
-                            <div class="match-row">
+                                                const label =
+                                                    getMatchLabel(
+                                                        match
+                                                    );
 
-                                <strong>
-                                    Connected case:
-                                    ${escapeHtml(
-                                        otherId
-                                    )}
-                                </strong>
 
-                                <small>
-                                    Correlation:
-                                    ${Number(
-                                        relation.score || 0
-                                    )}%
-                                </small>
+                                                const value =
+                                                    formatMatchValue(
+                                                        match.value ??
+                                                        match.currentValue ??
+                                                        match.relatedValue
+                                                    );
 
-                                <small>
-                                    ${matchText ||
-                                    "Shared correlation"}
-                                </small>
 
-                            </div>
+                                                const color =
+                                                    getIndicatorColor(
+                                                        match?.type
+                                                    );
 
-                        `;
 
-                    }
-                ).join("");
+                                                return `
+
+                                                    <div
+                                                        class="match-indicator"
+                                                        style="
+                                                            border-left: 3px solid ${color};
+                                                            padding-left: 8px;
+                                                            margin: 7px 0;
+                                                        ">
+
+                                                        <strong>
+                                                            ${escapeHtml(
+                                                                label
+                                                            )}
+                                                        </strong>
+
+                                                        <small>
+                                                            ${escapeHtml(
+                                                                value
+                                                            )}
+                                                        </small>
+
+                                                    </div>
+
+                                                `;
+
+                                            }
+                                        )
+                                        .join("");
+
+
+                                return `
+
+                                    <div
+                                        class="match-row">
+
+                                        <strong>
+                                            Connected case:
+                                            ${escapeHtml(
+                                                otherId
+                                            )}
+                                        </strong>
+
+                                        <small>
+                                            Correlation:
+                                            ${Number(
+                                                relation.score ||
+                                                0
+                                            )}%
+                                        </small>
+
+                                        ${
+                                            basis ||
+                                            `
+                                            <small>
+                                                Shared correlation
+                                            </small>
+                                            `
+                                        }
+
+                                    </div>
+
+                                `;
+
+                            }
+                        )
+                        .join("");
+
+            }
 
         }
 
@@ -1277,6 +1574,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 await fetchClusters();
 
 
+            /*
+             * Dynamic summary.
+             */
+
             if (campaignCount) {
 
                 campaignCount.textContent =
@@ -1285,24 +1586,28 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
 
+            const totalEmails =
+                clusters.reduce(
+                    (
+                        total,
+                        cluster
+                    ) =>
+                        total +
+                        (
+                            Array.isArray(
+                                cluster.emails
+                            )
+                                ? cluster.emails.length
+                                : 0
+                        ),
+                    0
+                );
+
+
             if (emailCount) {
 
                 emailCount.textContent =
-                    clusters.reduce(
-                        (
-                            total,
-                            cluster
-                        ) =>
-                            total +
-                            (
-                                Array.isArray(
-                                    cluster.emails
-                                )
-                                    ? cluster.emails.length
-                                    : 0
-                            ),
-                        0
-                    );
+                    totalEmails;
 
             }
 
@@ -1316,9 +1621,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 "";
 
 
-            if (
-                !clusters.length
-            ) {
+            if (!clusters.length) {
 
                 clustersGrid.innerHTML = `
 
@@ -1355,7 +1658,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
             /*
-             * Build and render each mini graph.
+             * One graph per API cluster.
              */
 
             for (
@@ -1442,10 +1745,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     }
 
-
-    /*
-     * Escape closes drawer.
-     */
 
     document.addEventListener(
         "keydown",
