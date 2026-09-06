@@ -395,7 +395,11 @@ function compareCases(currentEmail, otherEmail) {
  * Main campaign correlation function.
  */
 async function findRelatedCases(caseId) {
+  console.log("🔎 Correlation caseId received:", caseId);
+
   const currentEmail = await Email.findOne({ caseId });
+
+  console.log("📧 Current email found:", currentEmail ? "YES" : "NO");
 
   if (!currentEmail) {
     throw new Error("Current case not found");
@@ -420,13 +424,15 @@ async function findRelatedCases(caseId) {
   }
 
   // Strongest / highest match first.
-  relatedCases.sort((a, b) => {
-    if (b.matchCount !== a.matchCount) {
-      return b.matchCount - a.matchCount;
-    }
+  if (relatedCases.length > 0) {
+    relatedCases.sort((a, b) => {
+      if (b.matchCount !== a.matchCount) {
+        return b.matchCount - a.matchCount;
+      }
 
-    return a.caseId.localeCompare(b.caseId);
-  });
+      return (a.caseId || "").localeCompare(b.caseId || "");
+    });
+  }
 
   return {
     currentCase: {
