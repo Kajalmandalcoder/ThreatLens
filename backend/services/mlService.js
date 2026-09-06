@@ -11,9 +11,16 @@ function runMLPrediction(text) {
             "ml_predict.py"
         );
 
+        const pythonPath = path.join(
+              projectRoot,
+              ".venv",
+              "Scripts",
+              "python.exe"
+        );
+
         const pythonProcess = spawn(
-            "python",
-            [mlScript, text]
+              pythonPath,
+             [mlScript, text]
         );
 
         let output = "";
