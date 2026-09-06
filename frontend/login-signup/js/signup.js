@@ -46,7 +46,7 @@ signupForm.addEventListener("submit", async function (e) {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/auth/signup",
+            "http://localhost:5001/api/auth/signup",
             {
                 method: "POST",
 
@@ -137,7 +137,7 @@ verifyOtpBtn.addEventListener("click", async function () {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/api/auth/verify-otp",
+            "http://localhost:5001/api/auth/verify-otp",
             {
                 method: "POST",
 
