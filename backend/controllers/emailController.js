@@ -9,6 +9,9 @@ const { analyzeNetworkAndDomains } = require("../services/intelligenceService");
 const { analyzeAttachments } = require("../services/attachmentIntelligenceService");
 
 const Email = require("../models/email");
+const {
+      findRelatedCases
+    } = require("../services/campaignCorrelationService");
 
 function buildTechnicalReasons({
   mlResult,
@@ -282,6 +285,11 @@ async function analyzeEmail(req, res) {
     const parsedEmail = await parseEmailWithPython(req.file.path);
     console.log("✅ Python parser completed");
 
+    console.log(
+      "📍 Email Journey:",
+      JSON.stringify(parsedEmail.emailJourney, null, 2)
+    );
+
     // 2. ML Threat Prediction
     let mlResult = null;
     try {
@@ -453,8 +461,51 @@ async function getEmailById(req, res) {
   }
 }
 
+/**
+ * Dynamically correlate current case with previous cases.
+ */
+async function getCampaignCorrelations(req, res) {
+  try {
+    const { caseId } = req.params;
+
+    if (!caseId) {
+      return res.status(400).json({
+        success: false,
+        message: "caseId is required"
+      });
+    }
+
+    const result = await findRelatedCases(caseId);
+
+    return res.status(200).json({
+      success: true,
+      data: result
+    });
+
+  } catch (error) {
+    console.error(
+      "❌ Campaign correlation failed:",
+      error
+    );
+
+    if (error.message === "Current case not found") {
+      return res.status(404).json({
+        success: false,
+        message: error.message
+      });
+    }
+
+    return res.status(500).json({
+      success: false,
+      message: "Failed to calculate campaign correlations",
+      error: error.message
+    });
+  }
+}
+
 module.exports = {
   analyzeEmail,
   getAllEmails,
-  getEmailById
+  getEmailById,
+  getCampaignCorrelations
 };

@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Campaign Correlation | ThreatLens</title>
+
+    <!-- Campaign Correlation CSS -->
+    <link
+        rel="stylesheet"
+        href="css/campaign_correlation.css"
+    >
+</head>
+
+<body>
+
+    <!-- =========================
+         PAGE HEADER
+    ========================== -->
+    <header class="page-header">
+
+        <div class="header-left">
+
+            <button
+                class="back-btn"
+                onclick="history.back()"
+            >
+                ← Back
+            </button>
+
+            <div class="page-title">
+                <h1>Campaign Correlation</h1>
+                <p>
+                    Investigate relationships between email cases
+                    and shared threat indicators.
+                </p>
+            </div>
+
+        </div>
+
+        <div class="header-right">
+            <span class="status-badge">
+                ● LIVE ANALYSIS
+            </span>
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+    <main class="main-container">
+
+        <!-- =====================
+             CURRENT CASE SUMMARY
+        ====================== -->
+        <section class="case-summary">
+
+            <div class="section-heading">
+                <div>
+                    <h2>Current Case</h2>
+                    <p>Case currently under investigation</p>
+                </div>
+            </div>
+
+            <div class="case-card">
+
+                <div class="case-info">
+
+                    <span class="info-label">
+                        CASE ID
+                    </span>
+
+                    <span
+                        id="currentCaseId"
+                        class="info-value"
+                    >
+                        Loading...
+                    </span>
+
+                </div>
+
+
+                <div class="case-info">
+
+                    <span class="info-label">
+                        SUBJECT
+                    </span>
+
+                    <span
+                        id="currentCaseSubject"
+                        class="info-value"
+                    >
+                        Loading...
+                    </span>
+
+                </div>
+
+
+                <div class="case-info">
+
+                    <span class="info-label">
+                        SENDER
+                    </span>
+
+                    <span
+                        id="currentCaseSender"
+                        class="info-value"
+                    >
+                        Loading...
+                    </span>
+
+                </div>
+
+
+                <div class="case-info">
+
+                    <span class="info-label">
+                        RELATED CASES
+                    </span>
+
+                    <span
+                        id="relatedCaseCount"
+                        class="info-value highlight"
+                    >
+                        0
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================
+             CORRELATION WORKSPACE
+        ====================== -->
+        <section class="correlation-workspace">
+
+            <!-- GRAPH -->
+            <div class="graph-section">
+
+                <div class="section-heading">
+
+                    <div>
+                        <h2>Campaign Relationship Graph</h2>
+
+                        <p>
+                            Shared indicators between email cases
+                        </p>
+                    </div>
+
+
+                    <div class="graph-controls">
+
+                        <button
+                            id="fitGraphBtn"
+                            class="control-btn"
+                        >
+                            Fit Graph
+                        </button>
+
+                        <button
+                            id="resetGraphBtn"
+                            class="control-btn"
+                        >
+                            Reset
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Cytoscape graph will render here -->
+                <div
+                    id="campaignGraph"
+                    class="campaign-graph"
+                >
+
+                    <div
+                        id="graphLoading"
+                        class="graph-loading"
+                    >
+                        <div class="loader"></div>
+
+                        <p>
+                            Loading campaign correlations...
+                        </p>
+                    </div>
+
+                </div>
+
+
+                <!-- GRAPH LEGEND -->
+                <div class="graph-legend">
+
+                    <div class="legend-title">
+                        Correlation Strength
+                    </div>
+
+                    <div class="legend-items">
+
+                        <div class="legend-item">
+                            <span class="legend-dot strong"></span>
+                            <span>STRONG</span>
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-dot medium"></span>
+                            <span>MEDIUM</span>
+                        </div>
+
+                        <div class="legend-item">
+                            <span class="legend-dot weak"></span>
+                            <span>WEAK</span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- =====================
+                 DETAILS PANEL
+            ====================== -->
+            <aside
+                id="correlationDetails"
+                class="details-panel"
+            >
+
+                <div class="details-header">
+
+                    <div>
+                        <h2>Correlation Details</h2>
+
+                        <p>
+                            Select a case or connection
+                            from the graph.
+                        </p>
+                    </div>
+
+                    <button
+                        id="closeDetailsBtn"
+                        class="close-btn"
+                        aria-label="Close details"
+                    >
+                        ×
+                    </button>
+
+                </div>
+
+
+                <!-- Default state -->
+                <div
+                    id="detailsEmpty"
+                    class="details-empty"
+                >
+
+                    <div class="empty-icon">
+                        ⛓
+                    </div>
+
+                    <h3>No correlation selected</h3>
+
+                    <p>
+                        Click a related case or connection
+                        to inspect the matched indicators.
+                    </p>
+
+                </div>
+
+
+                <!-- Selected case details -->
+                <div
+                    id="caseDetailsContent"
+                    class="details-content hidden"
+                >
+
+                    <div class="detail-case-header">
+
+                        <span class="detail-label">
+                            CASE
+                        </span>
+
+                        <h3 id="detailCaseId">
+                            -
+                        </h3>
+
+                        <span
+                            id="detailStrength"
+                            class="strength-badge"
+                        >
+                            -
+                        </span>
+
+                    </div>
+
+
+                    <div class="detail-field">
+
+                        <span class="detail-label">
+                            SUBJECT
+                        </span>
+
+                        <p id="detailSubject">
+                            -
+                        </p>
+
+                    </div>
+
+
+                    <div class="detail-field">
+
+                        <span class="detail-label">
+                            SENDER
+                        </span>
+
+                        <p id="detailSender">
+                            -
+                        </p>
+
+                    </div>
+
+
+                    <div class="match-summary">
+
+                        <div class="match-number">
+                            <span id="detailMatchCount">
+                                0
+                            </span>
+
+                            <small>
+                                MATCHES
+                            </small>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Matched indicators -->
+                    <div class="matched-indicators">
+
+                        <h3>
+                            Matched Indicators
+                        </h3>
+
+
+                        <div
+                            id="matchedIndicatorsList"
+                            class="indicator-list"
+                        >
+                            <!-- JS will populate -->
+                        </div>
+
+                    </div>
+
+
+                    <!-- Open case -->
+                    <button
+                        id="openCaseBtn"
+                        class="open-case-btn"
+                    >
+                        Open Case Details →
+                    </button>
+
+                </div>
+
+            </aside>
+
+        </section>
+
+
+        <!-- =====================
+             NO CORRELATION STATE
+        ====================== -->
+        <section
+            id="noCorrelation"
+            class="no-correlation hidden"
+        >
+
+            <div class="empty-icon">
+                ✓
+            </div>
+
+            <h2>No Related Campaign Cases Found</h2>
+
+            <p>
+                No matching IP, domain, URL, attachment,
+                or header patterns were found in the
+                available cases.
+            </p>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         CYTOSCAPE.JS
+         CDN - no npm required
+    ========================== -->
+    <script src="https://unpkg.com/cytoscape/dist/cytoscape.min.js"></script>
+
+
+    <!-- Campaign Correlation JS -->
+    <script
+        src="js/campaign_correlation.js">
+    </script>
+
+</body>
+</html>

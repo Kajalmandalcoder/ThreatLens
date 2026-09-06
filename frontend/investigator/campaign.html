@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,811 +15,941 @@
 
 <body>
 
-<!-- ================= HEADER ================= -->
-<div id="investigator-header"></div>
+    <!-- ================= HEADER ================= -->
 
-<!-- <header class="top-header">
+    <div id="investigator-header"></div>
 
-    <div class="brand">
-        <div class="brand-icon">
-            <i data-lucide="scan-search"></i>
+
+    <!-- ================= MAIN ================= -->
+
+    <main class="page">
+
+        <!-- ================= PAGE HEADER ================= -->
+
+        <section class="page-header">
+
+            <div class="page-kicker">
+                INVESTIGATION / CORRELATION
+                <span class="active-pill">● ACTIVE</span>
+            </div>
+
+            <h1>Campaign Correlation Graph</h1>
+
+            <p>
+                Map technical and content indicators across historical email cases.
+            </p>
+
+        </section>
+
+
+        <!-- ================= STAT CARDS ================= -->
+
+        <section class="stats-grid">
+
+            <!-- RELATED CASES -->
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+                    <span>RELATED CASES</span>
+                    <i data-lucide="layers-3"></i>
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="relatedCasesCount">
+                    00
+                </div>
+
+                <div
+                    class="stat-footer positive"
+                    id="relatedCasesChange">
+                    ↗ 0 new this week
+                </div>
+
+            </div>
+
+
+            <!-- MATCHING INDICATORS -->
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+                    <span>MATCHING INDICATORS</span>
+                    <i data-lucide="fingerprint"></i>
+                </div>
+
+                <div
+                    class="stat-value"
+                    id="matchingIndicatorsCount">
+                    00
+                </div>
+
+                <div
+                    class="stat-footer"
+                    id="indicatorTypesSummary">
+                    Across 0 evidence types
+                </div>
+
+            </div>
+
+
+            <!-- CORRELATION STRENGTH -->
+
+            <div class="stat-card">
+
+                <div class="stat-top">
+                    <span>CORRELATION STRENGTH</span>
+                    <i data-lucide="activity"></i>
+                </div>
+
+                <div
+                    class="stat-value teal"
+                    id="correlationStrength">
+                    0<span>%</span>
+                </div>
+
+                <div class="progress">
+                    <div
+                        class="progress-fill"
+                        id="correlationProgress"
+                        style="width: 0%;">
+                    </div>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= INFO BAR ================= -->
+
+        <div class="info-bar">
+
+            <i data-lucide="sparkles"></i>
+
+            <strong id="infoRelatedCases">
+                0 previous cases
+            </strong>
+
+            <span>
+                share technical or content indicators with this email.
+            </span>
+
         </div>
+
+
+        <!-- ================= VIEW TABS ================= -->
+
+        <div class="view-tabs">
+
+            <button
+                class="view-tab active"
+                type="button"
+                data-view="network">
+
+                <i data-lucide="network"></i>
+
+                Network View
+
+            </button>
+
+
+            <button
+                class="view-tab"
+                type="button"
+                data-view="clusters">
+
+                <i data-lucide="layers"></i>
+
+                Campaign Clusters
+
+                <span class="beta">BETA</span>
+
+            </button>
+
+        </div>
+
+
+        <!-- ================= NETWORK PANEL ================= -->
+
+        <section class="panel network-panel">
+
+            <div class="panel-header">
+
+                <div>
+
+                    <div class="section-label">
+                        ─ RELATIONSHIP MAP
+                    </div>
+
+                    <h2>
+                        Current email <span>↔</span> previous cases
+                    </h2>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= FILTERS ================= -->
+
+            <div class="filters">
+
+                <span class="filter-label">
+                    ☷ FILTER RELATIONSHIPS
+                </span>
+
+
+                <button
+                    class="filter active"
+                    type="button"
+                    data-filter="all">
+                    All
+                </button>
+
+
+                <button
+                    class="filter"
+                    type="button"
+                    data-filter="sender">
+                    Same Sender
+                </button>
+
+
+                <button
+                    class="filter"
+                    type="button"
+                    data-filter="domain">
+                    Same Domain
+                </button>
+
+
+                <button
+                    class="filter"
+                    type="button"
+                    data-filter="url">
+                    Same URL
+                </button>
+
+
+                <button
+                    class="filter"
+                    type="button"
+                    data-filter="hash">
+                    Same Hash
+                </button>
+
+
+                <button
+                    class="filter"
+                    type="button"
+                    data-filter="ip">
+                    Same IP
+                </button>
+
+
+                <button
+                    class="filter"
+                    type="button"
+                    data-filter="content">
+                    Similar Content
+                </button>
+
+
+                <button
+                    class="filter"
+                    type="button"
+                    data-filter="high">
+
+                    High Confidence
+
+                    <b id="highConfidenceCount">0</b>
+
+                </button>
+
+            </div>
+
+
+            <!-- ================= GRAPH ================= -->
+
+            <div
+                class="graph-area"
+                id="campaignGraph">
+
+
+                <!-- CONNECTIONS -->
+                <!-- CONNECTIONS -->
+                <svg
+                    class="connections"
+                    aria-hidden="true">
+                </svg>
+                
+                <!-- ================= CURRENT EMAIL ================= -->
+
+                <div
+                    class="node current-node"
+                    id="currentEmailNode">
+
+                    <div class="node-icon">
+                        <i data-lucide="mail"></i>
+                    </div>
+
+                    <div class="node-type">
+                        CURRENT EMAIL
+                    </div>
+
+                    <strong id="currentEmailSubject">
+                        —
+                    </strong>
+
+                    <small id="currentEmailSender">
+                        —
+                    </small>
+
+                    <div class="node-tags">
+
+                        <span
+                            class="risk"
+                            id="currentRisk">
+                            —
+                        </span>
+
+                        <span
+                            class="phishing"
+                            id="currentVerdict">
+                            —
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- ================= PREVIOUS CASE NODES ================= -->
+
+                <div
+                    class="node case-node node-case1"
+                    data-case=""
+                    data-case-index="0">
+
+                    <div class="mini-icon mail">
+                        <i data-lucide="mail"></i>
+                    </div>
+
+                    <div>
+
+                        <div
+                            class="node-title"
+                            data-case-id>
+                            —
+                        </div>
+
+                        <small data-case-risk>
+                            —
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="node case-node node-case2"
+                    data-case=""
+                    data-case-index="1">
+
+                    <div class="mini-icon mail">
+                        <i data-lucide="mail"></i>
+                    </div>
+
+                    <div>
+
+                        <div
+                            class="node-title"
+                            data-case-id>
+                            —
+                        </div>
+
+                        <small data-case-risk>
+                            —
+                        </small>
+
+                    </div>
+
+                    <p data-case-subject></p>
+
+                </div>
+
+
+                <div
+                    class="node case-node node-case3"
+                    data-case=""
+                    data-case-index="2">
+
+                    <div class="mini-icon mail">
+                        <i data-lucide="mail"></i>
+                    </div>
+
+                    <div>
+
+                        <div
+                            class="node-title"
+                            data-case-id>
+                            —
+                        </div>
+
+                        <small data-case-risk>
+                            —
+                        </small>
+
+                    </div>
+
+                    <p data-case-subject></p>
+
+                </div>
+
+
+                <div
+                    class="node case-node node-case4"
+                    data-case=""
+                    data-case-index="3">
+
+                    <div class="mini-icon mail">
+                        <i data-lucide="mail"></i>
+                    </div>
+
+                    <div>
+
+                        <div
+                            class="node-title"
+                            data-case-id>
+                            —
+                        </div>
+
+                        <small data-case-risk>
+                            —
+                        </small>
+
+                    </div>
+
+                    <p data-case-subject></p>
+
+                </div>
+
+
+                <!-- ================= SHARED INDICATOR NODES ================= -->
+
+                <!-- SAME SENDER -->
+
+                <div
+                    class="node indicator sender-node"
+                    data-indicator="sender">
+
+                    <div class="mini-icon sender">
+                        <i data-lucide="send"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="node-title">
+                            SAME SENDER
+                        </div>
+
+                        <small id="sameSenderValue">
+                            —
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SAME URL -->
+
+                <div
+                    class="node indicator url-node"
+                    data-indicator="url">
+
+                    <div class="mini-icon url">
+                        <i data-lucide="link-2"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="node-title">
+                            SAME URL
+                        </div>
+
+                        <small id="sameUrlValue">
+                            —
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SAME DOMAIN -->
+
+                <div
+                    class="node indicator domain-node"
+                    data-indicator="domain">
+
+                    <div class="mini-icon domain">
+                        <i data-lucide="globe-2"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="node-title">
+                            SAME DOMAIN
+                        </div>
+
+                        <small id="sameDomainValue">
+                            —
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                <!-- SAME ATTACHMENT HASH -->
+
+                <div
+                    class="node indicator hash-node"
+                    data-indicator="hash">
+
+                    <div class="mini-icon hash">
+                        <i data-lucide="file-key-2"></i>
+                    </div>
+
+                    <div>
+
+                        <div class="node-title">
+                            SAME ATTACHMENT HASH
+                        </div>
+
+                        <small id="sameHashValue">
+                            —
+                        </small>
+
+                    </div>
+
+                </div>
+
+
+                
+
+
+                
+
+                <!-- ================= GRAPH LEGEND ================= -->
+
+                <div class="graph-legend">
+
+                    <span>
+                        <i class="dot current"></i>
+                        Current Email
+                    </span>
+
+                    <span>
+                        <i class="dot previous"></i>
+                        Previous Cases
+                    </span>
+
+                    <span>
+                        <i class="dot shared"></i>
+                        Shared Indicator
+                    </span>
+
+                    <span>
+                        ─ Correlation
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <!-- ================= NETWORK FOOTER ================= -->
+
+            <div class="network-footer">
+
+                <label>
+                    <input
+                        type="checkbox"
+                        id="showPreviousCases"
+                        checked>
+                    Previous cases
+                </label>
+
+                <label>
+                    <input
+                        type="checkbox"
+                        id="showSharedIndicators"
+                        checked>
+                    Shared indicators
+                </label>
+
+            </div>
+
+        </section>
+        <!-- ================= CAMPAIGN CLUSTERS ================= -->
+
+<section
+    class="panel campaign-clusters-panel"
+    id="campaignClustersPanel"
+    style="display: none;">
+
+    <div class="panel-header">
 
         <div>
-            <div class="brand-name">THREATLENS</div>
-            <div class="brand-subtitle">THREAT INVESTIGATION PLATFORM</div>
-        </div>
-    </div>
 
-    <div class="case-status">
-        <span class="live-dot"></span>
-        <span>LIVE INVESTIGATION</span>
-
-        <span class="divider"></span>
-
-        <span>CASE</span>
-        <strong>TL-2026-00421</strong>
-    </div>
-
-    <div class="header-actions">
-        <button>
-            <i data-lucide="bell"></i>
-        </button>
-
-        <button>
-            <i data-lucide="sliders-horizontal"></i>
-        </button>
-
-        <div class="avatar">JA</div>
-    </div>
-
-</header> -->
-
-
-<!-- ================= MAIN ================= -->
-
-<main class="page">
-
-    <!-- PAGE HEADER -->
-
-    <section class="page-header">
-
-        <div class="page-kicker">
-            INVESTIGATION / CORRELATION
-            <span class="active-pill">● ACTIVE</span>
-        </div>
-
-        <h1>Campaign Correlation Graph</h1>
-
-        <p>
-            Map technical and content indicators across historical email cases.
-        </p>
-
-    </section>
-
-
-    <!-- ================= STAT CARDS ================= -->
-
-    <section class="stats-grid">
-
-        <div class="stat-card">
-
-            <div class="stat-top">
-                <span>RELATED CASES</span>
-                <i data-lucide="layers-3"></i>
+            <div class="section-label">
+                ─ CAMPAIGN CLUSTERS
             </div>
 
-            <div class="stat-value">06</div>
-
-            <div class="stat-footer positive">
-                ↗ 2 new this week
-            </div>
+            <h2>
+                Related email campaigns across the database
+            </h2>
 
         </div>
 
+    </div>
 
-        <div class="stat-card">
+    <div
+        id="campaignClusters"
+        class="campaign-clusters">
 
-            <div class="stat-top">
-                <span>MATCHING INDICATORS</span>
-                <i data-lucide="fingerprint"></i>
-            </div>
-
-            <div class="stat-value">08</div>
-
-            <div class="stat-footer">
-                Across 6 evidence types
-            </div>
-
-        </div>
-
-
-        <div class="stat-card">
-
-            <div class="stat-top">
-                <span>CORRELATION STRENGTH</span>
-                <i data-lucide="activity"></i>
-            </div>
-
-            <div class="stat-value teal">92<span>%</span></div>
-
-            <div class="progress">
-                <div class="progress-fill" style="width:92%"></div>
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- INFO BAR -->
-
-    <div class="info-bar">
-
-        <i data-lucide="sparkles"></i>
-
-        <strong>6 previous cases</strong>
-
-        share technical or content indicators with this email.
+        <!-- JavaScript will populate clusters here -->
 
     </div>
 
-
-    <!-- VIEW TABS -->
-
-    <div class="view-tabs">
-
-        <button class="view-tab active">
-            <i data-lucide="network"></i>
-            Network View
-        </button>
-
-        <button class="view-tab">
-            <i data-lucide="layers"></i>
-            Campaign Clusters
-
-            <span class="beta">BETA</span>
-        </button>
-
-    </div>
+</section>
 
 
-    <!-- ================= NETWORK PANEL ================= -->
+        <!-- ================= LOWER GRID ================= -->
 
-    <section class="panel network-panel">
+        <section class="lower-grid">
 
-        <div class="panel-header">
 
-            <div>
+            <!-- ================= TIMELINE ================= -->
+
+            <div class="panel timeline-panel">
 
                 <div class="section-label">
-                    ─ RELATIONSHIP MAP
+                    ─ TEMPORAL CONTEXT
                 </div>
 
                 <h2>
-                    Current email <span>↔</span> previous cases
+                    Campaign Activity Timeline
                 </h2>
 
+                <div
+                    class="timeline"
+                    id="campaignTimeline">
+
+                    <div class="timeline-line"></div>
+
+                    <!--
+                        campaign.js will populate timeline items
+                        from backend data.timeline
+                    -->
+
+                </div>
+
             </div>
 
-        </div>
+
+            <!-- ================= CAMPAIGN SUMMARY ================= -->
+
+            <div class="panel campaign-summary">
+
+                <div class="section-label">
+                    ─ DETECTION
+                </div>
+
+                <h2>
+                    Potential Campaign
+                </h2>
+
+                <h3 id="campaignName">
+                    No campaign detected
+                </h3>
 
 
-        <!-- FILTERS -->
+                <div class="summary-row">
 
-        <div class="filters">
+                    <span>
+                        RELATED CASES
+                    </span>
 
-            <span class="filter-label">
-                ☷ FILTER RELATIONSHIPS
+                    <strong id="summaryRelatedCases">
+                        00
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-row">
+
+                    <span>
+                        PRIMARY INDICATORS
+                    </span>
+
+                </div>
+
+
+                <div
+                    class="chips"
+                    id="primaryIndicators">
+
+                    <!-- Dynamic indicators -->
+
+                </div>
+
+
+                <div class="warning-box">
+
+                    <i data-lucide="shield-alert"></i>
+
+                    Correlation-based attribution
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= EVIDENCE TABLE ================= -->
+
+        <section class="panel evidence-table-panel">
+
+            <div class="section-label">
+                ─ INVESTIGATOR EVIDENCE
+            </div>
+
+            <h2>
+                Campaign Correlation Evidence
+            </h2>
+
+
+            <div class="table-wrapper">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>
+                                INDICATOR
+                            </th>
+
+                            <th>
+                                CURRENT EMAIL
+                            </th>
+
+                            <th>
+                                PREVIOUS CASE
+                            </th>
+
+                            <th>
+                                MATCH
+                            </th>
+
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody id="evidenceTableBody">
+
+                        <!--
+                            campaign.js will populate
+                            evidence rows here.
+                        -->
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- ================= FOOTER ================= -->
+
+        <footer>
+
+            <span id="lastSynced">
+                ◷ Last synced —
             </span>
 
-            <button class="filter active" data-filter="all">
-                All
-            </button>
+            <span>
+                ThreatLens Intelligence Engine v2.4.1
+            </span>
 
-            <button class="filter" data-filter="sender">
-                Same Sender
-            </button>
+        </footer>
 
-            <button class="filter" data-filter="domain">
-                Same Domain
-            </button>
+    </main>
 
-            <button class="filter" data-filter="url">
-                Same URL
-            </button>
 
-            <button class="filter" data-filter="hash">
-                Same Hash
-            </button>
+    <!-- ================= RIGHT EVIDENCE DRAWER ================= -->
 
-            <button class="filter" data-filter="ip">
-                Same IP
-            </button>
+    <aside
+        class="evidence-drawer"
+        id="evidenceDrawer">
 
-            <button class="filter" data-filter="content">
-                Similar Content
-            </button>
+        <button
+            class="close-drawer"
+            id="closeDrawer"
+            type="button"
+            aria-label="Close evidence drawer">
 
-            <button class="filter" data-filter="high">
-                High Confidence <b>4</b>
-            </button>
+            <i data-lucide="x"></i>
 
-        </div>
+        </button>
 
-
-        <!-- GRAPH -->
-
-        <div class="graph-area">
-
-            <svg class="connections">
-
-                <line
-                    x1="50%"
-                    y1="51%"
-                    x2="23%"
-                    y2="18%"
-                    data-type="sender"
-                />
-
-                <line
-                    x1="50%"
-                    y1="51%"
-                    x2="68%"
-                    y2="18%"
-                    data-type="url"
-                />
-
-                <line
-                    x1="50%"
-                    y1="51%"
-                    x2="79%"
-                    y2="75%"
-                    data-type="hash"
-                />
-
-                <line
-                    x1="50%"
-                    y1="51%"
-                    x2="28%"
-                    y2="76%"
-                    data-type="domain"
-                />
-
-                <line
-                    x1="50%"
-                    y1="51%"
-                    x2="13%"
-                    y2="46%"
-                    data-type="content"
-                />
-
-                <line
-                    x1="50%"
-                    y1="51%"
-                    x2="83%"
-                    y2="45%"
-                    data-type="ip"
-                />
-
-            </svg>
-
-
-            <!-- CURRENT EMAIL -->
-
-            <div class="node current-node">
-
-                <div class="node-icon">
-                    <i data-lucide="mail"></i>
-                </div>
-
-                <div class="node-type">
-                    CURRENT EMAIL
-                </div>
-
-                <strong>TL-2026-00421</strong>
-
-                <small>
-                    Urgent: Verify Your Account
-                </small>
-
-                <div class="node-tags">
-                    <span class="risk">RISK 94</span>
-                    <span class="phishing">PHISHING</span>
-                </div>
-
-            </div>
-
-
-            <!-- CASE 1 -->
-
-            <div class="node case-node node-case1"
-                 data-case="TL-2026-00387">
-
-                <div class="mini-icon mail">
-                    <i data-lucide="mail"></i>
-                </div>
-
-                <div>
-                    <div class="node-title">CASE 00387</div>
-                    <small>PHISHING · 91</small>
-                </div>
-
-            </div>
-
-
-            <!-- CASE 2 -->
-
-            <div class="node case-node node-case2"
-                 data-case="TL-2026-00391">
-
-                <div class="mini-icon mail">
-                    <i data-lucide="mail"></i>
-                </div>
-
-                <div>
-                    <div class="node-title">CASE 00391</div>
-                    <small>PHISHING · 88</small>
-                </div>
-
-                <p>Account Verification Required</p>
-
-            </div>
-
-
-            <!-- CASE 3 -->
-
-            <div class="node case-node node-case3"
-                 data-case="TL-2026-00402">
-
-                <div class="mini-icon mail">
-                    <i data-lucide="mail"></i>
-                </div>
-
-                <div>
-                    <div class="node-title">CASE 00402</div>
-                    <small>PHISHING · 86</small>
-                </div>
-
-                <p>Action Needed: Verify Identity</p>
-
-            </div>
-
-
-            <!-- CASE 4 -->
-
-            <div class="node case-node node-case4"
-                 data-case="TL-2026-00398">
-
-                <div class="mini-icon mail">
-                    <i data-lucide="mail"></i>
-                </div>
-
-                <div>
-                    <div class="node-title">CASE 00398</div>
-                    <small>SUSPICIOUS · 68</small>
-                </div>
-
-            </div>
-
-
-            <!-- SENDER -->
-
-            <div class="node indicator sender-node">
-
-                <div class="mini-icon sender">
-                    <i data-lucide="send"></i>
-                </div>
-
-                <div>
-                    <div class="node-title">SAME SENDER</div>
-                    <small>kajaltanu17.05@gmail.com</small>
-                </div>
-
-            </div>
-
-
-            <!-- URL -->
-
-            <div class="node indicator url-node">
-
-                <div class="mini-icon url">
-                    <i data-lucide="link-2"></i>
-                </div>
-
-                <div>
-                    <div class="node-title">SAME URL</div>
-                    <small>/account-verification</small>
-                </div>
-
-            </div>
-
-
-            <!-- DOMAIN -->
-
-            <div class="node indicator domain-node">
-
-                <div class="mini-icon domain">
-                    <i data-lucide="globe-2"></i>
-                </div>
-
-                <div>
-                    <div class="node-title">SAME DOMAIN</div>
-                    <small>example.com</small>
-                </div>
-
-            </div>
-
-
-            <!-- HASH -->
-
-            <div class="node indicator hash-node">
-
-                <div class="mini-icon hash">
-                    <i data-lucide="file-key-2"></i>
-                </div>
-
-                <div>
-                    <div class="node-title">SAME ATTACHMENT HASH</div>
-                    <small>SHA-256: 8a91...c42f</small>
-                </div>
-
-            </div>
-
-
-            <!-- CONTENT -->
-
-            <div class="node indicator content-node">
-
-                <div class="mini-icon content">
-                    <i data-lucide="text-search"></i>
-                </div>
-
-                <div>
-                    <div class="node-title">SIMILAR SUBJECT / BODY</div>
-                    <small>Verify your account</small>
-                </div>
-
-            </div>
-
-
-            <div class="graph-legend">
-
-                <span>
-                    <i class="dot current"></i>
-                    Current Email
-                </span>
-
-                <span>
-                    <i class="dot previous"></i>
-                    Previous Cases
-                </span>
-
-                <span>
-                    <i class="dot shared"></i>
-                    Shared Indicator
-                </span>
-
-                <span>
-                    ─ Correlation
-                </span>
-
-            </div>
-
-        </div>
-
-
-        <div class="network-footer">
-
-            <label>
-                <input type="checkbox" checked>
-                Previous cases
-            </label>
-
-            <label>
-                <input type="checkbox" checked>
-                Shared indicators
-            </label>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================= LOWER GRID ================= -->
-
-    <section class="lower-grid">
-
-
-        <!-- TIMELINE -->
-
-        <div class="panel timeline-panel">
-
-            <div class="section-label">
-                ─ TEMPORAL CONTEXT
-            </div>
-
-            <h2>Campaign Activity Timeline</h2>
-
-            <div class="timeline">
-
-                <div class="timeline-line"></div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <small>AUG 28</small>
-                    <strong>First related case</strong>
-                    <span>TL-2026-00376</span>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <small>AUG 30</small>
-                    <strong>Same sender observed</strong>
-                    <span>TL-2026-00387</span>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <small>SEP 01</small>
-                    <strong>Same domain observed</strong>
-                    <span>TL-2026-00391</span>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <small>SEP 02</small>
-                    <strong>Same URL observed</strong>
-                    <span>TL-2026-00402</span>
-                </div>
-
-                <div class="timeline-item">
-                    <div class="timeline-dot"></div>
-                    <small>SEP 03</small>
-                    <strong>Same attachment hash</strong>
-                    <span>TL-2026-00376</span>
-                </div>
-
-                <div class="timeline-item current">
-                    <div class="timeline-dot"></div>
-                    <small>SEP 04</small>
-                    <strong>Current email</strong>
-                    <span>TL-2026-00421</span>
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- CAMPAIGN SUMMARY -->
-
-        <div class="panel campaign-summary">
-
-            <div class="section-label">
-                ─ DETECTION
-            </div>
-
-            <h2>Potential Campaign</h2>
-
-            <h3>Account Verification</h3>
-
-            <div class="summary-row">
-                <span>RELATED CASES</span>
-                <strong>06</strong>
-            </div>
-
-            <div class="summary-row">
-                <span>PRIMARY INDICATORS</span>
-            </div>
-
-            <div class="chips">
-                <span>Same sender</span>
-                <span>Same domain</span>
-                <span>Same URL</span>
-                <span>Same hash</span>
-            </div>
-
-            <div class="warning-box">
-                <i data-lucide="shield-alert"></i>
-                Correlation-based attribution
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ================= EVIDENCE TABLE ================= -->
-
-    <section class="panel evidence-table-panel">
 
         <div class="section-label">
-            ─ INVESTIGATOR EVIDENCE
+            ─ CASE EVIDENCE
         </div>
 
-        <h2>Campaign Correlation Evidence</h2>
 
-        <table>
-
-            <thead>
-                <tr>
-                    <th>INDICATOR</th>
-                    <th>CURRENT EMAIL</th>
-                    <th>PREVIOUS CASE</th>
-                    <th>MATCH</th>
-                </tr>
-            </thead>
-
-            <tbody>
-
-                <tr>
-                    <td>✓ &nbsp; Sender</td>
-                    <td>kajaltanu17.05@gmail.com</td>
-                    <td>kajaltanu17.05@gmail.com</td>
-                    <td><span class="match">MATCH</span></td>
-                </tr>
-
-                <tr>
-                    <td>✓ &nbsp; Domain</td>
-                    <td>example.com</td>
-                    <td>example.com</td>
-                    <td><span class="match">MATCH</span></td>
-                </tr>
-
-                <tr>
-                    <td>✓ &nbsp; URL</td>
-                    <td>/account-verification</td>
-                    <td>/account-verification</td>
-                    <td><span class="match">MATCH</span></td>
-                </tr>
-
-                <tr>
-                    <td>✓ &nbsp; Attachment Hash</td>
-                    <td>8a91...c42f</td>
-                    <td>8a91...c42f</td>
-                    <td><span class="match">MATCH</span></td>
-                </tr>
-
-                <tr>
-                    <td>✓ &nbsp; Subject</td>
-                    <td>Verify Your Account</td>
-                    <td>Account Verification Required</td>
-                    <td><span class="similar">SIMILAR</span></td>
-                </tr>
-
-            </tbody>
-
-        </table>
-
-    </section>
+        <h2>
+            Why is this case related?
+        </h2>
 
 
-    <footer>
+        <!-- SELECTED CASE -->
 
-        <span>◷ Last synced 2 min ago</span>
+        <div class="selected-case">
 
-        <span>ThreatLens Intelligence Engine v2.4.1</span>
-
-    </footer>
-
-</main>
-
-
-<!-- ================= RIGHT EVIDENCE DRAWER ================= -->
-
-<aside class="evidence-drawer" id="evidenceDrawer">
-
-    <button class="close-drawer" id="closeDrawer">
-        <i data-lucide="x"></i>
-    </button>
-
-    <div class="section-label">
-        ─ CASE EVIDENCE
-    </div>
-
-    <h2>Why is this case related?</h2>
-
-
-    <div class="selected-case">
-
-        <div class="case-icon">
-            <i data-lucide="mail"></i>
-        </div>
-
-        <div>
-            <strong id="drawerCase">TL-2026-00387</strong>
-            <small>Verify Account immediately</small>
-        </div>
-
-        <span class="case-score">● 91</span>
-
-    </div>
-
-
-    <div class="drawer-section">
-
-        <div class="drawer-heading">
-
-            <span>Correlation Strength</span>
-
-            <strong>100%</strong>
-
-        </div>
-
-        <div class="drawer-progress">
-            <div></div>
-        </div>
-
-        <small>Based on 4 matching indicators</small>
-
-    </div>
-
-
-    <div class="drawer-divider"></div>
-
-
-    <div class="section-label">
-        CORRELATION EVIDENCE
-    </div>
-
-
-    <div class="evidence-list">
-
-        <div class="evidence-item strong">
-            <span>✓</span>
-            <div>
-                <strong>Same Sender</strong>
-                <small>kajaltanu17.05@gmail.com</small>
+            <div class="case-icon">
+                <i data-lucide="mail"></i>
             </div>
-        </div>
 
-        <div class="evidence-item strong">
-            <span>✓</span>
             <div>
-                <strong>Same Domain</strong>
-                <small>example.com</small>
+
+                <strong id="drawerCase">
+                    —
+                </strong>
+
+                <small id="drawerSubject">
+                    —
+                </small>
+
             </div>
+
+            <span
+                class="case-score"
+                id="drawerScore">
+                —
+            </span>
+
         </div>
 
-        <div class="evidence-item strong">
-            <span>✓</span>
-            <div>
-                <strong>Same URL</strong>
-                <small>https://example.com/account-verification</small>
+
+        <!-- CORRELATION STRENGTH -->
+
+        <div class="drawer-section">
+
+            <div class="drawer-heading">
+
+                <span>
+                    Correlation Strength
+                </span>
+
+                <strong id="drawerCorrelation">
+                    0%
+                </strong>
+
             </div>
+
+
+            <div class="drawer-progress">
+
+                <div
+                    id="drawerProgress"
+                    style="width: 0%;">
+                </div>
+
+            </div>
+
+
+            <small id="drawerIndicatorCount">
+                0 indicators
+            </small>
+
         </div>
 
-        <div class="evidence-item strong">
-            <span>✓</span>
-            <div>
-                <strong>Same Attachment Hash</strong>
-                <small>SHA-256: 8a91...c42f</small>
-            </div>
+
+        <div class="drawer-divider"></div>
+
+
+        <div class="section-label">
+            CORRELATION EVIDENCE
         </div>
 
-        <div class="evidence-item weak">
-            <span>✓</span>
-            <div>
-                <strong>Similar Subject</strong>
-                <small>92% similarity</small>
-            </div>
+
+        <!-- DYNAMIC EVIDENCE -->
+
+        <div
+            class="evidence-list"
+            id="drawerEvidenceList">
+
+            <!-- campaign.js fills this -->
+
         </div>
 
-        <div class="evidence-item weak">
-            <span>✓</span>
-            <div>
-                <strong>Similar Body</strong>
-                <small>87% similarity</small>
-            </div>
+
+        <!-- FOUND BOX -->
+
+        <div
+            class="found-box"
+            id="drawerFoundBox">
+
         </div>
 
-        <div class="evidence-item strong">
-            <span>✓</span>
-            <div>
-                <strong>Same IP</strong>
-                <small>203.0.113.45</small>
-            </div>
-        </div>
 
-    </div>
+        <!-- PIN -->
 
+        <button
+            class="pin-button"
+            type="button">
 
-    <div class="found-box">
-        ✓ &nbsp; 6 matching indicators found
-    </div>
+            <i data-lucide="panel-top"></i>
 
+            Pin evidence to investigation
 
-    <button class="pin-button">
-        <i data-lucide="panel-top"></i>
-        Pin evidence to investigation
-    </button>
+        </button>
 
-</aside>
+    </aside>
 
 
-<script src="js/campaign.js"></script>
-<script src="js/header.js"></script>
+    <!-- ================= SCRIPTS ================= -->
+
+    <script src="js/campaign.js"></script>
+    <script src="js/header.js"></script>
+
+    <script>
+        /*
+         * Render Lucide icons after the page loads.
+         * campaign.js/header.js can also safely call this again
+         * if they dynamically add icons.
+         */
+        document.addEventListener("DOMContentLoaded", () => {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        });
+    </script>
 
 </body>
+
 </html>

@@ -2623,6 +2623,22 @@ function showJourneyNode(hop, label) {
             const targetId =
                 tab.dataset.tab;
 
+            if (targetId === "campaign") {
+
+                const caseId =
+                    document.querySelector(".case-id")?.textContent?.trim();
+
+                if (!caseId) {
+                    alert("Case ID not found");
+                    return;
+                }
+
+                window.location.href =
+                    `campaign_correlation.html?caseId=${encodeURIComponent(caseId)}`;
+
+                return;
+            }
+
             panels.forEach(panel => {
                 panel.style.display = "none";
             });

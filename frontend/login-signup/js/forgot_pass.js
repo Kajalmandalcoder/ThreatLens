@@ -57,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             const response = await fetch(
-                "http://localhost:5000/api/auth/forgot-password",
+                "http://localhost:5001/api/auth/forgot-password",
                 {
                     method: "POST",
 
@@ -111,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             const response = await fetch(
-                "http://localhost:5000/api/auth/verify-reset-otp",
+                "http://localhost:5001/api/auth/verify-reset-otp",
                 {
                     method: "POST",
 
@@ -173,7 +173,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             const response = await fetch(
-                "http://localhost:5000/api/auth/reset-password",
+                "http://localhost:5001/api/auth/reset-password",
                 {
                     method: "POST",
 
@@ -222,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
 
             const response = await fetch(
-                "http://localhost:5000/api/auth/forgot-password",
+                "http://localhost:5001/api/auth/forgot-password",
                 {
                     method: "POST",
 

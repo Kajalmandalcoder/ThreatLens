@@ -49,7 +49,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 // =====================================================
-// MAIN RENDER
+// MAIN REPORT RENDER
 // =====================================================
 
 function renderReport(email) {
@@ -67,56 +67,78 @@ function renderReport(email) {
 
     const urlSummary = url.summary || {};
     const attachmentSummary = attachment.summary || {};
+
     const routing = ip.routing_summary || {};
     const originIP = ip.origin_ip_data || {};
+
     const domainData = domain.domains || {};
     const alignment = domain.identity_alignment || {};
     const signals = domain.signals || {};
     const lookalike = domain.lookalike_analysis || {};
 
-    // -------------------------------------------------
-    // SCORES
-    // -------------------------------------------------
+    // =================================================
+    // SCORE CALCULATION
+    // =================================================
 
-    const headerScore = Number(header.header_risk_score || 0);
+    const headerScore =
+        Number(header.header_risk_score ?? 0);
 
-    const urlMaxScore = Number(
-        urlSummary.max_risk_score || 0
-    );
+    const urlMaxScore =
+        Number(urlSummary.max_risk_score ?? 0);
 
-    const attachmentMaxScore = Number(
-        attachmentSummary.max_attachment_risk_score || 0
-    );
+    const attachmentMaxScore =
+        Number(
+            attachmentSummary.max_attachment_risk_score ?? 0
+        );
 
-    const mlConfidence = normalizeConfidence(
-        ml.confidence
-    );
+    const mlConfidence =
+        normalizeConfidence(ml.confidence);
 
-    const mlScore = mlConfidence;
+    const mlScore =
+        ml.confidence != null
+            ? mlConfidence
+            : 0;
 
-    const ipScore = calculateIPScore(ip);
-    const domainScore = calculateDomainScore(domain);
+    const ipScore =
+        calculateIPScore(ip);
 
-    const compositeScore = Math.round(
-        Math.max(
-            mlScore,
-            headerScore,
-            urlMaxScore,
-            attachmentMaxScore,
-            ipScore,
-            domainScore
-        )
-    );
+    const domainScore =
+        calculateDomainScore(domain);
 
-    const risk = getRiskLevel(compositeScore);
+    const compositeScore =
+        Math.round(
+            Math.max(
+                mlScore,
+                headerScore,
+                urlMaxScore,
+                attachmentMaxScore,
+                ipScore,
+                domainScore
+            )
+        );
 
-    // -------------------------------------------------
+    const risk =
+        getRiskLevel(compositeScore);
+
+
+    console.log("📊 REPORT SCORES");
+    console.log("ML:", mlScore);
+    console.log("Header:", headerScore);
+    console.log("IP:", ipScore);
+    console.log("Domain:", domainScore);
+    console.log("URL:", urlMaxScore);
+    console.log("Attachment:", attachmentMaxScore);
+    console.log("Composite:", compositeScore);
+    console.log("Risk:", risk);
+
+
+    // =================================================
     // CASE INFORMATION
-    // -------------------------------------------------
+    // =================================================
 
     setText(
         "case-id",
-        email.caseId || `CASE-${email._id || "UNKNOWN"}`
+        email.caseId || "CASE-UNKNOWN"
     );
 
     setText(
@@ -126,12 +148,14 @@ function renderReport(email) {
 
     setText(
         "analysis-date",
-        formatDate(email.createdAt || headers.date)
+        formatDate(email.createdAt)
     );
 
     setText(
         "report-from-domain",
-        domainData.from_domain || extractDomain(headers.from)
+        domainData.from_domain ||
+        extractDomain(headers.from) ||
+        "—"
     );
 
     setText(
@@ -139,12 +163,14 @@ function renderReport(email) {
         headers.subject || "—"
     );
 
+    const replyDomain =
+        domainData.reply_to_domain ||
+        identity.reply_to_domain ||
+        extractDomain(headers.replyTo);
+
     setText(
         "report-reply",
-        identity.reply_to_domain ||
-        domainData.reply_to_domain ||
-        extractDomain(headers.replyTo) ||
-        "—"
+        replyDomain || "—"
     );
 
     setText(
@@ -156,6 +182,7 @@ function renderReport(email) {
         "report-return",
         domainData.return_path_domain ||
         identity.return_path_domain ||
+        extractDomain(headers.returnPath) ||
         "—"
     );
 
@@ -166,13 +193,13 @@ function renderReport(email) {
 
     setText(
         "report-total-attachments",
-        attachmentSummary.total_attachments || 0
+        attachmentSummary.total_attachments ?? 0
     );
 
 
-    // -------------------------------------------------
+    // =================================================
     // EXECUTIVE SUMMARY
-    // -------------------------------------------------
+    // =================================================
 
     setText(
         "composite-score",
@@ -194,13 +221,17 @@ function renderReport(email) {
         risk
     );
 
+    let verdict = "LOW RISK";
+
+    if (risk === "CRITICAL" || risk === "HIGH") {
+        verdict = "THREAT DETECTED";
+    } else if (risk === "MEDIUM") {
+        verdict = "SUSPICIOUS";
+    }
+
     setText(
         "executive-verdict",
-        risk === "HIGH" || risk === "CRITICAL"
-            ? "THREAT DETECTED"
-            : risk === "MEDIUM"
-                ? "SUSPICIOUS"
-                : "LOW RISK"
+        verdict
     );
 
     setText(
@@ -227,8 +258,15 @@ function renderReport(email) {
         )
     );
 
+
+    // =================================================
+    // SCORE BAR
+    // =================================================
+
     const scoreFill =
-        document.getElementById("composite-score-fill");
+        document.getElementById(
+            "composite-score-fill"
+        );
 
     if (scoreFill) {
         scoreFill.style.width =
@@ -236,9 +274,9 @@ function renderReport(email) {
     }
 
 
-    // -------------------------------------------------
-    // ML
-    // -------------------------------------------------
+    // =================================================
+    // ML ANALYSIS
+    // =================================================
 
     setText(
         "ml-confidence",
@@ -260,9 +298,9 @@ function renderReport(email) {
     );
 
 
-    // -------------------------------------------------
-    // HEADER
-    // -------------------------------------------------
+    // =================================================
+    // HEADER FORENSICS
+    // =================================================
 
     setText(
         "overview-header-score",
@@ -296,9 +334,9 @@ function renderReport(email) {
     );
 
 
-    // -------------------------------------------------
+    // =================================================
     // IP INTELLIGENCE
-    // -------------------------------------------------
+    // =================================================
 
     const publicOrigin =
         routing.has_public_origin === true;
@@ -361,7 +399,7 @@ function renderReport(email) {
 
     setText(
         "ip-total-report",
-        routing.total_extracted_ips || 0
+        routing.total_extracted_ips ?? 0
     );
 
     setText(
@@ -370,9 +408,9 @@ function renderReport(email) {
     );
 
 
-    // -------------------------------------------------
+    // =================================================
     // DOMAIN INTELLIGENCE
-    // -------------------------------------------------
+    // =================================================
 
     setText(
         "domain-from-report",
@@ -391,24 +429,60 @@ function renderReport(email) {
 
     setText(
         "domain-body-report",
-        Array.isArray(domain.body_domains)
+        Array.isArray(domain.body_domains) &&
+        domain.body_domains.length > 0
             ? domain.body_domains.join(", ")
             : "—"
     );
 
-    setText(
-        "domain-reply-match-report",
-        alignment.from_matches_reply_to
-            ? "MATCH"
-            : "MISMATCH"
-    );
 
-    setText(
-        "domain-return-match-report",
-        alignment.from_matches_return_path
-            ? "MATCH"
-            : "MISMATCH"
-    );
+    // -----------------------------------------------
+    // FROM ↔ REPLY-TO
+    // -----------------------------------------------
+
+    if (domainData.reply_to_domain) {
+
+        setText(
+            "domain-reply-match-report",
+            alignment.from_matches_reply_to
+                ? "MATCH"
+                : "MISMATCH"
+        );
+
+    } else {
+
+        setText(
+            "domain-reply-match-report",
+            "NOT AVAILABLE"
+        );
+    }
+
+
+    // -----------------------------------------------
+    // FROM ↔ RETURN PATH
+    // -----------------------------------------------
+
+    if (domainData.return_path_domain) {
+
+        setText(
+            "domain-return-match-report",
+            alignment.from_matches_return_path
+                ? "MATCH"
+                : "MISMATCH"
+        );
+
+    } else {
+
+        setText(
+            "domain-return-match-report",
+            "NOT AVAILABLE"
+        );
+    }
+
+
+    // -----------------------------------------------
+    // BODY DOMAIN MATCH
+    // -----------------------------------------------
 
     setText(
         "domain-body-match-report",
@@ -416,6 +490,11 @@ function renderReport(email) {
             ? "MATCH"
             : "MISMATCH"
     );
+
+
+    // -----------------------------------------------
+    // LOOKALIKE
+    // -----------------------------------------------
 
     setText(
         "domain-lookalike-report",
@@ -426,12 +505,23 @@ function renderReport(email) {
             : "NO"
     );
 
+
+    // -----------------------------------------------
+    // MX
+    // -----------------------------------------------
+
+    const hasMX =
+        domain.dns_health?.from_has_mx;
+
     setText(
         "domain-mx-report",
-        domain.dns_health?.from_has_mx
+        hasMX === true
             ? "PRESENT"
-            : "MISSING"
+            : hasMX === false
+                ? "MISSING"
+                : "NOT AVAILABLE"
     );
+
 
     setText(
         "domain-risk-report",
@@ -439,11 +529,41 @@ function renderReport(email) {
     );
 
 
-    // -------------------------------------------------
+    // =================================================
     // URL INTELLIGENCE
-    // -------------------------------------------------
+    // =================================================
 
-    const totalUrls = getTotalUrls(url);
+    const totalUrls =
+        getTotalUrls(url);
+
+    const criticalUrls =
+        Number(
+            urlSummary.critical_risk_urls ??
+            urlSummary.critical_count ??
+            0
+        );
+
+    const highUrls =
+        Number(
+            urlSummary.high_risk_urls ??
+            urlSummary.high_count ??
+            0
+        );
+
+    const mediumUrls =
+        Number(
+            urlSummary.medium_risk_urls ??
+            urlSummary.medium_count ??
+            0
+        );
+
+    const lowUrls =
+        Number(
+            urlSummary.low_risk_urls ??
+            urlSummary.low_count ??
+            0
+        );
+
 
     setText(
         "overview-url-score",
@@ -462,22 +582,22 @@ function renderReport(email) {
 
     setText(
         "report-url-critical",
-        urlSummary.critical_count || 0
+        criticalUrls
     );
 
     setText(
         "report-url-high",
-        urlSummary.high_count || 0
+        highUrls
     );
 
     setText(
         "report-url-medium",
-        urlSummary.medium_count || 0
+        mediumUrls
     );
 
     setText(
         "report-url-low",
-        urlSummary.low_count || 0
+        lowUrls
     );
 
     setText(
@@ -488,9 +608,26 @@ function renderReport(email) {
     renderURLList(url);
 
 
-    // -------------------------------------------------
-    // ATTACHMENTS
-    // -------------------------------------------------
+    // =================================================
+    // ATTACHMENT INTELLIGENCE
+    // =================================================
+
+    const totalAttachments =
+        Number(
+            attachmentSummary.total_attachments ??
+            attachment.attachments?.length ??
+            0
+        );
+
+    const hasHighRiskFiles =
+        attachmentSummary.has_high_risk_files === true;
+
+    const hasExecutableTypes =
+        attachmentSummary.has_executable_types === true;
+
+    const hasMacrosScripts =
+        attachmentSummary.has_macros_or_scripts === true;
+
 
     setText(
         "overview-attachment-score",
@@ -504,26 +641,26 @@ function renderReport(email) {
 
     setText(
         "report-attachment-total",
-        attachmentSummary.total_attachments || 0
+        totalAttachments
     );
 
     setText(
         "report-attachment-high",
-        attachmentSummary.high_risk_count > 0
+        hasHighRiskFiles
             ? "YES"
             : "NO"
     );
 
     setText(
         "report-attachment-executable",
-        attachmentSummary.has_executable
+        hasExecutableTypes
             ? "YES"
             : "NO"
     );
 
     setText(
         "report-attachment-scripts",
-        attachmentSummary.has_scripts_or_macros
+        hasMacrosScripts
             ? "YES"
             : "NO"
     );
@@ -541,9 +678,9 @@ function renderReport(email) {
     renderAttachmentList(attachment);
 
 
-    // -------------------------------------------------
-    // FINAL MODULES
-    // -------------------------------------------------
+    // =================================================
+    // FINAL RISK ASSESSMENT
+    // =================================================
 
     setText(
         "final-ml",
@@ -584,21 +721,24 @@ function renderReport(email) {
     );
 
 
-    // -------------------------------------------------
+    // =================================================
     // KEY FINDINGS
-    // -------------------------------------------------
+    // =================================================
 
     renderKeyFindings(email);
 
 
-    // -------------------------------------------------
+    // =================================================
     // SCORE CIRCLE
-    // -------------------------------------------------
+    // =================================================
 
     const circle =
-        document.getElementById("final-score-circle");
+        document.getElementById(
+            "final-score-circle"
+        );
 
     if (circle) {
+
         circle.style.setProperty(
             "--score",
             `${compositeScore * 3.6}deg`
@@ -616,12 +756,22 @@ function renderReport(email) {
 // AUTHENTICATION
 // =====================================================
 
-function setAuth(valueId, iconId, lineId, value) {
+function setAuth(
+    valueId,
+    iconId,
+    lineId,
+    value
+) {
 
     const status =
-        String(value || "MISSING").toUpperCase();
+        String(
+            value || "MISSING"
+        ).toUpperCase();
 
-    setText(valueId, status);
+    setText(
+        valueId,
+        status
+    );
 
     const icon =
         document.getElementById(iconId);
@@ -634,13 +784,17 @@ function setAuth(valueId, iconId, lineId, value) {
         status === "PASSED";
 
     if (icon) {
+
         icon.setAttribute(
             "data-lucide",
-            passed ? "check" : "x"
+            passed
+                ? "check"
+                : "x"
         );
     }
 
     if (line) {
+
         line.classList.remove(
             "success-line",
             "warning-line",
@@ -663,7 +817,9 @@ function setAuth(valueId, iconId, lineId, value) {
 function renderKeyFindings(email) {
 
     const container =
-        document.getElementById("key-findings");
+        document.getElementById(
+            "key-findings"
+        );
 
     if (!container) return;
 
@@ -687,78 +843,154 @@ function renderKeyFindings(email) {
     const ml =
         email.mlAnalysis || {};
 
+
+    // ML
     if (
         ml.prediction &&
-        String(ml.prediction).toLowerCase() !== "benign"
+        String(ml.prediction)
+            .toLowerCase() !== "benign"
     ) {
+
         findings.push(
             `ML model classified the email as ${ml.prediction}.`
         );
     }
 
-    if (header.header_risk_score > 0) {
+
+    // Header
+    if (
+        Number(header.header_risk_score || 0) > 0
+    ) {
+
         findings.push(
             `Header forensics produced a risk score of ${header.header_risk_score}/100.`
         );
     }
 
-    if (header.identity_analysis?.is_spoofed) {
+
+    // Spoofing
+    if (
+        header.identity_analysis?.is_spoofed
+    ) {
+
         findings.push(
             "Sender identity shows signs of spoofing."
         );
     }
 
-    if (domain.signals?.body_domain_mismatch) {
+
+    // Domain mismatch
+    if (
+        domain.signals?.body_domain_mismatch
+    ) {
+
         findings.push(
             "Body/link domain differs from the sender domain."
         );
     }
 
-    if (domain.lookalike_analysis?.is_lookalike) {
+
+    // Lookalike
+    if (
+        domain.lookalike_analysis?.is_lookalike
+    ) {
+
         findings.push(
             "A potential lookalike / brand impersonation domain was detected."
         );
     }
 
-    if (url.summary?.max_risk_score > 0) {
+
+    // URL
+    if (
+        Number(
+            url.summary?.max_risk_score || 0
+        ) > 0
+    ) {
+
         findings.push(
             `URL intelligence detected suspicious URL activity with a maximum score of ${url.summary.max_risk_score}.`
         );
     }
 
-    if (ip.routing_summary?.has_public_origin) {
-        if (ip.origin_ip_data?.is_hosting) {
+
+    // IP
+    if (
+        ip.routing_summary?.has_public_origin
+    ) {
+
+        if (
+            ip.origin_ip_data?.is_proxy
+        ) {
+
+            findings.push(
+                "The originating IP is associated with a proxy/VPN indicator."
+            );
+
+        } else if (
+            ip.origin_ip_data?.is_hosting
+        ) {
+
             findings.push(
                 "The originating IP belongs to a hosting/cloud provider."
             );
         }
     }
 
+
+    // Attachments
     if (
-        attachment.summary?.overall_status &&
-        attachment.summary.overall_status !== "LOW"
+        attachment.summary?.has_high_risk_files
     ) {
+
         findings.push(
-            `Attachment intelligence reports ${attachment.summary.overall_status} risk.`
+            "One or more attachments were classified as high risk."
         );
     }
 
+    if (
+        attachment.summary?.has_executable_types
+    ) {
+
+        findings.push(
+            "Executable attachment types were detected."
+        );
+    }
+
+    if (
+        attachment.summary?.has_macros_or_scripts
+    ) {
+
+        findings.push(
+            "Macros or embedded scripts were detected in attachments."
+        );
+    }
+
+
     if (findings.length === 0) {
+
         findings.push(
             "No significant malicious indicators were identified by the available analysis modules."
         );
     }
 
-    container.innerHTML = findings.map(
-        (finding, index) => `
-            <div class="finding-row">
-                <div class="finding-icon info">
-                    <i data-lucide="alert-circle"></i>
+
+    container.innerHTML =
+        findings.map(
+            (finding) => `
+                <div class="finding-row">
+
+                    <div class="finding-icon info">
+                        <i data-lucide="alert-circle"></i>
+                    </div>
+
+                    <span>
+                        ${escapeHTML(finding)}
+                    </span>
+
                 </div>
-                <span>${escapeHTML(finding)}</span>
-            </div>
-        `
-    ).join("");
+            `
+        ).join("");
 
     lucide.createIcons();
 }
@@ -771,7 +1003,9 @@ function renderKeyFindings(email) {
 function renderURLList(urlData) {
 
     const container =
-        document.getElementById("report-url-list");
+        document.getElementById(
+            "report-url-list"
+        );
 
     if (!container) return;
 
@@ -781,14 +1015,23 @@ function renderURLList(urlData) {
         urlData.details ||
         [];
 
-    if (!Array.isArray(urls) || urls.length === 0) {
+
+    if (
+        !Array.isArray(urls) ||
+        urls.length === 0
+    ) {
 
         container.innerHTML = `
             <div class="finding-row">
+
                 <div class="finding-icon info">
                     <i data-lucide="info"></i>
                 </div>
-                <span>No URLs available for detailed inspection.</span>
+
+                <span>
+                    No URLs available for detailed inspection.
+                </span>
+
             </div>
         `;
 
@@ -797,33 +1040,60 @@ function renderURLList(urlData) {
         return;
     }
 
-    container.innerHTML = urls.map(
-        item => {
 
-            const url =
-                typeof item === "string"
-                    ? item
-                    : item.url || item.original_url || "—";
+    container.innerHTML =
+        urls.map(
+            item => {
 
-            const score =
-                item.risk_score ??
-                item.score ??
-                0;
+                const url =
+                    typeof item === "string"
+                        ? item
+                        : item.url ||
+                          item.original_url ||
+                          "—";
 
-            const status =
-                item.risk_status ||
-                item.status ||
-                getScoreRisk(Number(score));
 
-            return `
-                <div class="report-url-row">
-                    <strong>${escapeHTML(url)}</strong>
-                    <span>${escapeHTML(String(status))}</span>
-                    <small>Score: ${score}</small>
-                </div>
-            `;
-        }
-    ).join("");
+                const score =
+                    Number(
+                        item.risk_score ??
+                        item.score ??
+                        0
+                    );
+
+
+                // IMPORTANT:
+                // Backend has risk_level, not risk_status.
+                const status =
+                    item.risk_level ||
+                    item.risk_status ||
+                    (
+                        score > 0
+                            ? getScoreRisk(score)
+                            : "LOW"
+                    );
+
+
+                return `
+                    <div class="report-url-row">
+
+                        <strong>
+                            ${escapeHTML(url)}
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(
+                                String(status)
+                            )}
+                        </span>
+
+                        <small>
+                            Score: ${score}
+                        </small>
+
+                    </div>
+                `;
+            }
+        ).join("");
 
     lucide.createIcons();
 }
@@ -845,6 +1115,7 @@ function renderAttachmentList(data) {
     const attachments =
         data.attachments || [];
 
+
     if (
         !Array.isArray(attachments) ||
         attachments.length === 0
@@ -852,10 +1123,15 @@ function renderAttachmentList(data) {
 
         container.innerHTML = `
             <div class="finding-row">
+
                 <div class="finding-icon info">
                     <i data-lucide="info"></i>
                 </div>
-                <span>No attachments detected.</span>
+
+                <span>
+                    No attachments detected.
+                </span>
+
             </div>
         `;
 
@@ -864,43 +1140,56 @@ function renderAttachmentList(data) {
         return;
     }
 
-    container.innerHTML = attachments.map(
-        item => {
 
-            const name =
-                item.filename ||
-                item.name ||
-                "Unknown attachment";
+    container.innerHTML =
+        attachments.map(
+            item => {
 
-            const score =
-                item.risk_score ??
-                item.score ??
-                0;
+                const name =
+                    item.filename ||
+                    item.name ||
+                    "Unknown attachment";
 
-            const status =
-                item.risk_status ||
-                item.status ||
-                getScoreRisk(Number(score));
 
-            return `
-                <div class="report-attachment-row">
+                const score =
+                    Number(
+                        item.risk_score ??
+                        item.score ??
+                        0
+                    );
 
-                    <strong>
-                        ${escapeHTML(name)}
-                    </strong>
 
-                    <span>
-                        ${escapeHTML(String(status))}
-                    </span>
+                const status =
+                    item.risk_level ||
+                    item.risk_status ||
+                    (
+                        score > 0
+                            ? getScoreRisk(score)
+                            : "LOW"
+                    );
 
-                    <small>
-                        Score: ${score}
-                    </small>
 
-                </div>
-            `;
-        }
-    ).join("");
+                return `
+                    <div class="report-attachment-row">
+
+                        <strong>
+                            ${escapeHTML(name)}
+                        </strong>
+
+                        <span>
+                            ${escapeHTML(
+                                String(status)
+                            )}
+                        </span>
+
+                        <small>
+                            Score: ${score}
+                        </small>
+
+                    </div>
+                `;
+            }
+        ).join("");
 
     lucide.createIcons();
 }
@@ -912,37 +1201,51 @@ function renderAttachmentList(data) {
 
 function setupButtons(emailId) {
 
+    // BACK TO CASE
     const back =
-        document.getElementById("backCaseBtn");
+        document.getElementById(
+            "backCaseBtn"
+        );
 
     if (back) {
-        back.addEventListener("click", () => {
-            window.location.href =
-                `case_detail.html?id=${encodeURIComponent(emailId)}`;
-        });
+
+        back.addEventListener(
+            "click",
+            () => {
+
+                window.location.href =
+                    `case_detail.html?id=${encodeURIComponent(emailId)}`;
+            }
+        );
     }
 
+
+    // PRINT
     const print =
-        document.getElementById("printReportBtn");
+        document.getElementById(
+            "printReportBtn"
+        );
 
     if (print) {
+
         print.addEventListener(
             "click",
             () => window.print()
         );
     }
 
+
+    // EXPORT
     const exportBtn =
-        document.getElementById("exportReportBtn");
+        document.getElementById(
+            "exportReportBtn"
+        );
 
     if (exportBtn) {
+
         exportBtn.addEventListener(
             "click",
-            () => {
-
-                window.print();
-
-            }
+            () => window.print()
         );
     }
 }
@@ -955,13 +1258,17 @@ function setupButtons(emailId) {
 function startReportClock() {
 
     const element =
-        document.getElementById("report-time");
+        document.getElementById(
+            "report-time"
+        );
 
     if (!element) return;
 
+
     function update() {
 
-        const now = new Date();
+        const now =
+            new Date();
 
         element.textContent =
             "UTC " +
@@ -970,9 +1277,13 @@ function startReportClock() {
                 .split(".")[0];
     }
 
+
     update();
 
-    setInterval(update, 1000);
+    setInterval(
+        update,
+        1000
+    );
 }
 
 
@@ -985,41 +1296,67 @@ function setText(id, value) {
     const element =
         document.getElementById(id);
 
-    if (element) {
-        element.textContent =
-            value === null ||
-            value === undefined ||
-            value === ""
-                ? "—"
-                : value;
-    }
+    if (!element) return;
+
+    element.textContent =
+        value === null ||
+        value === undefined ||
+        value === ""
+            ? "—"
+            : value;
 }
 
+
+// -----------------------------------------------------
+// EXTRACT DOMAIN
+// -----------------------------------------------------
 
 function extractDomain(value) {
 
     if (!value) return null;
 
-    const match =
-        String(value).match(
-            /@([^>\s]+)/
+    const text =
+        String(value);
+
+
+    // Normal email
+    const emailMatch =
+        text.match(
+            /@([^>\s]+)/ 
         );
 
-    return match
-        ? match[1].trim()
-        : null;
+    if (emailMatch) {
+
+        return emailMatch[1]
+            .trim()
+            .replace(/[)>;,]+$/, "");
+    }
+
+
+    return null;
 }
 
+
+// -----------------------------------------------------
+// FORMAT DATE
+// -----------------------------------------------------
 
 function formatDate(value) {
 
     if (!value) return "—";
 
-    const date = new Date(value);
+    const date =
+        new Date(value);
 
-    if (isNaN(date.getTime())) {
+    if (
+        isNaN(
+            date.getTime()
+        )
+    ) {
+
         return String(value);
     }
+
 
     return date.toLocaleString(
         "en-IN",
@@ -1034,17 +1371,38 @@ function formatDate(value) {
 }
 
 
+// -----------------------------------------------------
+// NORMALIZE ML CONFIDENCE
+// -----------------------------------------------------
+
 function normalizeConfidence(value) {
 
-    if (value === null || value === undefined) {
+    if (
+        value === null ||
+        value === undefined
+    ) {
+
         return 0;
     }
 
-    let number = Number(value);
+
+    let number =
+        Number(value);
+
+
+    if (
+        !Number.isFinite(number)
+    ) {
+
+        return 0;
+    }
+
 
     if (number <= 1) {
+
         number *= 100;
     }
+
 
     return Math.min(
         Math.max(number, 0),
@@ -1053,27 +1411,55 @@ function normalizeConfidence(value) {
 }
 
 
+// =====================================================
+// IP SCORE
+// =====================================================
+
 function calculateIPScore(ip) {
 
-    if (!ip || !ip.origin_ip_data) {
+    if (
+        !ip ||
+        !ip.origin_ip_data
+    ) {
+
         return 0;
     }
 
-    if (ip.origin_ip_data.is_proxy) {
+
+    // Proxy / VPN = high
+    if (
+        ip.origin_ip_data.is_proxy
+    ) {
+
         return 90;
     }
 
-    if (ip.origin_ip_data.is_hosting) {
-        return 60;
+
+    // Hosting provider alone = medium
+    if (
+        ip.origin_ip_data.is_hosting
+    ) {
+
+        return 50;
     }
 
-    if (ip.routing_summary?.has_public_origin) {
+
+    // Public origin but no suspicious indicator
+    if (
+        ip.routing_summary?.has_public_origin
+    ) {
+
         return 20;
     }
+
 
     return 0;
 }
 
+
+// =====================================================
+// DOMAIN SCORE
+// =====================================================
 
 function calculateDomainScore(domain) {
 
@@ -1083,24 +1469,35 @@ function calculateDomainScore(domain) {
     const lookalike =
         domain.lookalike_analysis || {};
 
+
+    // Strong domain indicators
     if (
         lookalike.is_lookalike ||
         signals.reply_to_mismatch ||
         signals.return_path_mismatch
     ) {
+
         return 90;
     }
 
+
+    // Moderate indicator
     if (
         signals.body_domain_mismatch ||
         signals.from_missing_mx
     ) {
+
         return 50;
     }
+
 
     return 0;
 }
 
+
+// =====================================================
+// TOTAL URLS
+// =====================================================
 
 function getTotalUrls(url) {
 
@@ -1114,47 +1511,70 @@ function getTotalUrls(url) {
 }
 
 
+// =====================================================
+// SCORE → RISK
+// =====================================================
+
 function getScoreRisk(score) {
 
-    score = Number(score || 0);
+    score =
+        Number(score || 0);
 
-    if (score >= 80) return "CRITICAL";
-    if (score >= 60) return "HIGH";
-    if (score >= 40) return "MEDIUM";
+
+    if (score >= 80) {
+        return "CRITICAL";
+    }
+
+    if (score >= 60) {
+        return "HIGH";
+    }
+
+    if (score >= 40) {
+        return "MEDIUM";
+    }
 
     return "LOW";
 }
 
+
+// =====================================================
+// FINAL RISK
+// =====================================================
 
 function getRiskLevel(score) {
 
-    score = Number(score || 0);
-
-    if (score >= 80) return "CRITICAL";
-    if (score >= 60) return "HIGH";
-    if (score >= 40) return "MEDIUM";
-
-    return "LOW";
+    return getScoreRisk(score);
 }
 
+
+// =====================================================
+// RECOMMENDED ACTION
+// =====================================================
 
 function getPrimaryAction(risk) {
 
     if (risk === "CRITICAL") {
+
         return "QUARANTINE / BLOCK";
     }
 
     if (risk === "HIGH") {
+
         return "QUARANTINE EMAIL";
     }
 
     if (risk === "MEDIUM") {
+
         return "INVESTIGATE EMAIL";
     }
 
     return "REVIEW EMAIL";
 }
 
+
+// =====================================================
+// EXECUTIVE DESCRIPTION
+// =====================================================
 
 function getExecutiveDescription(
     risk,
@@ -1163,67 +1583,123 @@ function getExecutiveDescription(
 ) {
 
     if (risk === "CRITICAL") {
+
         return `The email demonstrates multiple high-confidence threat indicators. Composite analysis produced a score of ${score}/100. Immediate containment and investigation are recommended.`;
     }
 
+
     if (risk === "HIGH") {
+
         return `The email contains significant suspicious indicators. Composite analysis produced a score of ${score}/100 and requires investigation.`;
     }
 
+
     if (risk === "MEDIUM") {
-        return `The email contains one or more suspicious signals. Further investigation is recommended before treating the message as benign.`;
+
+        return `The email contains one or more suspicious signals. Composite analysis produced a score of ${score}/100. Further investigation is recommended before treating the message as benign.`;
     }
+
 
     return `Available forensic modules did not identify significant malicious indicators. Composite score: ${score}/100.`;
 }
 
 
-function getFinalConclusion(risk, score) {
+// =====================================================
+// FINAL CONCLUSION
+// =====================================================
+
+function getFinalConclusion(
+    risk,
+    score
+) {
 
     if (risk === "CRITICAL") {
+
         return `Final assessment: CRITICAL risk with a composite score of ${score}/100. Immediate containment is recommended.`;
     }
 
+
     if (risk === "HIGH") {
+
         return `Final assessment: HIGH risk with a composite score of ${score}/100. The email should be investigated and potentially quarantined.`;
     }
 
+
     if (risk === "MEDIUM") {
+
         return `Final assessment: MEDIUM risk with a composite score of ${score}/100. Additional investigation is recommended.`;
     }
+
 
     return `Final assessment: LOW risk with a composite score of ${score}/100. No immediate containment action is indicated.`;
 }
 
 
+// =====================================================
+// ESCAPE HTML
+// =====================================================
+
 function escapeHTML(value) {
 
     return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
 }
 
 
+// =====================================================
+// ERROR
+// =====================================================
+
 function showError(message) {
 
-    console.error("❌", message);
+    console.error(
+        "❌",
+        message
+    );
+
 
     const title =
-        document.querySelector(".report-title-section h1");
+        document.querySelector(
+            ".report-title-section h1"
+        );
 
     if (title) {
-        title.textContent = "Unable to Load Report";
+
+        title.textContent =
+            "Unable to Load Report";
     }
+
 
     const description =
-        document.getElementById("executive-description");
+        document.getElementById(
+            "executive-description"
+        );
 
     if (description) {
-        description.textContent = message;
+
+        description.textContent =
+            message;
     }
+
 
     setText(
         "executive-verdict",

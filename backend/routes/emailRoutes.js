@@ -5,7 +5,8 @@ const path = require("path");
 const {
     analyzeEmail,
     getAllEmails,
-    getEmailById
+    getEmailById,
+    getCampaignCorrelations
 } = require("../controllers/emailController");
 
 const router = express.Router();
@@ -68,6 +69,11 @@ router.post(
 
 // GET /api/emails - Fetch list of analyzed emails for dashboards
 router.get("/", getAllEmails);
+
+router.get(
+    "/case/:caseId/correlations",
+    getCampaignCorrelations
+);
 
 // GET /api/emails/:id - Fetch full forensics (URL, Header, IP, Domain) for case details
 router.get("/:id", getEmailById);
