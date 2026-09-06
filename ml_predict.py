@@ -150,7 +150,7 @@ def main():
         print(json.dumps({
             "success": True,
             "prediction": prediction,
-            "confidence": threat_score,
+            "confidence": round(float(max(probabilities)) * 100, 2),
             "raw_label": f"LABEL_{prediction_label}",
             "threatScore": threat_score,
             "riskLevel": risk_level,

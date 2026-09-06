@@ -130,12 +130,16 @@ const emailSchema = new mongoose.Schema(
     // ML THREAT ANALYSIS
     // ========================================================
 
-    mlAnalysis: {
-      success: Boolean,
-      prediction: String,
-      confidence: Number,
-      raw_label: String
-    },
+  mlAnalysis: {
+  success: Boolean,
+  prediction: String,
+  confidence: Number,
+  raw_label: String,
+  threatScore: Number,
+  riskLevel: String,
+  technicalReasons: [String],
+  recommendedActions: [String]
+},
 
     // ========================================================
     // URL INTELLIGENCE
