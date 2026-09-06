@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThreatLens - Campaign Clusters</title>
+
+    <link rel="stylesheet" href="css/campaignCluster.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+
+<main class="clusters-page">
+
+    <header class="clusters-header">
+        <div>
+            <div class="eyebrow">INVESTIGATION / CAMPAIGNS</div>
+            <h1>Campaign Clusters</h1>
+            <p>Connected email cases grouped by shared correlation indicators.</p>
+        </div>
+
+        <div class="header-stats">
+            <div>
+                <span>CAMPAIGNS</span>
+                <strong id="campaignCount">0</strong>
+            </div>
+            <div>
+                <span>EMAILS</span>
+                <strong id="emailCount">0</strong>
+            </div>
+        </div>
+    </header>
+
+    <section class="clusters-toolbar">
+        <span id="clustersStatus">Loading campaign clusters...</span>
+        <button id="refreshClusters" type="button">
+            <i data-lucide="refresh-cw"></i>
+            Refresh
+        </button>
+    </section>
+
+    <section id="clustersGrid" class="clusters-grid"></section>
+
+</main>
+
+<aside class="cluster-drawer" id="clusterDrawer" aria-hidden="true">
+    <button class="drawer-close" id="drawerClose" type="button" aria-label="Close">
+        <i data-lucide="x"></i>
+    </button>
+
+    <div class="eyebrow">CASE DETAILS</div>
+
+    <div class="drawer-case">
+        <div class="drawer-mail-icon">
+            <i data-lucide="mail"></i>
+        </div>
+
+        <div>
+            <strong id="drawerCaseId">—</strong>
+            <small id="drawerSubject">—</small>
+        </div>
+
+        <span id="drawerScore" class="drawer-score">—</span>
+    </div>
+
+    <div class="drawer-section">
+        <div class="drawer-label">
+            <span>CONNECTED THROUGH</span>
+            <strong id="drawerMatchCount">0</strong>
+        </div>
+
+        <div id="drawerMatches" class="drawer-matches"></div>
+    </div>
+
+    <div class="drawer-section">
+        <div class="drawer-label">
+            <span>CASE DATE</span>
+        </div>
+        <div id="drawerDate" class="drawer-value">—</div>
+    </div>
+</aside>
+
+<script src="js/campaignCluster.js"></script>
+</body>
+</html>
