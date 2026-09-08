@@ -191,3 +191,26 @@ def generate_risk_analysis(
             "recommendedActions": recommended_actions
         }
     }
+
+if __name__ == "__main__":
+    import sys
+    import json
+
+    input_data = json.loads(sys.stdin.read())
+
+    result = generate_risk_analysis(
+        input_data["ml_score"],
+        input_data["header_score"],
+        input_data["ip_score"],
+        input_data["domain_score"],
+        input_data["url_score"],
+        input_data["attachment_score"],
+        input_data.get("ml_reasons"),
+        input_data.get("header_reasons"),
+        input_data.get("ip_reasons"),
+        input_data.get("domain_reasons"),
+        input_data.get("url_reasons"),
+        input_data.get("attachment_reasons")
+    )
+
+    print(json.dumps(result))
