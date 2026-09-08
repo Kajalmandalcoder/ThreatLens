@@ -1,10 +1,8 @@
 const mongoose = require("mongoose");
 const headerForensicsSchema = require("./header_forensics");
-
 // ============================================================
 // URL INTELLIGENCE RESULT SCHEMA
 // ============================================================
-
 const urlIntelligenceResultSchema = new mongoose.Schema(
   {
     url: String,
@@ -106,11 +104,32 @@ const emailSchema = new mongoose.Schema(
       returnPath: String,
       received: [String]
     },
+        senderIdentity: {
+        displayName: String,
+        email: String,
+        domain: String,
+        mismatch: Boolean,
+        reason: String
+    },
 
     body: {
       plainText: String,
       html: String
     },
+    bodyStructure: {
+    hasPlainText: Boolean,
+    hasHtml: Boolean,
+    plainTextLength: Number,
+    htmlLength: Number,
+    linkCount: Number,
+    externalLinkCount: Number,
+    imageCount: Number,
+    formCount: Number,
+    buttonCount: Number,
+    hiddenElementCount: Number,
+    scriptCount: Number,
+    iframeCount: Number
+},
 
     links: [
       {
@@ -137,12 +156,16 @@ const emailSchema = new mongoose.Schema(
     // ML THREAT ANALYSIS
     // ========================================================
 
-    mlAnalysis: {
-      success: Boolean,
-      prediction: String,
-      confidence: Number,
-      raw_label: String
-    },
+  mlAnalysis: {
+  success: Boolean,
+  prediction: String,
+  confidence: Number,
+  raw_label: String,
+  threatScore: Number,
+  riskLevel: String,
+  technicalReasons: [String],
+  recommendedActions: [String]
+},
 
     // ========================================================
     // URL INTELLIGENCE

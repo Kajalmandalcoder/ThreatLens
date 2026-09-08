@@ -1,6 +1,7 @@
 from email import policy
 from email.parser import BytesParser
 from bs4 import BeautifulSoup
+from email.utils import parseaddr
 import re
 import json
 import sys
@@ -9,9 +10,337 @@ sys.stdout.reconfigure(encoding="utf-8")
 sys.stderr.reconfigure(encoding="utf-8")
 from pathlib import Path
 from urllib.parse import urlparse
+# =================================
+# SENDER IDENTITY ANALYSIS
+# =================================
+
+def analyze_sender_identity(from_value):
+
+    display_name, email_address = parseaddr(
+        from_value or ""
+    )
+
+    display_name = display_name.strip()
+    email_address = email_address.strip().lower()
+
+    domain = ""
+
+    if "@" in email_address:
+        domain = email_address.split("@", 1)[1]
+
+    mismatch = False
+    reason = None
+
+    # Known brand/domain relationships.
+    # This is only an inconsistency flag,
+    # not a phishing verdict.
+
+    known_brand_domains = {
+
+        "microsoft": {
+            "microsoft.com",
+            "microsoftonline.com",
+            "office.com",
+            "live.com",
+            "outlook.com"
+        },
+
+        "google": {
+            "google.com",
+            "googlemail.com"
+        },
+
+        "paypal": {
+            "paypal.com"
+        },
+
+        "amazon": {
+            "amazon.com",
+            "amazon.in"
+        },
+
+        "apple": {
+            "apple.com"
+        },
+
+        "linkedin": {
+            "linkedin.com"
+        },
+
+        "github": {
+            "github.com"
+        }
+
+    }
+
+    normalized_name = re.sub(
+        r"[^a-z0-9]",
+        "",
+        display_name.lower()
+    )
+
+    for brand, domains in known_brand_domains.items():
+
+        if brand in normalized_name:
+
+            if domain not in domains:
+
+                mismatch = True
+
+                reason = (
+                    f"Display name suggests {brand}, "
+                    f"but sender domain is "
+                    f"{domain or 'unknown'}"
+                )
+
+            break
+
+    return {
+
+        "displayName":
+            display_name or None,
+
+        "email":
+            email_address or None,
+
+        "domain":
+            domain or None,
+
+        "mismatch":
+            mismatch,
+
+        "reason":
+            reason
+
+    }
+# =================================
+# EMAIL BODY STRUCTURAL ANALYSIS
+# =================================
+
+def analyze_body_structure(
+    plain_text,
+    html_text
+):
+
+    result = {
+        "hasPlainText": bool(
+            plain_text.strip()
+        ),
+
+        "hasHtml": bool(
+            html_text.strip()
+        ),
+
+        "plainTextLength": len(
+            plain_text
+        ),
+
+        "htmlLength": len(
+            html_text
+        ),
+
+        "linkCount": 0,
+
+        "externalLinkCount": 0,
+
+        "imageCount": 0,
+
+        "formCount": 0,
+
+        "buttonCount": 0,
+
+        "hiddenElementCount": 0,
+
+        "scriptCount": 0,
+
+        "iframeCount": 0
+    }
+
+
+    # No HTML means there is
+    # nothing structural to inspect.
+    if not html_text:
+
+        return result
+
+
+    soup = BeautifulSoup(
+        html_text,
+        "html.parser"
+    )
+
+
+    # ---------------------------------
+    # LINKS
+    # ---------------------------------
+
+    links = soup.find_all(
+            "a",
+            href=True
+        )
+
+    result["linkCount"] = len(
+        links
+    )
+
+
+    external_links = 0
+
+
+    for link in links:
+
+        href =(
+                link.get("href") or ""
+            ).strip()
+
+
+        if href.startswith(
+            (
+                "http://",
+                "https://"
+            )
+        ):
+
+            external_links += 1
+
+
+    result[
+        "externalLinkCount"
+    ] = external_links
+
+
+    # ---------------------------------
+    # IMAGES
+    # ---------------------------------
+
+    result["imageCount"] = len(
+        soup.find_all(
+            "img"
+        )
+    )
+
+
+    # ---------------------------------
+    # FORMS
+    # ---------------------------------
+
+    result["formCount"] = len(
+        soup.find_all(
+            "form"
+        )
+    )
+
+
+    # ---------------------------------
+    # BUTTONS
+    # ---------------------------------
+
+    button_count = 0
+
+
+    button_count += len(
+        soup.find_all(
+            "button"
+        )
+    )
+
+
+    button_count += len(
+        soup.find_all(
+            "input",
+            attrs={
+                "type":
+                    re.compile(
+                        r"submit|button",
+                        re.IGNORECASE
+                    )
+            }
+        )
+    )
+
+
+    result["buttonCount"] = (
+        button_count
+    )
+
+
+    # ---------------------------------
+    # HIDDEN ELEMENTS
+    # ---------------------------------
+
+    hidden_count = 0
+
+
+    for element in soup.find_all():
+
+        style =(element.get(
+                    "style"
+                ) or ""
+            ).lower()
+
+
+        classes =" ".join(
+                element.get(
+                    "class",
+                    []
+                )
+            ).lower()
+
+
+        element_type =(
+                element.get(
+                    "type"
+                ) or ""
+            ).lower()
+
+
+        if (
+            "display:none" in style
+            or "display: none" in style
+            or "visibility:hidden" in style
+            or "visibility: hidden" in style
+            or element.has_attr(
+                "hidden"
+            )
+            or "hidden" in classes
+            or element_type == "hidden"
+        ):
+
+            hidden_count += 1
+
+
+    result[
+        "hiddenElementCount"
+    ] = hidden_count
+
+
+    # ---------------------------------
+    # SCRIPT
+    # ---------------------------------
+
+    result["scriptCount"] = len(
+        soup.find_all(
+            "script"
+        )
+    )
+
+
+    # ---------------------------------
+    # IFRAME
+    # ---------------------------------
+
+    result["iframeCount"] = len(
+        soup.find_all(
+            "iframe"
+        )
+    )
+
+
+    return result
+
+
 
 def parse_email_journey(received_headers):
-
     journey = []
 
     for index, received in enumerate(received_headers, start=1):
@@ -130,6 +459,9 @@ def parse_email(file_path):
         "returnPath": msg.get("Return-Path"),
         "received": msg.get_all("Received", [])
     }
+    sender_identity = analyze_sender_identity(
+        headers["from"]
+    )
 
     # ---------------------------------
     # EMAIL JOURNEY
@@ -161,6 +493,10 @@ def parse_email(file_path):
                 html_text += part.get_content()
             except Exception:
                 pass
+        body_structure = analyze_body_structure(
+            plain_text,
+            html_text
+        )
 
     # ---------------------------------
     # EXTRACT LINKS
@@ -235,17 +571,20 @@ def parse_email(file_path):
     # ---------------------------------
     # FINAL STRUCTURED EMAIL DATA
     # ---------------------------------
-
     result = {
         "headers": headers,
+
+        "senderIdentity":
+            sender_identity,
 
         "body": {
             "plainText": plain_text,
             "html": html_text
         },
+        "bodyStructure":
+            body_structure,
 
         "links": links,
-
         "attachments": attachments,
 
         "emailJourney": email_journey

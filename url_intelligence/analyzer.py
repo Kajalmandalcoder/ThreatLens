@@ -167,6 +167,11 @@ def analyze_single_url(
             ],
             "components": {},
             "features": {},
+            "normalized_output": {
+                "risk_score": 0,
+                "risk_level": "LOW",
+                "risk_reasons": ["Malformed or empty URL string"]
+            }
         }
 
     # =========================================
@@ -193,6 +198,11 @@ def analyze_single_url(
             ],
             "components": components,
             "features": {},
+            "normalized_output": {
+                "risk_score": 30,
+                "risk_level": "MEDIUM",
+                "risk_reasons": ["Malformed URL syntax could not be safely parsed"]
+            }
         }
 
     # =========================================
@@ -245,6 +255,11 @@ def analyze_single_url(
                 "(no external API configured)"
             ),
         },
+        "normalized_output": {
+            "risk_score": risk_assessment["risk_score"],
+            "risk_level": risk_assessment["risk_level"],
+            "risk_reasons": risk_assessment["indicators"]
+        }
     }
 
 
