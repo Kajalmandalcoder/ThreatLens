@@ -1,4 +1,5 @@
 import re
+import dns.exception
 import dns.resolver
 import ipaddress
 import json
@@ -10,14 +11,22 @@ from email.parser import BytesParser
 
 class HeaderForensicsEngine:
     """
-    Module B: Header Forensics Engine
+    ThreadLens - Module B: Header Forensics
 
-    Input:
-        Parsed MIME Email Object
-
-    Output:
-        Structured Header Findings & Risk Analysis
+    Responsibilities:
+    - From / Reply-To / Return-Path domain analysis
+    - Authentication-Results analysis
+    - SPF / DKIM / DMARC status
+    - Live DNS verification
+    - Received header parsing
+    - IPv4 / IPv6 extraction
+    - Public-origin IP candidate detection
+    - Explainable header risk scoring
     """
+
+    # =========================================================
+    # INIT
+    # =========================================================
 
     def __init__(self, msg):
         self.msg = msg
@@ -27,89 +36,283 @@ class HeaderForensicsEngine:
     # =========================================================
 
     def _extract_domain(self, address):
+        """
+        Extract domain from an email header.
+
+        Examples:
+            John Doe <john@example.com>
+            john@example.com
+
+        Returns:
+            example.com
+            None
+        """
+
         if not address:
             return None
 
-        match = re.search(r"<([^>]+)>", str(address))
+        try:
+            raw = str(address).strip()
 
-        clean_addr = (
-            match.group(1)
-            if match
-            else str(address).strip()
-        )
+            # Extract address from <...>
+            match = re.search(
+                r"<\s*([^>]+)\s*>",
+                raw
+            )
 
-        if "@" not in clean_addr:
+            clean_address = (
+                match.group(1).strip()
+                if match
+                else raw
+            )
+
+            if "@" not in clean_address:
+                return None
+
+            domain = (
+                clean_address
+                .rsplit("@", 1)[-1]
+                .strip()
+                .lower()
+            )
+
+            # Remove accidental trailing >
+            domain = domain.rstrip(">")
+
+            if not domain:
+                return None
+
+            return domain
+
+        except Exception:
             return None
 
-        return (
-            clean_addr.split("@")[-1]
-            .strip()
-            .lower()
-        )
+    # =========================================================
+    # DNS RESOLVER
+    # =========================================================
+
+    def _build_resolver(self, timeout_sec=3.0):
+        resolver = dns.resolver.Resolver()
+
+        resolver.timeout = timeout_sec
+        resolver.lifetime = timeout_sec
+
+        return resolver
 
     # =========================================================
-    # LIVE DNS VERIFICATION
+    # SPF / DMARC LIVE DNS
     # =========================================================
 
     def check_live_dns_records(self, domain):
-        if not domain:
-            return {
-                "spf_record": False,
-                "dmarc_record": False
-            }
+        """
+        Dynamically verify SPF and DMARC records.
 
-        records = {
-            "spf_record": False,
-            "dmarc_record": False
+        Returns:
+            True  -> record exists
+            False -> lookup succeeded but record absent
+            None  -> lookup unavailable
+        """
+
+        result = {
+            "spf_record": None,
+            "dmarc_record": None
         }
+
+        if not domain:
+            return result
 
         # -----------------------------------------------------
         # SPF
         # -----------------------------------------------------
 
-        try:
-            txt_records = dns.resolver.resolve(
-                domain,
-                "TXT"
-            )
-
-            for record in txt_records:
-                record_text = str(record).lower()
-
-                if "v=spf1" in record_text:
-                    records["spf_record"] = True
-                    break
-
-        except Exception:
-            records["spf_record"] = False
+        result["spf_record"] = self._check_spf(domain)
 
         # -----------------------------------------------------
         # DMARC
         # -----------------------------------------------------
 
+        result["dmarc_record"] = self._check_dmarc(domain)
+
+        return result
+
+    # =========================================================
+    # SPF CHECK
+    # =========================================================
+
+    def _check_spf(self, domain, timeout_sec=3.0):
+        """
+        Check TXT records for v=spf1.
+
+        System resolver is tried first.
+        Cloudflare / Google DNS are used as fallback.
+        """
+
+        if not domain:
+            return None
+
+        resolvers = []
+
+        # System resolver
         try:
-            dmarc_records = dns.resolver.resolve(
-                f"_dmarc.{domain}",
+            system_resolver = self._build_resolver(
+                timeout_sec
+            )
+            resolvers.append(system_resolver)
+        except Exception:
+            pass
+
+        # Public DNS fallback
+        for nameserver in [
+            "1.1.1.1",
+            "8.8.8.8"
+        ]:
+            try:
+                resolver = dns.resolver.Resolver(
+                    configure=False
+                )
+
+                resolver.nameservers = [
+                    nameserver
+                ]
+
+                resolver.timeout = timeout_sec
+                resolver.lifetime = timeout_sec
+
+                resolvers.append(resolver)
+
+            except Exception:
+                continue
+
+        successful_lookup = False
+
+        for resolver in resolvers:
+
+            try:
+                answers = resolver.resolve(
+                    domain,
+                    "TXT"
+                )
+
+                successful_lookup = True
+
+                for record in answers:
+
+                    try:
+                        record_text = record.to_text()
+                    except Exception:
+                        record_text = str(record)
+
+                    normalized = (
+                        record_text
+                        .strip()
+                        .replace('"', "")
+                        .lower()
+                    )
+
+                    if re.search(
+                        r"(^|\s)v=spf1(?:\s|$)",
+                        normalized
+                    ):
+                        return True
+
+            except dns.resolver.NXDOMAIN:
+                successful_lookup = True
+                continue
+
+            except dns.resolver.NoAnswer:
+                successful_lookup = True
+                continue
+
+            except (
+                dns.resolver.NoNameservers,
+                dns.exception.Timeout
+            ):
+                continue
+
+            except Exception:
+                continue
+
+        if successful_lookup:
+            return False
+
+        return None
+
+    # =========================================================
+    # DMARC CHECK
+    # =========================================================
+
+    def _check_dmarc(self, domain, timeout_sec=3.0):
+        """
+        Check _dmarc.<domain> TXT records.
+        """
+
+        if not domain:
+            return None
+
+        dmarc_domain = (
+            f"_dmarc.{domain}"
+        )
+
+        resolver = self._build_resolver(
+            timeout_sec
+        )
+
+        try:
+            answers = resolver.resolve(
+                dmarc_domain,
                 "TXT"
             )
 
-            for record in dmarc_records:
-                record_text = str(record).lower()
+            for record in answers:
 
-                if "v=dmarc1" in record_text:
-                    records["dmarc_record"] = True
-                    break
+                try:
+                    record_text = record.to_text()
+                except Exception:
+                    record_text = str(record)
+
+                normalized = (
+                    record_text
+                    .strip()
+                    .replace('"', "")
+                    .lower()
+                )
+
+                if normalized.startswith(
+                    "v=dmarc1"
+                ):
+                    return True
+
+            return False
+
+        except dns.resolver.NXDOMAIN:
+            return False
+
+        except dns.resolver.NoAnswer:
+            return False
+
+        except (
+            dns.resolver.NoNameservers,
+            dns.exception.Timeout
+        ):
+            return None
 
         except Exception:
-            records["dmarc_record"] = False
-
-        return records
+            return None
 
     # =========================================================
-    # FROM / REPLY-TO / RETURN-PATH ANALYSIS
+    # IDENTITY ANALYSIS
     # =========================================================
 
     def analyze_identity_spoofing(self):
+        """
+        Compare From, Reply-To and Return-Path.
+
+        Important:
+        Missing Reply-To / Return-Path is NOT a mismatch.
+
+        Return-Path mismatch is a warning signal,
+        but alone does not prove spoofing.
+        """
 
         from_domain = self._extract_domain(
             self.msg.get("From")
@@ -125,18 +328,16 @@ class HeaderForensicsEngine:
 
         anomalies = []
 
-        # -----------------------------------------------------
-        # Spoofing flag
-        # -----------------------------------------------------
-
         is_spoofed = False
 
         # -----------------------------------------------------
         # Reply-To mismatch
         # -----------------------------------------------------
 
-        if reply_to_domain and from_domain:
-
+        if (
+            from_domain
+            and reply_to_domain
+        ):
             if reply_to_domain != from_domain:
 
                 is_spoofed = True
@@ -156,9 +357,13 @@ class HeaderForensicsEngine:
         # Return-Path mismatch
         # -----------------------------------------------------
 
-        if return_path_domain and from_domain:
+        if (
+            from_domain
+            and return_path_domain
+        ):
 
-            # Same domain OR valid subdomain
+            # Root domain exact match
+            # OR legitimate subdomain relation
             is_related = (
                 return_path_domain == from_domain
                 or return_path_domain.endswith(
@@ -180,14 +385,6 @@ class HeaderForensicsEngine:
                     )
                 })
 
-                # IMPORTANT:
-                #
-                # Return-Path mismatch alone does NOT
-                # prove spoofing.
-                #
-                # Legitimate email providers can use
-                # separate bounce / mailing infrastructure.
-
         return {
             "from_domain": from_domain,
             "reply_to_domain": reply_to_domain,
@@ -197,20 +394,30 @@ class HeaderForensicsEngine:
         }
 
     # =========================================================
-    # SPF / DKIM / DMARC
+    # AUTHENTICATION HEADERS
     # =========================================================
 
     def analyze_authentication_headers(self):
+        """
+        Parse Authentication-Results.
+
+        States:
+            PASS
+            FAIL
+            MISSING
+        """
 
         auth_headers = self.msg.get_all(
             "Authentication-Results",
             []
         )
 
-        auth_header = " ".join(
+        raw_auth_header = " ".join(
             str(header)
             for header in auth_headers
-        ).lower()
+        )
+
+        auth_header = raw_auth_header.lower()
 
         # -----------------------------------------------------
         # SPF
@@ -227,6 +434,12 @@ class HeaderForensicsEngine:
             auth_header
         ):
             spf = "PASS"
+
+        elif re.search(
+            r"\bspf\s*=\s*(?:softfail|neutral|none|temperror|permerror)\b",
+            auth_header
+        ):
+            spf = "MISSING"
 
         else:
             spf = "MISSING"
@@ -247,6 +460,12 @@ class HeaderForensicsEngine:
         ):
             dkim = "PASS"
 
+        elif re.search(
+            r"\bdkim\s*=\s*(?:neutral|none|temperror|permerror)\b",
+            auth_header
+        ):
+            dkim = "MISSING"
+
         else:
             dkim = "MISSING"
 
@@ -266,6 +485,12 @@ class HeaderForensicsEngine:
         ):
             dmarc = "PASS"
 
+        elif re.search(
+            r"\bdmarc\s*=\s*(?:neutral|none|temperror|permerror)\b",
+            auth_header
+        ):
+            dmarc = "MISSING"
+
         else:
             dmarc = "MISSING"
 
@@ -274,17 +499,25 @@ class HeaderForensicsEngine:
             "dkim": dkim,
             "dmarc": dmarc,
             "raw_auth_header": (
-                auth_header
-                if auth_header
+                raw_auth_header
+                if raw_auth_header
                 else None
             )
         }
 
     # =========================================================
-    # EXTRACT RECEIVED HEADERS + NETWORK HOPS + IPs
+    # RECEIVED HEADER / IP EXTRACTION
     # =========================================================
 
     def extract_received_hops(self):
+        """
+        Parse Received headers.
+
+        Extract only globally routable IPs.
+
+        Private, loopback, link-local,
+        multicast and documentation ranges are excluded.
+        """
 
         received_headers = self.msg.get_all(
             "Received",
@@ -292,68 +525,91 @@ class HeaderForensicsEngine:
         )
 
         hops = []
+
         all_public_ips = []
 
         # -----------------------------------------------------
-        # IPv4 + IPv6 candidate extraction
-        # -----------------------------------------------------
-        #
-        # Supported:
-        #
-        # IPv4:
-        #   54.240.9.29
-        #
-        # IPv6:
-        #   2607:f8b0:4864::8846
-        #
-        # Bracketed IPv6:
-        #   [2607:f8b0:4864::8846]
-        #
+        # IPv4 / IPv6 patterns
         # -----------------------------------------------------
 
         ip_pattern = re.compile(
             r"""
-            \[
-                ([0-9a-fA-F:.]+)
-            \]
-            |
-            (?<![a-zA-Z0-9])
+            # IPv4
+            (?<![A-Za-z0-9])
             (
                 (?:\d{1,3}\.){3}\d{1,3}
-                |
-                [0-9a-fA-F]*:[0-9a-fA-F:.]+
             )
-            (?![a-zA-Z0-9])
+            (?![A-Za-z0-9])
+
+            |
+
+            # IPv6
+            (?<![A-Za-z0-9])
+            (
+                (?:
+                    [0-9A-Fa-f]{1,4}
+                    :
+                ){2,7}
+                [0-9A-Fa-f:.]*
+            )
+            (?![A-Za-z0-9])
             """,
             re.VERBOSE
         )
 
         # -----------------------------------------------------
-        # Process every Received header
+        # Process headers
         # -----------------------------------------------------
 
-        for idx, header in enumerate(received_headers):
+        for idx, header in enumerate(
+            received_headers
+        ):
 
-            raw_header = str(header).strip()
+            raw_header = str(
+                header
+            ).strip()
 
             candidates = []
 
             # -------------------------------------------------
-            # Extract bracketed and unbracketed candidates
+            # Regular matches
             # -------------------------------------------------
 
-            for match in ip_pattern.finditer(raw_header):
+            for match in ip_pattern.finditer(
+                raw_header
+            ):
 
-                bracketed_ip = match.group(1)
-                unbracketed_ip = match.group(2)
+                ipv4 = match.group(1)
+                ipv6 = match.group(2)
 
                 candidate = (
-                    bracketed_ip
-                    or unbracketed_ip
+                    ipv4
+                    or ipv6
                 )
 
                 if candidate:
-                    candidates.append(candidate)
+                    candidates.append(
+                        candidate
+                    )
+
+            # -------------------------------------------------
+            # Bracketed IPv6 support
+            # -------------------------------------------------
+
+            bracketed_ipv6_pattern = re.compile(
+                r"\[([0-9A-Fa-f:]+)\]"
+            )
+
+            for match in bracketed_ipv6_pattern.finditer(
+                raw_header
+            ):
+
+                candidate = match.group(1)
+
+                if candidate:
+                    candidates.append(
+                        candidate
+                    )
 
             # -------------------------------------------------
             # Validate public IPs
@@ -364,38 +620,34 @@ class HeaderForensicsEngine:
             for candidate in candidates:
 
                 try:
-
                     ip_obj = ipaddress.ip_address(
                         candidate
                     )
 
-                    # Only globally routable IPs
-                    if ip_obj.is_global:
-
-                        ip_string = str(ip_obj)
-
-                        # -------------------------------------
-                        # Avoid duplicate IP inside same hop
-                        # -------------------------------------
-
-                        if ip_string not in valid_public_ips:
-
-                            valid_public_ips.append(
-                                ip_string
-                            )
-
-                        # -------------------------------------
-                        # Avoid duplicate IP globally
-                        # -------------------------------------
-
-                        if ip_string not in all_public_ips:
-
-                            all_public_ips.append(
-                                ip_string
-                            )
-
                 except ValueError:
                     continue
+
+                # Only globally routable
+                if not ip_obj.is_global:
+                    continue
+
+                ip_string = str(
+                    ip_obj
+                )
+
+                # Same-hop dedupe
+                if ip_string not in valid_public_ips:
+
+                    valid_public_ips.append(
+                        ip_string
+                    )
+
+                # Global dedupe
+                if ip_string not in all_public_ips:
+
+                    all_public_ips.append(
+                        ip_string
+                    )
 
             # -------------------------------------------------
             # Store hop
@@ -404,12 +656,16 @@ class HeaderForensicsEngine:
             hops.append({
                 "hop_id": idx + 1,
                 "raw_received": raw_header,
-                "extracted_public_ips": valid_public_ips
+                "extracted_public_ips":
+                    valid_public_ips
             })
 
-        # =====================================================
-        # ORIGIN IP CANDIDATE
-        # =====================================================
+        # -----------------------------------------------------
+        # Origin candidate
+        #
+        # Received headers generally run newest -> oldest.
+        # Last globally extracted public IP is used as candidate.
+        # -----------------------------------------------------
 
         origin_ip_candidate = (
             all_public_ips[-1]
@@ -421,7 +677,8 @@ class HeaderForensicsEngine:
             "total_hops": len(hops),
             "hop_chain": hops,
             "all_extracted_ips": all_public_ips,
-            "origin_ip_candidate": origin_ip_candidate
+            "origin_ip_candidate":
+                origin_ip_candidate
         }
 
     # =========================================================
@@ -433,6 +690,25 @@ class HeaderForensicsEngine:
         identity,
         auth
     ):
+        """
+        Header risk scoring.
+
+        Identity:
+            Reply-To mismatch      +30
+            Return-Path mismatch   +10
+
+        Authentication:
+            SPF FAIL               +20
+            DKIM FAIL              +20
+            DMARC FAIL             +20
+
+            SPF missing            +5
+            DKIM missing           +5
+            DMARC missing          +5
+
+        Maximum:
+            100
+        """
 
         score = 0
 
@@ -440,133 +716,259 @@ class HeaderForensicsEngine:
         # Identity anomalies
         # -----------------------------------------------------
 
-        for anomaly in identity["anomalies"]:
+        for anomaly in identity.get(
+            "anomalies",
+            []
+        ):
 
-            anomaly_type = anomaly["type"]
+            anomaly_type = anomaly.get(
+                "type"
+            )
 
-            # Reply-To mismatch is stronger signal
-            if anomaly_type == "REPLY_TO_MISMATCH":
-
+            if anomaly_type == (
+                "REPLY_TO_MISMATCH"
+            ):
                 score += 30
 
-            # Return-Path mismatch is weaker signal
-            elif anomaly_type == "RETURN_PATH_MISMATCH":
-
+            elif anomaly_type == (
+                "RETURN_PATH_MISMATCH"
+            ):
                 score += 10
 
         # -----------------------------------------------------
-        # Authentication failures
+        # Authentication FAIL
         # -----------------------------------------------------
 
-        if auth["spf"] == "FAIL":
+        if auth.get("spf") == "FAIL":
             score += 20
 
-        if auth["dkim"] == "FAIL":
+        if auth.get("dkim") == "FAIL":
             score += 20
 
-        if auth["dmarc"] == "FAIL":
+        if auth.get("dmarc") == "FAIL":
             score += 20
 
         # -----------------------------------------------------
-        # Limit score
+        # Authentication MISSING
         # -----------------------------------------------------
 
-        return min(score, 100)
+        if auth.get("spf") == "MISSING":
+            score += 5
+
+        if auth.get("dkim") == "MISSING":
+            score += 5
+
+        if auth.get("dmarc") == "MISSING":
+            score += 5
+
+        return min(
+            max(score, 0),
+            100
+        )
 
     # =========================================================
     # RISK SUMMARY
     # =========================================================
 
-    def generate_risk_summary(self, score):
+    def generate_risk_summary(
+        self,
+        score,
+        auth,
+        identity
+    ):
+        """
+        Generate human-readable header summary.
+        """
+
+        has_auth_failure = any(
+            auth.get(field) == "FAIL"
+            for field in [
+                "spf",
+                "dkim",
+                "dmarc"
+            ]
+        )
+
+        missing_auth_fields = [
+            field.upper()
+            for field in [
+                "spf",
+                "dkim",
+                "dmarc"
+            ]
+            if auth.get(field) == "MISSING"
+        ]
+
+        has_identity_anomaly = bool(
+            identity.get(
+                "anomalies",
+                []
+            )
+        )
+
+        # -----------------------------------------------------
+        # Critical
+        # -----------------------------------------------------
 
         if score >= 50:
-
             return (
                 "CRITICAL: Strong spoofing or "
                 "authentication failure indicators detected"
             )
 
-        elif score > 0:
+        # -----------------------------------------------------
+        # Authentication failure
+        # -----------------------------------------------------
+
+        if has_auth_failure:
 
             return (
-                "WARNING: Header anomalies or "
-                "authentication issues detected"
+                "WARNING: Authentication failure "
+                "indicators detected"
             )
 
-        else:
+        # -----------------------------------------------------
+        # Identity anomaly
+        # -----------------------------------------------------
+
+        if has_identity_anomaly:
+
+            if missing_auth_fields:
+
+                return (
+                    "WARNING: Header identity anomaly detected; "
+                    "some authentication signals are missing"
+                )
 
             return (
-                "PASS: No significant header spoofing "
-                "or authentication failures detected"
+                "WARNING: Header identity anomaly detected"
             )
+
+        # -----------------------------------------------------
+        # Missing auth
+        # -----------------------------------------------------
+
+        if missing_auth_fields:
+
+            fields = ", ".join(
+                missing_auth_fields
+            )
+
+            return (
+                "WARNING: Some email authentication "
+                f"signals are missing ({fields})"
+            )
+
+        # -----------------------------------------------------
+        # Clean
+        # -----------------------------------------------------
+
+        if score == 0:
+
+            return (
+                "PASS: No significant header risk "
+                "indicators detected"
+            )
+
+        return (
+            "WARNING: Header anomalies detected"
+        )
 
     # =========================================================
-    # MAIN HEADER FORENSICS ANALYSIS
+    # MAIN
     # =========================================================
 
     def generate_header_findings(self):
+        """
+        Main Header Forensics pipeline.
+        """
 
         # -----------------------------------------------------
         # Identity
         # -----------------------------------------------------
 
-        identity = self.analyze_identity_spoofing()
+        identity = (
+            self.analyze_identity_spoofing()
+        )
 
         # -----------------------------------------------------
         # Authentication
         # -----------------------------------------------------
 
-        auth = self.analyze_authentication_headers()
+        auth = (
+            self.analyze_authentication_headers()
+        )
 
         # -----------------------------------------------------
-        # Received / Network
+        # Received headers
         # -----------------------------------------------------
 
-        hops = self.extract_received_hops()
+        hops = (
+            self.extract_received_hops()
+        )
 
         # -----------------------------------------------------
         # Live DNS
         # -----------------------------------------------------
 
-        dns_status = self.check_live_dns_records(
-            identity["from_domain"]
+        dns_status = (
+            self.check_live_dns_records(
+                identity.get(
+                    "from_domain"
+                )
+            )
         )
 
         # -----------------------------------------------------
-        # Calculate risk score
+        # Risk
         # -----------------------------------------------------
 
-        header_risk_score = self.calculate_risk_score(
-            identity,
-            auth
+        header_risk_score = (
+            self.calculate_risk_score(
+                identity,
+                auth
+            )
         )
 
         # -----------------------------------------------------
-        # Generate summary
+        # Summary
         # -----------------------------------------------------
 
-        summary = self.generate_risk_summary(
-            header_risk_score
+        summary = (
+            self.generate_risk_summary(
+                header_risk_score,
+                auth,
+                identity
+            )
         )
 
         # -----------------------------------------------------
-        # Final output
+        # Final structured output
         # -----------------------------------------------------
 
         return {
             "module": "B. HEADER FORENSICS",
+
             "owner": "Akankcha",
-            "header_risk_score": header_risk_score,
+
+            "header_risk_score":
+                header_risk_score,
+
             "identity_analysis": identity,
+
             "authentication_matrix": auth,
+
             "live_dns_verification": dns_status,
+
             "network_hops": hops,
-            "header_findings_summary": summary
+
+            "header_findings_summary":
+                summary
         }
 
 
 # =============================================================
-# COMMAND LINE ENTRY POINT
+# CLI ENTRY POINT
 # =============================================================
 
 if __name__ == "__main__":
@@ -574,7 +976,14 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
 
         print(
-            "Usage: python header_forensics.py <email.eml>"
+            json.dumps(
+                {
+                    "error":
+                        "Usage: python header_forensics.py <email.eml>"
+                },
+                ensure_ascii=False,
+                indent=4
+            )
         )
 
         sys.exit(1)
@@ -584,28 +993,32 @@ if __name__ == "__main__":
     try:
 
         # -----------------------------------------------------
-        # Parse EML file
+        # Parse EML
         # -----------------------------------------------------
 
         with open(
             file_path,
             "rb"
-        ) as f:
+        ) as file:
 
             msg = BytesParser(
                 policy=policy.default
-            ).parse(f)
+            ).parse(file)
 
         # -----------------------------------------------------
-        # Run Header Forensics
+        # Run engine
         # -----------------------------------------------------
 
-        engine = HeaderForensicsEngine(msg)
+        engine = HeaderForensicsEngine(
+            msg
+        )
 
-        result = engine.generate_header_findings()
+        result = (
+            engine.generate_header_findings()
+        )
 
         # -----------------------------------------------------
-        # Print JSON
+        # JSON output
         # -----------------------------------------------------
 
         print(
@@ -616,12 +1029,13 @@ if __name__ == "__main__":
             )
         )
 
-    except Exception as e:
+    except Exception as exc:
 
         print(
             json.dumps(
                 {
-                    "error": str(e)
+                    "error":
+                        str(exc)
                 },
                 ensure_ascii=False,
                 indent=4
