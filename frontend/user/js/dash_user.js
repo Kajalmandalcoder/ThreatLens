@@ -139,12 +139,18 @@ document.addEventListener("DOMContentLoaded", () => {
         const formData = new FormData();
         formData.append("email", file);
 
+        const token = localStorage.getItem("token");
+
+        console.log("🔐 Token exists:", !!token);
         console.log("📤 Sending EML file to server:", file.name);
 
         try {
             console.log("🌐 Fetch starting...");
             const response = await fetch("http://localhost:5001/api/emails/analyze", {
                 method: "POST",
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
                 body: formData
             });
 

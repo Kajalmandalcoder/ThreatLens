@@ -8,6 +8,7 @@ const {
     getEmailById,
     getCampaignCorrelations
 } = require("../controllers/emailController");
+const authMiddleware = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -35,6 +36,9 @@ const upload = multer({
 // POST /api/emails/analyze
 router.post(
     "/analyze",
+
+    authMiddleware,
+
 
     (req, res, next) => {
         console.log("\n==============================");
@@ -68,7 +72,12 @@ router.post(
 );
 
 // GET /api/emails - Fetch list of analyzed emails for dashboards
-router.get("/", getAllEmails);
+router.get(
+    "/",
+    authMiddleware,
+    getAllEmails
+);
+
 
 router.get(
     "/case/:caseId/correlations",
@@ -76,6 +85,10 @@ router.get(
 );
 
 // GET /api/emails/:id - Fetch full forensics (URL, Header, IP, Domain) for case details
-router.get("/:id", getEmailById);
+router.get(
+    "/:id",
+    authMiddleware,
+    getEmailById
+);
 
 module.exports = router;

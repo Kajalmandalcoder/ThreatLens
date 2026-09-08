@@ -109,6 +109,16 @@ async function analyzeEmail(req, res) {
 
     parsedEmail.caseId = caseId;
 
+    // 🔐 Associate this email with the logged-in user
+    if (!req.user?.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authenticated user not found"
+      });
+    }
+
+    parsedEmail.userId = req.user.userId;
+
     const savedEmail = await Email.create(parsedEmail);
     console.log("✅ SAVED:", savedEmail._id);
     console.log("✅ Full forensic document saved to MongoDB:", savedEmail._id.toString());
@@ -144,32 +154,81 @@ async function analyzeEmail(req, res) {
 /**
  * Retrieve all emails for summary dashboard views.
  */
-async function getAllEmails(req, res) {
-  try {
-    const emails = await Email.find().select("caseId headers.subject headers.from headers.date createdAt")
-      // .select("headers.subject headers.from headers.date threatAnalysis urlIntelligence headerForensics mlAnalysis attachmentIntelligence createdAt")
-      .sort({ createdAt: -1 });
+const getAllEmails = async (req, res) => {
+    try {
 
-    return res.status(200).json({
-      success: true,
-      count: emails.length,
-      data: emails
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Failed to fetch emails",
-      error: error.message
-    });
-  }
-}
+      console.log("👤 AUTH USER:", req.user);
+      console.log("🎭 USER ROLE:", req.user?.role);
 
+        if (!req.user?.userId) {
+            return res.status(401).json({
+                success: false,
+                message: "Authenticated user not found"
+            });
+        }
+
+        let query = {};
+
+        // Normal user → only their own emails
+        if (req.user.role === "user") {
+            query = {
+                userId: req.user.userId
+            };
+        }
+
+        // Investigator → all emails
+        if (req.user.role === "investigator") {
+            query = {};
+        }
+
+        const emails = await Email.find(query)
+            .select("caseId headers.subject headers.from headers.date createdAt userId mlAnalysis")
+            .sort({ createdAt: -1 });
+
+        console.log("📦 EMAIL COUNT:", emails.length);
+
+        return res.status(200).json({
+            success: true,
+            cases: emails
+        });
+
+    } catch (error) {
+
+        console.error("Get all emails error:", error);
+
+        return res.status(500).json({
+            success: false,
+            message: "Failed to fetch emails"
+        });
+    }
+};
 /**
  * Retrieve a single email with full forensic subdocuments.
  */
 async function getEmailById(req, res) {
   try {
-    const email = await Email.findById(req.params.id);
+    if (!req.user?.userId) {
+      return res.status(401).json({
+        success: false,
+        message: "Authenticated user not found"
+      });
+    }
+
+    let query = {
+      _id: req.params.id
+    };
+
+    // Normal user → only their own email
+    if (req.user.role === "user") {
+      query.userId = req.user.userId;
+    }
+
+    // Investigator → can view any case
+    if (req.user.role === "investigator") {
+      // No userId filter
+    }
+
+    const email = await Email.findOne(query);
 
     if (!email) {
       return res.status(404).json({
@@ -182,6 +241,7 @@ async function getEmailById(req, res) {
       success: true,
       data: email
     });
+
   } catch (error) {
     return res.status(500).json({
       success: false,

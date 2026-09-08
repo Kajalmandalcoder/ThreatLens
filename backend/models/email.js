@@ -87,6 +87,13 @@ const emailSchema = new mongoose.Schema(
         index: true
     },
 
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+        index: true
+    },
+
     headers: {
       from: String,
       to: [String],

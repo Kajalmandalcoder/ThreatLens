@@ -1,4 +1,5 @@
 console.log("🔥 DASH INVEST JS LOADED");
+
 document.addEventListener("DOMContentLoaded", async function () {
 
     lucide.createIcons();
@@ -35,93 +36,87 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     let cases = [];
 
-    // async function fetchCases() {
-
-    //     try {
-
-    //         const response = await fetch(
-    //             "http://localhost:5000/api/emails"
-    //         );
-
-    //         const result = await response.json();
-
-    //         if (!response.ok || !result.success) {
-    //             throw new Error(
-    //                 result.message || "Failed to fetch cases"
-    //             );
-    //         }
-
-    //         cases = result.data || [];
-
-    //         console.log("📥 Cases fetched:", cases);
-
-    //         renderCases(cases);
-
-    //     } catch (error) {
-
-    //         console.error(
-    //             "❌ Failed to fetch cases:",
-    //             error
-    //         );
-
-    //         tableBody.innerHTML = `
-    //             <tr>
-    //                 <td colspan="9" style="text-align:center;">
-    //                     Failed to load cases
-    //                 </td>
-    //             </tr>
-    //         `;
-
-    //         resultCount.textContent =
-    //             "Showing 0 cases";
-    //     }
-    // }
-
     async function fetchCases() {
 
-    console.log("🚀 fetchCases STARTED");
+        console.log("🚀 fetchCases STARTED");
 
-    try {
+        try {
 
-        console.log("🌐 Calling API...");
+            const token = localStorage.getItem("token");
 
-        const response = await fetch(
-            "http://localhost:5001/api/emails"
-        );
-
-        console.log("✅ API response received:", response);
-
-        const result = await response.json();
-
-        console.log("📦 API data:", result);
-
-        if (!response.ok || !result.success) {
-            throw new Error(
-                result.message || "Failed to fetch cases"
+            console.log("🔐 Token exists:", !!token);
+            console.log(
+                "🔐 Token length:",
+                token ? token.length : 0
             );
+
+            if (!token) {
+                throw new Error(
+                    "Authentication token not found"
+                );
+            }
+
+            console.log("🌐 Calling API...");
+
+            const response = await fetch(
+                "http://localhost:5001/api/emails",
+                {
+                    method: "GET",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                }
+            );
+
+            console.log(
+                "✅ API response received:",
+                response.status
+            );
+
+            const result = await response.json();
+
+            console.log("📦 API data:", result);
+
+            if (!response.ok || !result.success) {
+
+                throw new Error(
+                    result.message ||
+                    "Failed to fetch cases"
+                );
+
+            }
+
+            cases = result.cases || [];
+
+            console.log(
+                "📥 Cases fetched:",
+                cases
+            );
+
+            renderCases(cases);
+
+        } catch (error) {
+
+            console.error(
+                "❌ Failed to fetch cases:",
+                error
+            );
+
+            tableBody.innerHTML = `
+                <tr>
+                    <td
+                        colspan="9"
+                        style="text-align:center;"
+                    >
+                        Failed to load cases
+                    </td>
+                </tr>
+            `;
+
+            resultCount.textContent =
+                "Showing 0 cases";
         }
-
-        cases = result.data || [];
-
-        console.log("📥 Cases fetched:", cases);
-
-        renderCases(cases);
-
-    } catch (error) {
-
-        console.error("❌ Failed to fetch cases:", error);
-
-        tableBody.innerHTML = `
-            <tr>
-                <td colspan="9" style="text-align:center;">
-                    Failed to load cases
-                </td>
-            </tr>
-        `;
-
-        resultCount.textContent = "Showing 0 cases";
     }
-}
 
 
     // =========================
@@ -130,18 +125,19 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function getCaseId(email) {
 
-        // New records: backend-generated Case ID
         if (email.caseId) {
             return email.caseId;
         }
 
-        // Old records: stable Case ID using MongoDB _id
         if (email._id) {
+
             const year = new Date(
                 email.createdAt || Date.now()
             ).getFullYear();
 
-            return `CASE-${year}-${email._id.slice(-6).toUpperCase()}`;
+            return `CASE-${year}-${email._id
+                .slice(-6)
+                .toUpperCase()}`;
         }
 
         return "CASE-UNKNOWN";
@@ -187,7 +183,10 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             tableBody.innerHTML = `
                 <tr>
-                    <td colspan="9" style="text-align:center;">
+                    <td
+                        colspan="9"
+                        style="text-align:center;"
+                    >
                         No cases found
                     </td>
                 </tr>
@@ -200,7 +199,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
 
 
-        data.forEach((email, index) => {
+        data.forEach((email) => {
 
             const caseId =
                 getCaseId(email);
@@ -213,7 +212,10 @@ document.addEventListener("DOMContentLoaded", async function () {
                 email.headers?.from ||
                 "Unknown Sender";
 
-            const created = formatDate(email.headers?.date);
+            const created =
+                formatDate(
+                    email.headers?.date
+                );
 
 
             const row =
@@ -233,7 +235,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             row.dataset.sender =
                 sender;
 
-            // Not fetched yet
             row.dataset.threat = "";
 
             row.dataset.severity = "";
@@ -285,12 +286,13 @@ document.addEventListener("DOMContentLoaded", async function () {
                         data-id="${email._id}"
                     >
                         View
-                        <i data-lucide="chevron-right"></i>
+                        <i
+                            data-lucide="chevron-right"
+                        ></i>
                     </button>
                 </td>
 
             `;
-
 
             tableBody.appendChild(row);
 
@@ -381,9 +383,6 @@ document.addEventListener("DOMContentLoaded", async function () {
                 subject.includes(searchValue) ||
                 sender.includes(searchValue);
 
-
-            // Since these fields are NOT fetched yet
-            // only "all" will show the records
 
             const matchesSeverity =
                 selectedSeverity === "all" ||
@@ -501,7 +500,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             );
 
 
-            // Later case detail page
             window.location.href =
                 `case_detail.html?id=${emailId}`;
         }

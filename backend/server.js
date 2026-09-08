@@ -1,5 +1,7 @@
 const path = require("path");
 require("dotenv").config({ path: path.resolve(__dirname, ".env") });
+console.log("🔑 JWT_SECRET loaded:", !!process.env.JWT_SECRET);
+console.log("🔑 JWT_SECRET length:", process.env.JWT_SECRET?.length);
 
 const dns = require("dns");
 const mongoose = require("mongoose");

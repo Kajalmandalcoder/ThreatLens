@@ -206,6 +206,9 @@ const verifyOTP = async (req, res) => {
         // GENERATE JWT
         // =========================
 
+        console.log("🔐 LOGIN JWT_SECRET loaded:", !!process.env.JWT_SECRET);
+        console.log("🔐 LOGIN JWT_SECRET length:", process.env.JWT_SECRET?.length);
+
         const token = jwt.sign(
             {
                 userId: user._id,

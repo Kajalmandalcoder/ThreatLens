@@ -42,8 +42,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
 
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            throw new Error("Authentication token not found");
+        }
+
         const response = await fetch(
-            `http://localhost:5001/api/emails/${emailId}`
+            `http://localhost:5001/api/emails/${emailId}`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
         );
 
         console.log("🌐 API response:", response);
@@ -213,26 +225,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (meta.length >= 7) {
 
-            meta[0].textContent =
-                headers.from || "—";
-
-            meta[1].textContent =
-                headers.to || "—";
-
-            meta[2].textContent =
-                headers.replyTo || "—";
-
-            meta[3].textContent =
-                headers.returnPath || "—";
-
-            meta[4].textContent =
-                headers.subject || "—";
-
-            meta[5].textContent =
-                headers.messageId || "—";
-
-            meta[6].textContent =
-                headers.date || "—";
+            meta[0].textContent = formatHeaderValue(headers.from);
+            meta[1].textContent = formatHeaderValue(headers.to);
+            meta[2].textContent = formatHeaderValue(headers.replyTo);
+            meta[3].textContent = formatHeaderValue(headers.returnPath);
+            meta[4].textContent = formatHeaderValue(headers.subject);
+            meta[5].textContent = formatHeaderValue(headers.messageId);
+            meta[6].textContent = formatHeaderValue(headers.date);
         }
 
 
@@ -2159,13 +2158,39 @@ function buildRawHeaderText(headers) {
 // HEADER NAME FORMAT
 // =========================================================
 
-function formatHeaderName(key) {
+function formatHeaderValue(value) {
 
-    return key
-        .replace(/([A-Z])/g, " $1")
-        .replace(/^./, char =>
-            char.toUpperCase()
+    if (!value) {
+        return "—";
+    }
+
+    if (Array.isArray(value)) {
+        return value
+            .map(item => {
+                if (typeof item === "object") {
+                    return (
+                        item.address ||
+                        item.email ||
+                        item.name ||
+                        JSON.stringify(item)
+                    );
+                }
+
+                return item;
+            })
+            .join(", ");
+    }
+
+    if (typeof value === "object") {
+        return (
+            value.address ||
+            value.email ||
+            value.name ||
+            JSON.stringify(value)
         );
+    }
+
+    return String(value);
 }
 
 // =========================================================
@@ -2512,42 +2537,33 @@ function showJourneyNode(hop, label) {
 
     function calculateThreatScore(email) {
 
-        const ml =
-            Number(
-                email.mlAnalysis?.confidence || 0
+        // Future Risk Engine score
+        if (
+            email.riskAnalysis?.final_score !== undefined
+        ) {
+            return Math.round(
+                Number(email.riskAnalysis.final_score)
             );
+        }
 
-        const header =
-            Number(
-                email.headerForensics
-                    ?.header_risk_score || 0
+        if (
+            email.riskEngine?.final_score !== undefined
+        ) {
+            return Math.round(
+                Number(email.riskEngine.final_score)
             );
+        }
 
-        const url =
-            Number(
-                email.urlIntelligence
-                    ?.summary
-                    ?.max_risk_score || 0
+        // Current backend ML threat score
+        if (
+            email.mlAnalysis?.threatScore !== undefined
+        ) {
+            return Math.round(
+                Number(email.mlAnalysis.threatScore)
             );
+        }
 
-        const attachment =
-            Number(
-                email.attachmentIntelligence
-                    ?.summary
-                    ?.max_attachment_risk_score || 0
-            );
-
-        const values = [
-            ml <= 1 ? ml * 100 : ml,
-            header,
-            url,
-            attachment
-        ];
-
-        return Math.min(
-            100,
-            Math.round(Math.max(...values))
-        );
+        return 0;
     }
 
 

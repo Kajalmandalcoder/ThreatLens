@@ -17,8 +17,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
 
+        const token = localStorage.getItem("token");
+
         const response = await fetch(
-            `http://localhost:5001/api/emails/${encodeURIComponent(emailId)}`
+            `http://localhost:5001/api/emails/${encodeURIComponent(emailId)}`,
+            {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
         );
 
         console.log("📡 Report API status:", response.status);
