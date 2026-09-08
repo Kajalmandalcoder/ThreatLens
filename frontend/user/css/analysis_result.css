@@ -341,107 +341,139 @@ body {
 }
 
 
-/* =====================================================
-   ACTION BOX
-===================================================== */
+/* ==========================================
+   RECOMMENDED ACTION BOX
+========================================== */
 
 .action-box {
-    margin-top: 35px;
+    width: 100%;
+    box-sizing: border-box;
 
-    padding: 25px 27px;
+    padding: 34px 38px 38px;
 
-    border: 1px solid #5967df;
+    background: #f1f7ff;
 
-    border-radius: 17px;
+    border: 1px solid #d5e6ff;
 
-    background: #f5f5ff;
+    border-radius: 22px;
+
+    margin-top: 36px;
 }
 
+
+/* ==========================================
+   ACTION TITLE
+========================================== */
 
 .action-title {
     display: flex;
-
-    align-items: center;
-
+    align-items: flex-start;
     gap: 12px;
-
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 
 
+/* ==========================================
+   SHIELD ICON
+========================================== */
+
 .action-icon {
-    width: 37px;
-    height: 37px;
+    width: 36px;
+    height: 36px;
 
-    flex-shrink: 0;
-
-    border-radius: 10px;
-
-    background: #7182ed;
-
-    color: #ffffff;
+    flex: 0 0 36px;
 
     display: flex;
     align-items: center;
     justify-content: center;
-}
 
+    background: #2166f3;
+
+    border-radius: 10px;
+
+    color: white;
+}
 
 .action-icon svg {
-    width: 18px;
-    height: 18px;
+    width: 19px;
+    height: 19px;
 }
 
+
+/* ==========================================
+   ACTION HEADING
+========================================== */
 
 .action-title h2 {
-    font-size: 17px;
+    margin: 0;
 
-    color: #172033;
+    font-size: 20px;
+    line-height: 1.2;
 
-    margin-bottom: 4px;
+    font-weight: 700;
+
+    color: #0d1830;
 }
-
 
 .action-title p {
-    font-size: 11px;
+    margin: 3px 0 0;
 
-    color: #73819b;
+    font-size: 12px;
+    line-height: 1.4;
+
+    color: #71809b;
 }
 
 
-/* =====================================================
+/* ==========================================
    ACTION GRID
-===================================================== */
+========================================== */
 
 .action-grid {
     display: grid;
 
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
 
-    column-gap: 35px;
+    column-gap: 70px;
+    row-gap: 20px;
 
-    row-gap: 12px;
+    width: 100%;
 }
 
+
+/* ==========================================
+   ACTION ITEM
+========================================== */
 
 .action-item {
     display: flex;
+    align-items: flex-start;
 
-    align-items: center;
+    gap: 14px;
 
-    gap: 10px;
+    width: 100%;
+    min-width: 0;
 
-    font-size: 12px;
+    padding: 0;
 
-    color: #253047;
+    margin: 0;
+
+    background: transparent;
+    border: none;
+    box-shadow: none;
+
+    color: #344563;
 }
 
 
-.action-item > span {
-    width: 17px;
-    height: 17px;
+/* ==========================================
+   ACTION MARK
+========================================== */
 
-    flex-shrink: 0;
+.action-mark {
+    width: 28px;
+    height: 28px;
+    flex: 0 0 28px;
 
     border-radius: 50%;
 
@@ -449,22 +481,70 @@ body {
     align-items: center;
     justify-content: center;
 
+    font-size: 16px;
+    line-height: 1;
+}
+
+
+/* ==========================================
+   ACTION TEXT
+========================================== */
+
+.action-text {
+    flex: 1;
+    min-width: 0;
+
+    padding-top: 3px;
+
     font-size: 12px;
-    font-weight: 700;
+    line-height: 1.4;
+
+    color: #344563;
+
+    word-break: normal;
+    overflow-wrap: break-word;
 }
 
 
-.action-item.danger > span {
-    background: #ffe4e6;
+/* ==========================================
+   DANGER
+========================================== */
 
-    color: #e33d48;
+.action-item.danger .action-mark {
+    background: #ffe0e0;
+    color: #ff2020;
 }
 
 
-.action-item.safe > span {
-    background: #d9f8ec;
+/* ==========================================
+   SAFE
+========================================== */
 
-    color: #0eae7c;
+.action-item.safe .action-mark {
+    background: #d2f8e8;
+    color: #00a878;
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 800px) {
+
+    .action-box {
+        padding: 26px 22px 30px;
+    }
+
+    .action-grid {
+        grid-template-columns: 1fr;
+        row-gap: 18px;
+    }
+
+    .action-title h2 {
+        font-size: 24px;
+    }
+
 }
 
 
@@ -867,4 +947,265 @@ body.dark-mode footer {
         text-align: center;
     }
 
+}
+
+/* ==========================================
+   TECHNICAL SUMMARY
+========================================== */
+
+.technical-summary {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    transition: all 0.2s ease;
+}
+
+.technical-summary:hover {
+    opacity: 0.8;
+}
+
+
+.technical-summary-content {
+    display: none;
+
+    margin-top: 12px;
+    padding: 18px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    background: #f8fafc;
+
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+
+.technical-summary-content.open {
+    display: grid;
+}
+
+
+.technical-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 12px 14px;
+
+    background: white;
+    border-radius: 10px;
+
+    border: 1px solid #edf0f4;
+}
+
+
+.technical-item span {
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+.technical-item strong {
+    color: #1e293b;
+    font-size: 14px;
+}
+
+
+/* Mobile */
+
+@media (max-width: 700px) {
+
+    .technical-summary-content {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+/* ==========================================
+   TECHNICAL SUMMARY
+========================================== */
+
+.technical-summary-content {
+    width: 100%;
+    box-sizing: border-box;
+
+    margin-top: 0;
+
+    padding: 24px 28px;
+
+    background: #ffffff;
+
+    border: 1px solid #dbe4f0;
+
+    border-top: none;
+
+    border-radius: 0 0 16px 16px;
+
+    display: grid;
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+    gap: 0;
+}
+
+
+/* IMPORTANT:
+   hidden attribute should actually hide it
+*/
+
+.technical-summary-content[hidden] {
+    display: none !important;
+}
+
+
+/* ==========================================
+   TECHNICAL ITEM
+========================================== */
+
+.technical-item {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    min-height: 52px;
+
+    padding: 12px 8px;
+
+    border-bottom: 1px solid #edf1f6;
+
+    box-sizing: border-box;
+}
+
+
+.technical-item span {
+    font-size: 14px;
+
+    color: #64748b;
+}
+
+
+.technical-item strong {
+    font-size: 14px;
+
+    color: #17233d;
+
+    text-align: right;
+
+    word-break: break-word;
+}
+
+
+/* ==========================================
+   SUMMARY TOGGLE
+========================================== */
+
+.technical-summary {
+    cursor: pointer;
+
+    user-select: none;
+
+    transition: background 0.2s ease;
+}
+
+
+.technical-summary.active {
+    border-radius: 16px 16px 0 0;
+}
+
+
+/* Arrow */
+
+#technicalSummaryIcon {
+    transition: transform 0.25s ease;
+}
+
+
+/* ==========================================
+   MOBILE
+========================================== */
+
+@media (max-width: 800px) {
+
+    .technical-summary-content {
+        grid-template-columns: 1fr;
+
+        padding: 18px;
+    }
+
+    .technical-item {
+        min-height: 48px;
+    }
+
+}
+
+.risk-badge.risk-high span {
+    background: #ef4444;
+}
+
+.risk-badge.risk-medium span {
+    background: #f59e0b;
+}
+
+.risk-badge.risk-low span {
+    background: #22c55e;
+}
+
+.risk-badge.risk-unknown span {
+    background: #94a3b8;
+}
+
+.risk-badge span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 7px;
+}
+
+/* ==========================================
+   DYNAMIC RESULT HERO BACKGROUND
+========================================== */
+
+.result-hero {
+    transition:
+        background 0.3s ease,
+        border-color 0.3s ease;
+}
+
+
+/* 🔴 HIGH */
+
+.result-hero.risk-high {
+    background: #fff1f2;
+    border-color: #f3b8bd;
+}
+
+
+/* 🟡 MEDIUM */
+
+.result-hero.risk-medium {
+    background: #fff9e6;
+    border-color: #f3d27a;
+}
+
+
+/* 🟢 LOW */
+
+.result-hero.risk-low {
+    background: #effbf3;
+    border-color: #b7e4c7;
+}
+
+
+/* UNKNOWN */
+
+.result-hero.risk-unknown {
+    background: #f8fafc;
+    border-color: #dbe3ec;
 }

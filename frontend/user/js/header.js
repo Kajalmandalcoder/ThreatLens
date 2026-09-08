@@ -12,6 +12,72 @@ fetch("components/header.html")
         // Lucide icons
         lucide.createIcons();
 
+        // ==========================================
+        // DYNAMIC USER PROFILE
+        // ==========================================
+
+        const token = localStorage.getItem("token");
+
+        if (token) {
+
+            try {
+
+                const payload = JSON.parse(
+                    atob(token.split(".")[1])
+                );
+
+                const name =
+                    payload.name ||
+                    payload.email?.split("@")[0] ||
+                    "User";
+
+                const profileName =
+                    document.getElementById("profileName");
+
+                const profileAvatar =
+                    document.getElementById("profileAvatar");
+
+                const profileWorkspace =
+                    document.getElementById("profileWorkspace");
+
+
+                // User name
+                if (profileName) {
+                    profileName.textContent = name;
+                }
+
+
+                // User initials
+                if (profileAvatar) {
+
+                    const initials = name
+                        .split(" ")
+                        .map(word => word.charAt(0))
+                        .join("")
+                        .substring(0, 2)
+                        .toUpperCase();
+
+                    profileAvatar.textContent = initials;
+                }
+
+
+                // Workspace
+                if (profileWorkspace) {
+                    profileWorkspace.textContent =
+                        "Personal workspace";
+                }
+
+            } catch (error) {
+
+                console.error(
+                    "Profile load nahi hua:",
+                    error
+                );
+
+            }
+
+        }
+
 
         // ==========================================
         // DARK / LIGHT MODE
