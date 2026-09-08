@@ -45,6 +45,7 @@ loginForm.addEventListener("submit", async function (e) {
             "user",
             JSON.stringify(data.user)
         );
+        
 
         alert("Login successful!");
 

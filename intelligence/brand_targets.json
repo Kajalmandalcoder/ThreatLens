@@ -1,11 +1,66 @@
 [
-  "paypal",
-  "microsoft",
-  "google",
-  "apple",
-  "amazon",
-  "netflix",
-  "chase",
-  "wellsfargo",
-  "bankofamerica"
+  {
+    "brand": "paypal",
+    "display_names": [
+      "paypal",
+      "paypal security",
+      "paypal support",
+      "paypal team"
+    ],
+    "official_domains": [
+      "paypal.com"
+    ]
+  },
+  {
+    "brand": "microsoft",
+    "display_names": [
+      "microsoft",
+      "microsoft support",
+      "microsoft security",
+      "microsoft account"
+    ],
+    "official_domains": [
+      "microsoft.com",
+      "live.com",
+      "office.com",
+      "outlook.com"
+    ]
+  },
+  {
+    "brand": "google",
+    "display_names": [
+      "google",
+      "google security",
+      "google support",
+      "google account"
+    ],
+    "official_domains": [
+      "google.com"
+    ]
+  },
+  {
+    "brand": "amazon",
+    "display_names": [
+      "amazon",
+      "amazon support",
+      "amazon security",
+      "amazon account"
+    ],
+    "official_domains": [
+      "amazon.com"
+    ]
+  },
+  {
+    "brand": "apple",
+    "display_names": [
+      "apple",
+      "apple support",
+      "apple security",
+      "apple account"
+    ],
+    "official_domains": [
+      "apple.com"
+    ]
+  }
 ]
+

@@ -282,13 +282,34 @@ async function analyzeEmail(req, res) {
     }
 
     // 1. Python Email Parser
+    // 1. Python Email Parser
+    
     const parsedEmail = await parseEmailWithPython(req.file.path);
+
+// Normalize header fields for downstream services
+    parsedEmail.from = parsedEmail.headers?.from || null;
+    parsedEmail.to = parsedEmail.headers?.to || null;
+    parsedEmail.subject = parsedEmail.headers?.subject || null;
+    parsedEmail.replyTo = parsedEmail.headers?.replyTo || null;
+    parsedEmail.returnPath = parsedEmail.headers?.returnPath || null;
+
     console.log("✅ Python parser completed");
+
+    // --- DOMAIN INTEL INPUT CHECK ---
+    console.log("========== PARSED EMAIL DEBUG ==========");
+    console.log("FROM:", parsedEmail.from);
+    console.log("TO:", parsedEmail.to);
+    console.log("SUBJECT:", parsedEmail.subject);
+    console.log("REPLY-TO:", parsedEmail.replyTo);
+    console.log("RETURN-PATH:", parsedEmail.returnPath);
+    console.log("HEADERS:", parsedEmail.headers);
+    console.log("========================================");
 
     console.log(
       "📍 Email Journey:",
       JSON.stringify(parsedEmail.emailJourney, null, 2)
     );
+
 
     // 2. ML Threat Prediction
     let mlResult = null;
