@@ -167,6 +167,116 @@ const emailSchema = new mongoose.Schema(
   recommendedActions: [String]
 },
 
+imageIntelligence: {
+  images_analyzed: {
+    type: Number,
+    default: 0
+  },
+
+  overall_risk_score: {
+    type: Number,
+    default: 0
+  },
+
+  risk_level: {
+    type: String,
+    enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
+    default: "LOW"
+  },
+
+  verdict: {
+    type: String,
+    enum: ["SAFE", "SUSPICIOUS", "MALICIOUS"],
+    default: "SAFE"
+  },
+
+  reasons: {
+    type: [String],
+    default: []
+  },
+
+  image_details: [
+    {
+      path: String,
+
+      ocr_text: {
+        type: String,
+        default: ""
+      },
+
+      text_analysis: {
+        has_suspicious_text: {
+          type: Boolean,
+          default: false
+        },
+
+        detected_intents: {
+          type: [String],
+          default: []
+        },
+
+        matched_phrases: {
+          type: [String],
+          default: []
+        },
+
+        risk_score: {
+          type: Number,
+          default: 0
+        },
+
+        verdict: {
+          type: String,
+          default: "BENIGN"
+        }
+      },
+
+      qr_data: [
+        {
+          payload: String,
+
+          url_intelligence: {
+            type: mongoose.Schema.Types.Mixed,
+            default: {}
+          }
+        }
+      ],
+
+      brand_data: {
+        detected_brand: {
+          type: String,
+          default: null
+        },
+
+        method: {
+          type: String,
+          default: null
+        },
+
+        is_impersonation: {
+          type: Boolean,
+          default: false
+        },
+
+        reason: {
+          type: String,
+          default: null
+        }
+      },
+
+      risk_score: {
+        type: Number,
+        default: 0
+      },
+
+      reasons: {
+        type: [String],
+        default: []
+      }
+    }
+  ]
+},
+
     // ========================================================
     // URL INTELLIGENCE
     // ========================================================

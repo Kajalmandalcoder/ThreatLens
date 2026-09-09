@@ -14,13 +14,19 @@ const {
       findRelatedCases
     } = require("../services/campaignCorrelationService");
 
+
+const {
+    runImageIntelligence
+} = require("../services/imageIntelligenceService");
+
 function buildTechnicalReasons({
   mlResult,
   headerForensics,
   urlIntelligence,
   ipIntelligence,
   domainIntelligence,
-  attachmentIntelligence
+  attachmentIntelligence,
+  imageIntelligence
 }) {
   const reasons = [];
   const actions = [];
@@ -222,6 +228,61 @@ function buildTechnicalReasons({
   // IMPORTANT:
   // Mere presence of an attachment is NOT a reason.
 
+    // =========================
+  // IMAGE INTELLIGENCE
+  // =========================
+
+  if (
+    imageIntelligence?.verdict === "MALICIOUS" ||
+    imageIntelligence?.risk_level === "CRITICAL" ||
+    Number(imageIntelligence?.overall_risk_score || 0) >= 75
+  ) {
+    add(
+      "MALICIOUS_IMAGE",
+      `Image Intelligence detected high-risk image content (Score: ${imageIntelligence.overall_risk_score}).`,
+      "Do not trust or interact with links, QR codes, or instructions contained in the image."
+    );
+  }
+
+  if (
+    imageIntelligence?.verdict === "SUSPICIOUS" ||
+    imageIntelligence?.risk_level === "HIGH" ||
+    (
+      Number(imageIntelligence?.overall_risk_score || 0) >= 50 &&
+      Number(imageIntelligence?.overall_risk_score || 0) < 75
+    )
+  ) {
+    add(
+      "SUSPICIOUS_IMAGE",
+      `Image Intelligence detected suspicious image content (Score: ${imageIntelligence.overall_risk_score}).`,
+      "Review the image content and verify any embedded instructions or links independently."
+    );
+  }
+
+  if (
+    imageIntelligence?.image_details?.some(
+      (image) => image?.brand_data?.is_impersonation === true
+    )
+  ) {
+    add(
+      "BRAND_IMPERSONATION",
+      "The email image appears to contain a brand identity that does not align with the sender.",
+      "Verify the sender and brand identity through an independent trusted source."
+    );
+  }
+
+  if (
+    imageIntelligence?.image_details?.some(
+      (image) => image?.qr_data?.length > 0
+    )
+  ) {
+    add(
+      "QR_CODE_DETECTED",
+      "A QR code was detected inside an email image.",
+      "Do not scan or follow the QR code until its destination has been independently verified."
+    );
+  }
+  
   // =========================
   // ML RESULT
   // =========================
@@ -376,16 +437,55 @@ const emailText = [
 
     console.log("✅ Attachment Intelligence completed");
 
-    // 7. Merge all findings into the email document
-    // 7. Build evidence-based technical reasoning
-const explainability = buildTechnicalReasons({
-  mlResult,
-  headerForensics,
-  urlIntelligence,
-  ipIntelligence: intelligenceData.ipIntelligence,
-  domainIntelligence: intelligenceData.domainIntelligence,
-  attachmentIntelligence
-});
+    // 7. Image Intelligence
+    let imageIntelligence = null;
+
+    try {
+      imageIntelligence = await runImageIntelligence(
+        req.file.path
+      );
+
+      console.log("🖼️ Image Intelligence completed");
+      console.log(
+        "🖼️ Images analyzed:",
+        imageIntelligence?.images_analyzed
+      );
+      console.log(
+        "🖼️ Image Risk Score:",
+        imageIntelligence?.overall_risk_score
+      );
+      console.log(
+        "🖼️ Image Verdict:",
+        imageIntelligence?.verdict
+      );
+
+    } catch (imageErr) {
+      console.warn(
+        "⚠️ Image Intelligence failed or skipped:",
+        imageErr.message
+      );
+
+      imageIntelligence = {
+        images_analyzed: 0,
+        overall_risk_score: 0,
+        risk_level: "LOW",
+        verdict: "SAFE",
+        reasons: ["Image Intelligence unavailable"],
+        image_details: []
+      };
+    }
+
+        // 7. Merge all findings into the email document
+        // 7. Build evidence-based technical reasoning
+    const explainability = buildTechnicalReasons({
+      mlResult,
+      headerForensics,
+      urlIntelligence,
+      ipIntelligence: intelligenceData.ipIntelligence,
+      domainIntelligence: intelligenceData.domainIntelligence,
+      attachmentIntelligence,
+       imageIntelligence
+    });
 
 // Merge all findings into the email document
 parsedEmail.mlAnalysis = {
@@ -404,6 +504,8 @@ parsedEmail.mlAnalysis = {
       summary: attachmentIntelligence.summary,
       attachments: attachmentIntelligence.attachments || []
     };
+
+    parsedEmail.imageIntelligence = imageIntelligence;
 
     // 8. Save full record to MongoDB
     console.log("💾 About to save to MongoDB");
