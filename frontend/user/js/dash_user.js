@@ -136,8 +136,14 @@ document.addEventListener("DOMContentLoaded", () => {
     // UPLOAD TO BACKEND SERVER
     // =========================
     async function uploadEmail(file) {
+        console.log("========== UPLOAD START ==========");
+        console.log("File name:", file.name);
+        console.log("File size:", file.size);
+        console.log("File type:", file.type);
+        console.log("Last modified:", file.lastModified);
+
         const formData = new FormData();
-        formData.append("email", file);
+        formData.append("email", file, "email.eml");
 
         const token = localStorage.getItem("token");
 

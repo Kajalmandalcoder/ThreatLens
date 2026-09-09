@@ -115,19 +115,31 @@ document.addEventListener("DOMContentLoaded", () => {
 /* =========================================================
    LOAD CORRELATIONS
 ========================================================= */
-
 async function loadCampaignCorrelations() {
 
     showLoading(true);
 
     try {
 
+        const token = localStorage.getItem("token");
+
+        if (!token) {
+            console.error("❌ Authentication token not found");
+            showError("Please login again.");
+            return;
+        }
+
         const response = await fetch(
             `${API_BASE_URL}/case/${encodeURIComponent(
                 currentCaseId
-            )}/correlations`
+            )}/correlations`,
+            {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            }
         );
-
 
         if (!response.ok) {
 
@@ -136,13 +148,17 @@ async function loadCampaignCorrelations() {
             );
         }
 
-
         const result = await response.json();
 
-        console.log("Correlation API response:", result);
+        console.log(
+            "Correlation API response:",
+            result
+        );
 
         if (!result.success || !result.data) {
-            throw new Error("Invalid correlation API response");
+            throw new Error(
+                "Invalid correlation API response"
+            );
         }
 
         correlationData = result.data;
@@ -150,7 +166,6 @@ async function loadCampaignCorrelations() {
         renderCurrentCase();
 
         renderCorrelationGraph();
-
 
     } catch (error) {
 
