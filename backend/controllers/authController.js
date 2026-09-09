@@ -7,7 +7,8 @@ const { sendOTPEmail, sendPasswordResetOTPEmail } = require("../services/emailSe
 
 const investigatorEmails = [
     "aryajiya396@gmail.com",
-    "deepika032btit24@igdtuw.ac.in"
+    "deepika032btit24@igdtuw.ac.in",
+    "english.2007.by.lisa@gmail.com"
 ];
 
 // =========================

@@ -51,10 +51,8 @@ const storage = multer.diskStorage({
 
     filename: (req, file, cb) => {
 
-        const originalName = file.originalname;
-
         const safeName =
-            `${Date.now()}-${originalName}`;
+            `${Date.now()}-email.eml`;
 
         console.log("📝 Multer filename:", safeName);
 

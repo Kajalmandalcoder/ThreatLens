@@ -23,18 +23,86 @@ document.addEventListener("DOMContentLoaded", async () => {
             lucide.createIcons();
         }
 
-        // Active page
-        const currentPage = window.location.pathname.split("/").pop();
+        // ==============================
+        // LOAD LOGGED-IN INVESTIGATOR
+        // ==============================
 
-        document.querySelectorAll(".top-header nav a").forEach(link => {
-            const linkPage = link.getAttribute("href");
+        const token = localStorage.getItem("token");
 
-            if (linkPage === currentPage) {
-                link.classList.add("active");
+        if (token) {
+            try {
+
+                const payload = JSON.parse(
+                    atob(token.split(".")[1])
+                );
+
+                const name =
+                    payload.name ||
+                    payload.email?.split("@")[0] ||
+                    "Investigator";
+
+                const nameElement =
+                    document.getElementById("investigatorName");
+
+                const avatarElement =
+                    document.getElementById("investigatorAvatar");
+
+                // Show name
+                if (nameElement) {
+                    nameElement.textContent = name;
+                }
+
+                // Generate initials
+                if (avatarElement) {
+
+                    const initials = name
+                        .trim()
+                        .split(/\s+/)
+                        .map(word => word[0])
+                        .join("")
+                        .substring(0, 2)
+                        .toUpperCase();
+
+                    avatarElement.textContent = initials;
+                }
+
+            } catch (profileError) {
+
+                console.error(
+                    "Failed to load investigator profile:",
+                    profileError
+                );
+
             }
-        });
+        }
+
+        // ==============================
+        // ACTIVE PAGE
+        // ==============================
+
+        const currentPage =
+            window.location.pathname.split("/").pop();
+
+        document
+            .querySelectorAll(".top-header nav a")
+            .forEach(link => {
+
+                const linkPage =
+                    link.getAttribute("href");
+
+                if (linkPage === currentPage) {
+                    link.classList.add("active");
+                }
+
+            });
 
     } catch (error) {
-        console.error("Header loading failed:", error);
+
+        console.error(
+            "Header loading failed:",
+            error
+        );
+
     }
+
 });
