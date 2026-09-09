@@ -191,25 +191,100 @@ const emailSchema = new mongoose.Schema(
           filename: String,
           contentType: String,
           size: Number,
+
           hashes: {
             md5: String,
+            sha1: String,
             sha256: String
           },
+          file_identity: mongoose.Schema.Types.Mixed,
+
+          entropy: mongoose.Schema.Types.Mixed,
+
+
           risk_score: Number,
-          risk_level: String, // LOW | MEDIUM | HIGH | CRITICAL
+          risk_level: String,
           indicators: [String],
+
           structural_analysis: {
-            is_executable: Boolean,
-            is_archive: Boolean,
+            has_executable: Boolean,
+            has_archive: Boolean,
             has_macro: Boolean,
             has_embedded_javascript: Boolean,
-            has_double_extension: Boolean,
-            extension_mime_mismatch: Boolean
+            double_extension: Boolean,
+            extension_mime_mismatch: Boolean,
+
+            has_embedded_objects: Boolean,
+            has_nested_archives: Boolean,
+            has_internal_executables: Boolean,
+            has_internal_scripts: Boolean,
+            magic_mime_mismatch: Boolean,
+            extension_magic_mismatch: Boolean
+          },
+
+          archive_analysis: {
+            is_archive: Boolean,
+            archive_type: String,
+            recursion_depth: Number,
+            file_count: Number,
+            total_uncompressed_size: Number,
+
+            dangerous_files: [mongoose.Schema.Types.Mixed],
+            script_files: [mongoose.Schema.Types.Mixed],
+            suspicious_files: [mongoose.Schema.Types.Mixed],
+            nested_archives: [mongoose.Schema.Types.Mixed],
+
+            files: [mongoose.Schema.Types.Mixed],
+
+            limits: mongoose.Schema.Types.Mixed,
+            errors: [String]
+          },
+
+          office_analysis: {
+            is_office_document: Boolean,
+            office_type: String,
+            is_ooxml_container: Boolean,
+            has_vba: Boolean,
+            has_embedded_objects: Boolean,
+            has_external_relationships: Boolean,
+            embedded_files: [String],
+            relationship_files: [String],
+            suspicious_parts: [String],
+            internal_urls: [String],
+            errors: [String]
+          },
+
+          pdf_analysis: {
+            is_pdf: Boolean,
+            has_javascript: Boolean,
+            has_embedded_files: Boolean,
+            has_launch_action: Boolean,
+            has_open_action: Boolean,
+            has_uri_actions: Boolean,
+            urls: [String],
+            indicators: [String]
+          },
+
+          embedded_url_analysis: {
+            total_urls: Number,
+            urls: [mongoose.Schema.Types.Mixed]
+          },
+          embedded_url_intelligence: {
+            type: mongoose.Schema.Types.Mixed,
+            default: null
+          },
+          previous_cases: [mongoose.Schema.Types.Mixed],
+          malware_verdict: {
+            verdict: String,
+            confidence: Number,
+            score: Number,
+            strong_malicious_evidence: Boolean,
+            reasons: [String],
+            evidence: [mongoose.Schema.Types.Mixed]
           }
         }
       ]
     },
-
     // ========================================================
     // EMAIL JOURNEY
     // ========================================================

@@ -354,9 +354,26 @@ const emailText = [
     const intelligenceData = await analyzeNetworkAndDomains(parsedEmail, headerForensics);
     console.log("✅ IP & Domain Intelligence completed");
 
+    // Generate Case ID before attachment analysis
+    const caseId =
+      `CASE-${new Date().getFullYear()}-${new mongoose.Types.ObjectId()
+        .toString()
+        .slice(-6)
+        .toUpperCase()}`;
+
     // 6. Attachment Intelligence
     const rawAttachments = parsedEmail.attachments || [];
-    const attachmentIntelligence = await analyzeAttachments(rawAttachments);
+
+    const attachmentIntelligence = await analyzeAttachments(
+      rawAttachments,
+      {
+        analyzeUrls,
+        senderEmail,
+        caseId,
+        userId: req.user.userId
+      }
+    );
+
     console.log("✅ Attachment Intelligence completed");
 
     // 7. Merge all findings into the email document
@@ -393,12 +410,7 @@ parsedEmail.mlAnalysis = {
     console.log("Database:", mongoose.connection.name);
     console.log("Collection:", Email.collection.name);
 
-    const caseId =
-        `CASE-${new Date().getFullYear()}-${new mongoose.Types.ObjectId()
-            .toString()
-            .slice(-6)
-            .toUpperCase()}`;
-
+    
     parsedEmail.caseId = caseId;
 
     // 🔐 Associate this email with the logged-in user

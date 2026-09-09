@@ -46,7 +46,6 @@ loginForm.addEventListener("submit", async function (e) {
             JSON.stringify(data.user)
         );
         
-
         alert("Login successful!");
 
         if (data.user.role === "investigator") {
