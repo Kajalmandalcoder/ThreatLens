@@ -7,6 +7,7 @@ import os
 import re
 import cv2
 import base64
+import requests
 import numpy as np
 from typing import List, Dict, Any, Optional
 from bs4 import BeautifulSoup
@@ -39,13 +40,13 @@ def extract_and_save_email_images(msg, save_dir="./extracted_email_images") -> L
     extracted_image_paths = []
     image_counter = 1
 
-    # MIME attachments / inline
+    # 1. MIME attachments / inline
     for part in msg.walk():
         content_type = part.get_content_type()
         if "image" in content_type:
             payload = part.get_payload(decode=True)
             if payload:
-                ext = content_type.split('/')[-1]
+                ext = content_type.split('/')[-1] or "jpg"
                 filename = part.get_filename() or f"embedded_img_{image_counter}.{ext}"
                 filepath = os.path.join(save_dir, filename)
                 with open(filepath, "wb") as f:
@@ -53,7 +54,7 @@ def extract_and_save_email_images(msg, save_dir="./extracted_email_images") -> L
                 extracted_image_paths.append(filepath)
                 image_counter += 1
 
-    # Base64 in HTML body
+    # 2. Base64 & External URLs in HTML body
     html_content = ""
     for part in msg.walk():
         if part.get_content_type() == "text/html":
@@ -62,12 +63,23 @@ def extract_and_save_email_images(msg, save_dir="./extracted_email_images") -> L
                 if isinstance(content, str):
                     html_content += content
             except Exception:
-                pass
+                try:
+                    payload = part.get_payload(decode=True)
+                    if payload:
+                        html_content += payload.decode(errors="ignore")
+                except Exception:
+                    pass
 
     if html_content:
         soup = BeautifulSoup(html_content, 'html.parser')
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+
         for i, img in enumerate(soup.find_all('img')):
             src = img.get('src', '')
+            if not src:
+                continue
+
+            # Case A: Base64 embedded images
             if src.startswith('data:image'):
                 try:
                     header, encoded = src.split(",", 1)
@@ -77,6 +89,19 @@ def extract_and_save_email_images(msg, save_dir="./extracted_email_images") -> L
                     with open(filepath, "wb") as f:
                         f.write(image_data)
                     extracted_image_paths.append(filepath)
+                except Exception:
+                    continue
+
+            # Case B: External image links (http / https)
+            elif src.startswith(('http://', 'https://')):
+                try:
+                    res = requests.get(src, headers=headers, timeout=6)
+                    if res.status_code == 200 and len(res.content) > 0:
+                        clean_ext = os.path.splitext(src.split('?')[0])[-1] or '.jpg'
+                        filepath = os.path.join(save_dir, f"external_img_{i+1}{clean_ext}")
+                        with open(filepath, "wb") as f:
+                            f.write(res.content)
+                        extracted_image_paths.append(filepath)
                 except Exception:
                     continue
 
@@ -192,7 +217,6 @@ def scan_qr_codes(image_paths: List[str], sender_email: Optional[str] = None) ->
                         if item.strip():
                             extracted_payloads.append(item.strip())
 
-            # Har QR URL ko url_intelligence se scan karna
             for payload in extracted_payloads:
                 url_threat = analyze_single_url(payload, sender_root=sender_domain)
                 qr_results[path].append({
@@ -251,11 +275,9 @@ def detect_visual_logo(image_path: str, threshold: float = 0.70) -> Optional[str
 def check_brand_impersonation(image_path: str, ocr_text: str, sender_email: Optional[str] = None) -> Dict[str, Any]:
     protected_brands = load_brand_targets()
 
-    # Visual detection
     detected_brand = detect_visual_logo(image_path)
     method = "visual"
 
-    # OCR text fallback
     if not detected_brand:
         ocr_lower = ocr_text.lower()
         for brand in protected_brands:
@@ -276,7 +298,6 @@ def check_brand_impersonation(image_path: str, ocr_text: str, sender_email: Opti
             is_impersonation = True
             reason = f"Image contains {detected_brand.title()} brand ({method}), but email sent from '{reg_domain}'."
 
-        # ThreadLens lookalike verification
         lookalike = detect_lookalike_brand(domain_name, protected_brands)
         if lookalike.get("is_lookalike"):
             is_impersonation = True
@@ -295,7 +316,6 @@ def check_brand_impersonation(image_path: str, ocr_text: str, sender_email: Opti
 # ============================================================
 
 def analyze_email_image_intelligence(msg, sender_email: Optional[str] = None) -> Dict[str, Any]:
-    # 1. Extraction
     image_paths = extract_and_save_email_images(msg)
 
     if not image_paths:
@@ -308,7 +328,6 @@ def analyze_email_image_intelligence(msg, sender_email: Optional[str] = None) ->
             "image_details": []
         }
 
-    # 2. OCR & QR
     ocr_results = extract_text_from_images(image_paths)
     qr_results = scan_qr_codes(image_paths, sender_email=sender_email)
 
@@ -325,7 +344,7 @@ def analyze_email_image_intelligence(msg, sender_email: Optional[str] = None) ->
         img_score = 0
         img_reasons = []
 
-        # Risk 1: QR URL threat (ThreadLens URL Intelligence integration)
+        # Risk 1: QR URL threat
         for item in qr_analysis:
             url_score = item.get("url_intelligence", {}).get("risk_score", 0)
             img_score = max(img_score, url_score)
