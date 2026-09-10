@@ -1,7 +1,7 @@
 const { spawn } = require("child_process");
 const path = require("path");
 
-function runMLPrediction(text) {
+function runMLPrediction(text, explanationText = text) {
     return new Promise((resolve, reject) => {
 
         const projectRoot =
@@ -13,13 +13,7 @@ function runMLPrediction(text) {
                 "ml_predict.py"
             );
 
-        const pythonPath =
-            path.join(
-                projectRoot,
-                ".venv",
-                "Scripts",
-                "python.exe"
-            );
+        const pythonPath = path.join(projectRoot, ".venv", "Scripts", "python.exe");
 
         let output = "";
         let errorOutput = "";
@@ -55,13 +49,22 @@ function runMLPrediction(text) {
         try {
 
             pythonProcess =
-                spawn(
-                    pythonPath,
-                    [mlScript, text],
-                    {
-                        windowsHide: true
-                    }
-                );
+    spawn(
+        pythonPath,
+        [mlScript],
+        {
+            windowsHide: true
+        }
+    );
+
+pythonProcess.stdin.write(
+    JSON.stringify({
+        text,
+        explanationText
+    })
+);
+
+pythonProcess.stdin.end();
 
         } catch (error) {
 
@@ -142,10 +145,7 @@ function runMLPrediction(text) {
 
                 if (code !== 0) {
 
-                    const message =
-                        errorOutput.trim() ||
-                        `ML process exited with code ${code}`;
-
+                   const message = errorOutput.trim() || `ML process exited with code ${code}`;
                     console.warn(
                         "⚠️ ML prediction unavailable:",
                         message
@@ -265,3 +265,6 @@ function runMLPrediction(text) {
 module.exports = {
     runMLPrediction
 };
+
+
+

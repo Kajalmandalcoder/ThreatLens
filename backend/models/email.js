@@ -156,127 +156,55 @@ const emailSchema = new mongoose.Schema(
     // ML THREAT ANALYSIS
     // ========================================================
 
-  mlAnalysis: {
+mlAnalysis: {
   success: Boolean,
   prediction: String,
   confidence: Number,
+
+  phishingProbability: Number,
+  benignProbability: Number,
+  malwareProbability: Number,
+  becProbability: Number,
+  spamProbability: Number,
+
   raw_label: String,
   threatScore: Number,
   riskLevel: String,
+
+  model: {
+    name: String,
+    version: String
+  },
+
+  mlExplanation: {
+    technicalReasons: [String],
+    recommendedActions: [String]
+  },
+
   technicalReasons: [String],
   recommendedActions: [String]
 },
 
-imageIntelligence: {
-  images_analyzed: {
-    type: Number,
-    default: 0
+// ========================================================
+// SOCIAL ENGINEERING ANALYSIS (#8)
+// ========================================================
+
+socialEngineeringAnalysis: {
+  signals: {
+    urgency: Boolean,
+    fear_or_threat: Boolean,
+    credential_request: Boolean,
+    password_or_otp_request: Boolean,
+    financial_request: Boolean,
+    account_verification: Boolean,
+    account_takeover: Boolean,
+    suspicious_cta: Boolean
   },
 
-  overall_risk_score: {
-    type: Number,
-    default: 0
-  },
-
-  risk_level: {
-    type: String,
-    enum: ["LOW", "MEDIUM", "HIGH", "CRITICAL"],
-    default: "LOW"
-  },
-
-  verdict: {
-    type: String,
-    enum: ["SAFE", "SUSPICIOUS", "MALICIOUS"],
-    default: "SAFE"
-  },
-
-  reasons: {
-    type: [String],
-    default: []
-  },
-
-  image_details: [
-    {
-      path: String,
-
-      ocr_text: {
-        type: String,
-        default: ""
-      },
-
-      text_analysis: {
-        has_suspicious_text: {
-          type: Boolean,
-          default: false
-        },
-
-        detected_intents: {
-          type: [String],
-          default: []
-        },
-
-        matched_phrases: {
-          type: [String],
-          default: []
-        },
-
-        risk_score: {
-          type: Number,
-          default: 0
-        },
-
-        verdict: {
-          type: String,
-          default: "BENIGN"
-        }
-      },
-
-      qr_data: [
-        {
-          payload: String,
-
-          url_intelligence: {
-            type: mongoose.Schema.Types.Mixed,
-            default: {}
-          }
-        }
-      ],
-
-      brand_data: {
-        detected_brand: {
-          type: String,
-          default: null
-        },
-
-        method: {
-          type: String,
-          default: null
-        },
-
-        is_impersonation: {
-          type: Boolean,
-          default: false
-        },
-
-        reason: {
-          type: String,
-          default: null
-        }
-      },
-
-      risk_score: {
-        type: Number,
-        default: 0
-      },
-
-      reasons: {
-        type: [String],
-        default: []
-      }
-    }
-  ]
+  risk_score: Number,
+  risk_level: String,
+  risk_reasons: [String]
 },
-
     // ========================================================
     // URL INTELLIGENCE
     // ========================================================
@@ -301,100 +229,25 @@ imageIntelligence: {
           filename: String,
           contentType: String,
           size: Number,
-
           hashes: {
             md5: String,
-            sha1: String,
             sha256: String
           },
-          file_identity: mongoose.Schema.Types.Mixed,
-
-          entropy: mongoose.Schema.Types.Mixed,
-
-
           risk_score: Number,
-          risk_level: String,
+          risk_level: String, // LOW | MEDIUM | HIGH | CRITICAL
           indicators: [String],
-
           structural_analysis: {
-            has_executable: Boolean,
-            has_archive: Boolean,
+            is_executable: Boolean,
+            is_archive: Boolean,
             has_macro: Boolean,
             has_embedded_javascript: Boolean,
-            double_extension: Boolean,
-            extension_mime_mismatch: Boolean,
-
-            has_embedded_objects: Boolean,
-            has_nested_archives: Boolean,
-            has_internal_executables: Boolean,
-            has_internal_scripts: Boolean,
-            magic_mime_mismatch: Boolean,
-            extension_magic_mismatch: Boolean
-          },
-
-          archive_analysis: {
-            is_archive: Boolean,
-            archive_type: String,
-            recursion_depth: Number,
-            file_count: Number,
-            total_uncompressed_size: Number,
-
-            dangerous_files: [mongoose.Schema.Types.Mixed],
-            script_files: [mongoose.Schema.Types.Mixed],
-            suspicious_files: [mongoose.Schema.Types.Mixed],
-            nested_archives: [mongoose.Schema.Types.Mixed],
-
-            files: [mongoose.Schema.Types.Mixed],
-
-            limits: mongoose.Schema.Types.Mixed,
-            errors: [String]
-          },
-
-          office_analysis: {
-            is_office_document: Boolean,
-            office_type: String,
-            is_ooxml_container: Boolean,
-            has_vba: Boolean,
-            has_embedded_objects: Boolean,
-            has_external_relationships: Boolean,
-            embedded_files: [String],
-            relationship_files: [String],
-            suspicious_parts: [String],
-            internal_urls: [String],
-            errors: [String]
-          },
-
-          pdf_analysis: {
-            is_pdf: Boolean,
-            has_javascript: Boolean,
-            has_embedded_files: Boolean,
-            has_launch_action: Boolean,
-            has_open_action: Boolean,
-            has_uri_actions: Boolean,
-            urls: [String],
-            indicators: [String]
-          },
-
-          embedded_url_analysis: {
-            total_urls: Number,
-            urls: [mongoose.Schema.Types.Mixed]
-          },
-          embedded_url_intelligence: {
-            type: mongoose.Schema.Types.Mixed,
-            default: null
-          },
-          previous_cases: [mongoose.Schema.Types.Mixed],
-          malware_verdict: {
-            verdict: String,
-            confidence: Number,
-            score: Number,
-            strong_malicious_evidence: Boolean,
-            reasons: [String],
-            evidence: [mongoose.Schema.Types.Mixed]
+            has_double_extension: Boolean,
+            extension_mime_mismatch: Boolean
           }
         }
       ]
     },
+
     // ========================================================
     // EMAIL JOURNEY
     // ========================================================

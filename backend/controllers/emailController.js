@@ -2,6 +2,7 @@ const path = require("path");
 const mongoose = require("mongoose");
 const { spawn } = require("child_process");
 
+const { analyzeSocialEngineering } = require("../services/socialEngineeringService");
 const { parseEmailWithPython } = require("../services/emailParserService");
 const { runHeaderForensics } = require("../services/headerForensicsService");
 const { runMLPrediction } = require("../services/mlService");
@@ -31,13 +32,19 @@ function buildTechnicalReasons({
   const reasons = [];
   const actions = [];
 
-  if (mlResult?.prediction !== "THREAT") {
+  if (!mlResult?.prediction) {
   return {
     technicalReasons: [],
     recommendedActions: []
   };
 }
 
+if (mlResult.prediction === "BENIGN") {
+  return {
+    technicalReasons: mlResult.technicalReasons || [],
+    recommendedActions: mlResult.recommendedActions || []
+  };
+}
   const add = (type, reason, action) => {
   const formattedReason = `${type}: ${reason}`;
 
@@ -289,7 +296,7 @@ function buildTechnicalReasons({
 
   // Only use ML's own reasons when it classified the email as THREAT.
   // Do not manufacture suspicious reasons for SAFE emails.
-  if (mlResult?.prediction === "THREAT") {
+  if (mlResult?.prediction && mlResult.prediction !== "BENIGN") {
     for (const reason of mlResult.technicalReasons || []) {
       if (reason === "CREDENTIAL_REQUEST") {
         add(
@@ -375,25 +382,61 @@ async function analyzeEmail(req, res) {
 
     // 2. ML Threat Prediction
     let mlResult = null;
-    try {
-      const htmlText = (parsedEmail.body?.html || "")
-  .replace(/<style[\s\S]*?<\/style>/gi, " ")
-  .replace(/<script[\s\S]*?<\/script>/gi, " ")
-  .replace(/<[^>]+>/g, " ")
-  .replace(/&nbsp;/gi, " ")
-  .replace(/\s+/g, " ")
-  .trim();
+let socialEngineeringAnalysis = null;
 
-const emailText = [
+// ML Prediction
+try {
+  const htmlText = (parsedEmail.body?.html || "")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  const emailText = [
   parsedEmail.headers?.subject || "",
-  parsedEmail.body?.plainText || ""
+  parsedEmail.body?.plainText || "",
+  htmlText || ""
 ].join(" ").trim();
 
-      mlResult = await runMLPrediction(emailText);
-      console.log("🤖 ML prediction completed");
-    } catch (mlErr) {
-      console.warn("⚠️ ML prediction failed or skipped:", mlErr.message);
-    }
+  const mlExplanationText = [
+    parsedEmail.headers?.subject || "",
+    parsedEmail.body?.plainText || "",
+    htmlText || ""
+  ].join(" ").trim();
+
+  mlResult = await runMLPrediction(
+    emailText,
+    mlExplanationText
+  );
+
+  console.log("🤖 ML prediction completed");
+  console.log("🤖 ML RESULT:", JSON.stringify(mlResult, null, 2));
+} catch (mlErr) {
+  console.warn(
+    "⚠️ ML prediction failed or skipped:",
+    mlErr.message
+  );
+}
+
+// Social Engineering Analysis
+try {
+  socialEngineeringAnalysis = analyzeSocialEngineering({
+    subject: parsedEmail.headers?.subject || "",
+    plainText: parsedEmail.body?.plainText || "",
+    html: parsedEmail.body?.html || ""
+  });
+
+  console.log("🧠 Social engineering analysis completed");
+} catch (socialErr) {
+  console.warn(
+    "⚠️ Social engineering analysis failed:",
+    socialErr.message
+  );
+
+  socialEngineeringAnalysis = null;
+}
 
     // 3. Header Forensics
     const headerForensics = await runHeaderForensics(req.file.path);
@@ -488,11 +531,45 @@ const emailText = [
     });
 
 // Merge all findings into the email document
+// Merge all findings into the email document
 parsedEmail.mlAnalysis = {
-  ...(mlResult || {}),
-  technicalReasons: explainability.technicalReasons,
-  recommendedActions: explainability.recommendedActions
+  success: mlResult?.success ?? false,
+  prediction: mlResult?.prediction ?? null,
+  confidence: mlResult?.confidence ?? null,
+
+  phishingProbability: mlResult?.phishingProbability ?? null,
+  benignProbability: mlResult?.benignProbability ?? null,
+  malwareProbability: mlResult?.malwareProbability ?? null,
+  becProbability: mlResult?.becProbability ?? null,
+  spamProbability: mlResult?.spamProbability ?? null,
+
+  raw_label: mlResult?.raw_label ?? null,
+  threatScore: mlResult?.threatScore ?? null,
+  riskLevel: mlResult?.riskLevel ?? null,
+
+  model: {
+    name: mlResult?.model?.name ?? null,
+    version: mlResult?.model?.version ?? null
+  },
+
+  mlExplanation: {
+    technicalReasons:
+      mlResult?.mlExplanation?.technicalReasons || [],
+    recommendedActions:
+      mlResult?.mlExplanation?.recommendedActions || []
+  },
+
+  technicalReasons:
+    explainability.technicalReasons?.length
+      ? explainability.technicalReasons
+      : (mlResult?.technicalReasons || []),
+
+  recommendedActions:
+    explainability.recommendedActions?.length
+      ? explainability.recommendedActions
+      : (mlResult?.recommendedActions || [])
 };
+    parsedEmail.socialEngineeringAnalysis = socialEngineeringAnalysis;
     parsedEmail.headerForensics = headerForensics;
     parsedEmail.urlIntelligence = urlIntelligence;
     parsedEmail.domainIntelligence = intelligenceData.domainIntelligence;
