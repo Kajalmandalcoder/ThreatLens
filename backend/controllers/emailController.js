@@ -15,6 +15,8 @@ const {
       findRelatedCases
     } = require("../services/campaignCorrelationService");
 
+const {calculateRiskAssessment
+} = require("../services/riskEngine");
 
 const {
     runImageIntelligence
@@ -720,6 +722,277 @@ parsedEmail.mlAnalysis = {
     };
 
     parsedEmail.imageIntelligence = imageIntelligence;
+    
+
+    // =====================================================
+// FINAL RISK ASSESSMENT
+// =====================================================
+
+const riskAssessment = calculateRiskAssessment({
+
+  // 1. ML
+  mlScore: Number(
+    mlResult?.risk_score ||
+    mlResult?.riskScore ||
+    mlResult?.threatScore ||
+    0
+  ),
+
+  // 2. HEADER
+  headerScore: Number(
+    headerForensics?.header_risk_score ||
+    0
+  ),
+
+  // 3. IP
+  ipScore: Number(
+    intelligenceData
+      ?.ipIntelligence
+      ?.risk_score ||
+    intelligenceData
+      ?.ipIntelligence
+      ?.overall_risk_score ||
+    0
+  ),
+
+  // 4. DOMAIN
+  domainScore: Number(
+    intelligenceData
+      ?.domainIntelligence
+      ?.risk_score ||
+    intelligenceData
+      ?.domainIntelligence
+      ?.overall_risk_score ||
+    0
+  ),
+
+  // 5. URL
+  urlScore: Number(
+    urlIntelligence
+      ?.summary
+      ?.max_risk_score ||
+    0
+  ),
+
+  // 6. ATTACHMENT
+  attachmentScore: Number(
+    attachmentIntelligence
+      ?.summary
+      ?.max_attachment_risk_score ||
+    0
+  ),
+
+  // 7. IMAGE
+  imageScore: Number(
+    imageIntelligence
+      ?.overall_risk_score ||
+    0
+  )
+});
+
+console.log("======================================");
+console.log("FINAL RISK ASSESSMENT");
+console.log("======================================");
+
+console.log(
+  "ML SCORE:",
+  riskAssessment.scoreComposition.ml
+);
+
+console.log(
+  "HEADER SCORE:",
+  riskAssessment.scoreComposition.header
+);
+
+console.log(
+  "IP SCORE:",
+  riskAssessment.scoreComposition.ip
+);
+
+console.log(
+  "DOMAIN SCORE:",
+  riskAssessment.scoreComposition.domain
+);
+
+console.log(
+  "URL SCORE:",
+  riskAssessment.scoreComposition.url
+);
+
+console.log(
+  "ATTACHMENT SCORE:",
+  riskAssessment.scoreComposition.attachment
+);
+
+console.log(
+  "IMAGE SCORE:",
+  riskAssessment.scoreComposition.image
+);
+
+console.log(
+  "FINAL RISK SCORE:",
+  riskAssessment.finalRiskScore
+);
+
+console.log(
+  "RISK LEVEL:",
+  riskAssessment.riskLevel
+);
+
+console.log(
+  "CLASSIFICATION:",
+  riskAssessment.classification
+);
+
+console.log("======================================");
+
+parsedEmail.riskAssessment = riskAssessment;
+
+// ========================================================
+// MODULE-WISE RISK SCORE + TECHNICAL REASONING
+// ========================================================
+
+riskAssessment.moduleAnalysis = {
+
+  // ------------------------------------------------------
+  // 1. ML ANALYSIS
+  // ------------------------------------------------------
+  ml: {
+    riskScore: riskAssessment.scoreComposition.ml,
+
+    technicalReasoning:
+      mlResult?.technicalReasons?.length
+        ? mlResult.technicalReasons.join("; ")
+        : mlResult?.mlExplanation?.technicalReasons?.length
+          ? mlResult.mlExplanation.technicalReasons.join("; ")
+          : mlResult?.prediction
+            ? `ML model classified the email as ${mlResult.prediction} with ${mlResult.confidence ?? 0}% confidence.`
+            : "ML analysis unavailable."
+  },
+
+  // ------------------------------------------------------
+  // 2. HEADER FORENSICS
+  // ------------------------------------------------------
+  header: {
+    riskScore: riskAssessment.scoreComposition.header,
+
+    technicalReasoning:
+      headerForensics?.technicalReasons?.length
+        ? headerForensics.technicalReasons.join("; ")
+        : headerForensics?.reasons?.length
+          ? headerForensics.reasons.join("; ")
+          : riskAssessment.scoreComposition.header > 0
+            ? "Header Forensics detected authentication, identity, or routing anomalies."
+            : "No significant header anomalies detected."
+  },
+
+  // ------------------------------------------------------
+  // 3. IP INTELLIGENCE
+  // ------------------------------------------------------
+  ip: {
+    riskScore: riskAssessment.scoreComposition.ip,
+
+    technicalReasoning:
+      intelligenceData?.ipIntelligence?.reasons?.length
+        ? intelligenceData.ipIntelligence.reasons.join("; ")
+        : intelligenceData?.ipIntelligence?.technicalReasons?.length
+          ? intelligenceData.ipIntelligence.technicalReasons.join("; ")
+          : riskAssessment.scoreComposition.ip > 0
+            ? "IP Intelligence identified infrastructure-related risk indicators."
+            : "No significant IP intelligence risk detected."
+  },
+
+  // ------------------------------------------------------
+  // 4. DOMAIN INTELLIGENCE
+  // ------------------------------------------------------
+  domain: {
+    riskScore: riskAssessment.scoreComposition.domain,
+
+    technicalReasoning:
+      intelligenceData?.domainIntelligence?.reasons?.length
+        ? intelligenceData.domainIntelligence.reasons.join("; ")
+        : intelligenceData?.domainIntelligence?.technicalReasons?.length
+          ? intelligenceData.domainIntelligence.technicalReasons.join("; ")
+          : riskAssessment.scoreComposition.domain > 0
+            ? "Domain Intelligence identified domain-related risk indicators."
+            : "No significant domain intelligence risk detected."
+  },
+
+  // ------------------------------------------------------
+  // 5. URL INTELLIGENCE
+  // ------------------------------------------------------
+  url: {
+    riskScore: riskAssessment.scoreComposition.url,
+
+    technicalReasoning:
+      urlIntelligence?.urls?.length
+        ? urlIntelligence.urls
+            .filter(url => Number(url?.risk_score || 0) > 0)
+            .map(url => {
+              const indicators = Array.isArray(url?.indicators)
+                ? url.indicators.join(", ")
+                : "";
+
+              return indicators
+                ? `${url.hostname || url.url}: ${indicators}`
+                : `${url.hostname || url.url}: risk score ${url.risk_score}`;
+            })
+            .join("; ")
+        : urlIntelligence?.summary?.overall_status &&
+          urlIntelligence.summary.overall_status !== "LOW"
+          ? `URL Intelligence detected ${urlIntelligence.summary.overall_status.toLowerCase()} risk URLs.`
+          : "No significant URL risk detected."
+  },
+
+  // ------------------------------------------------------
+  // 6. ATTACHMENT INTELLIGENCE
+  // ------------------------------------------------------
+  attachment: {
+    riskScore: riskAssessment.scoreComposition.attachment,
+
+    technicalReasoning:
+      attachmentIntelligence?.attachments?.length
+        ? attachmentIntelligence.attachments
+            .filter(file => Number(file?.risk_score || 0) > 0)
+            .map(file => {
+              const indicators = Array.isArray(file?.indicators)
+                ? file.indicators.join(", ")
+                : "";
+
+              return indicators
+                ? `${file.filename || "Attachment"}: ${indicators}`
+                : `${file.filename || "Attachment"}: risk score ${file.risk_score}`;
+            })
+            .join("; ")
+        : attachmentIntelligence?.summary?.overall_status &&
+          attachmentIntelligence.summary.overall_status !== "LOW"
+          ? `Attachment Intelligence detected ${attachmentIntelligence.summary.overall_status.toLowerCase()} risk.`
+          : "No significant attachment risk detected."
+  },
+
+  // ------------------------------------------------------
+  // 7. IMAGE INTELLIGENCE
+  // ------------------------------------------------------
+  image: {
+    riskScore: riskAssessment.scoreComposition.image,
+
+    technicalReasoning:
+      imageIntelligence?.reasons?.length
+        ? imageIntelligence.reasons.join("; ")
+        : imageIntelligence?.image_details?.length
+          ? imageIntelligence.image_details
+              .flatMap(image => Array.isArray(image?.reasons)
+                ? image.reasons
+                : [])
+              .join("; ")
+          : riskAssessment.scoreComposition.image > 0
+            ? "Image Intelligence detected image-based threat indicators."
+            : "No significant image-based risk detected."
+  }
+};
+
+parsedEmail.riskAssessment = riskAssessment;
+
 
     // 8. Save full record to MongoDB
     console.log("💾 About to save to MongoDB");
@@ -739,6 +1012,14 @@ parsedEmail.mlAnalysis = {
 
     parsedEmail.userId = req.user.userId;
 
+    console.log(
+      "🔥 MODULE ANALYSIS BEFORE SAVE:",
+      JSON.stringify(
+        riskAssessment.moduleAnalysis,
+        null,
+        2
+      )
+    );
     const savedEmail = await Email.create(parsedEmail);
     console.log("✅ SAVED:", savedEmail._id);
     console.log("✅ Full forensic document saved to MongoDB:", savedEmail._id.toString());
@@ -758,7 +1039,11 @@ parsedEmail.mlAnalysis = {
         hasPublicOriginIp: intelligenceData.ipIntelligence?.routing_summary?.has_public_origin || false,
         attachmentRiskStatus: attachmentIntelligence.summary.overall_status,
         attachmentMaxScore: attachmentIntelligence.summary.max_attachment_risk_score,
-        totalAttachments: attachmentIntelligence.summary.total_attachments
+        totalAttachments: attachmentIntelligence.summary.total_attachments,
+        finalRiskScore: riskAssessment.finalRiskScore,
+        riskLevel: riskAssessment.riskLevel,
+        classification: riskAssessment.classification,
+        scoreComposition: riskAssessment.scoreComposition
       }
     });
   } catch (error) {

@@ -13,7 +13,9 @@ function runMLPrediction(text, explanationText = text) {
                 "ml_predict.py"
             );
 
-        const pythonPath = path.join(projectRoot, ".venv", "Scripts", "python.exe");
+        // const pythonPath = path.join(projectRoot, ".venv", "Scripts", "python.exe");
+        const pythonPath =
+    "C:\\Users\\deepi\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe";
 
         let output = "";
         let errorOutput = "";

@@ -336,6 +336,106 @@ socialEngineeringAnalysis: {
         default: []
     }
 },
+// ========================================================
+// FINAL RISK ASSESSMENT
+// ========================================================
+
+riskAssessment: {
+  finalRiskScore: {
+    type: Number,
+    default: 0
+  },
+
+  riskLevel: {
+    type: String,
+    enum: ["LOW", "MEDIUM", "HIGH"],
+    default: "LOW"
+  },
+
+  classification: {
+    type: String,
+    enum: ["LEGITIMATE", "SUSPICIOUS", "PHISHING"],
+    default: "LEGITIMATE"
+  },
+
+  scoreComposition: {
+    ml: {
+      type: Number,
+      default: 0
+    },
+
+    header: {
+      type: Number,
+      default: 0
+    },
+
+    ip: {
+      type: Number,
+      default: 0
+    },
+
+    domain: {
+      type: Number,
+      default: 0
+    },
+
+    url: {
+      type: Number,
+      default: 0
+    },
+
+    attachment: {
+      type: Number,
+      default: 0
+    },
+
+    image: {
+      type: Number,
+      default: 0
+    }
+  },
+
+  weights: {
+    ml: {
+      type: Number,
+      default: 0.20
+    },
+
+    header: {
+      type: Number,
+      default: 0.15
+    },
+
+    ip: {
+      type: Number,
+      default: 0.15
+    },
+
+    domain: {
+      type: Number,
+      default: 0.10
+    },
+
+    url: {
+      type: Number,
+      default: 0.15
+    },
+
+    attachment: {
+      type: Number,
+      default: 0.10
+    },
+
+    image: {
+      type: Number,
+      default: 0.15
+    }
+  },
+  moduleAnalysis: {
+    type: mongoose.Schema.Types.Mixed,
+    default: {}
+  },
+},
   },
 
   {
