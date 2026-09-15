@@ -283,6 +283,8 @@ socialEngineeringAnalysis: {
       default: null
     },
 
+    
+
     // ========================================================
     // AUTHENTICATION
     // ========================================================
@@ -301,7 +303,39 @@ socialEngineeringAnalysis: {
       classification: String,
       riskScore: Number,
       reasons: [String]
+    },
+
+    imageIntelligence: {
+    images_analyzed: {
+        type: Number,
+        default: 0
+    },
+
+    overall_risk_score: {
+        type: Number,
+        default: 0
+    },
+
+    risk_level: {
+        type: String,
+        default: "LOW"
+    },
+
+    verdict: {
+        type: String,
+        default: "SAFE"
+    },
+
+    reasons: {
+        type: [String],
+        default: []
+    },
+
+    image_details: {
+        type: [mongoose.Schema.Types.Mixed],
+        default: []
     }
+},
   },
 
   {
