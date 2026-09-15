@@ -1,1284 +1,810 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+  <title>ThreatLens — Forensic Investigation Report</title>
 
-    <title>ThreatLens | Investigation Report</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet"
+  />
 
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Report CSS -->
-    <link rel="stylesheet" href="css/report.css">
+  <link rel="stylesheet" href="css/report.css" />
 </head>
 
 <body>
 
-    <!-- =====================================================
-         HEADER
-         ===================================================== -->
+  <div class="report-page">
 
-    <header class="report-header">
+    <!-- ================= HEADER ================= -->
 
-        <div class="brand">
+    <header class="top-header">
 
-            <div class="brand-icon">
-                <i data-lucide="shield-check"></i>
-            </div>
-
-            <div class="brand-text">
-                <strong>Threat<span>Lens</span></strong>
-                <small>SOC INVESTIGATION PLATFORM</small>
-            </div>
-
+      <div class="brand">
+        <div class="brand-icon">
+          🛡
         </div>
 
-
-        <div class="header-right">
-
-            <div class="analyst-status">
-                <span class="status-dot"></span>
-                ANALYST CONSOLE
-            </div>
-
-            <span class="header-separator">|</span>
-
-            <span id="report-time">UTC --:--:--</span>
-
-            <div class="profile-circle">
-                AR
-            </div>
-
+        <div>
+          <div class="brand-name">THREAT<span>LENS</span></div>
+          <div class="brand-subtitle">
+            FORENSIC INVESTIGATION REPORT
+          </div>
         </div>
+      </div>
+
+      <div class="header-meta">
+
+        <div class="meta-item">
+          <span>CASE REFERENCE</span>
+          <strong>CASE-2026-394494</strong>
+        </div>
+
+        <div class="meta-item">
+          <span>REPORT GENERATED</span>
+          <strong>06 FEB 2026&nbsp;&nbsp;•&nbsp;&nbsp;14:32 UTC</strong>
+        </div>
+
+        <div class="header-badge">
+          PHISHING
+        </div>
+
+      </div>
 
     </header>
 
 
+    <!-- ================= SECTION 01 ================= -->
 
-    <!-- =====================================================
-         MAIN
-         ===================================================== -->
+    <section class="section">
 
-    <main class="report-container">
+      <div class="section-heading">
+
+        <div>
+          <div class="section-number">01 / EXECUTIVE SUMMARY</div>
+          <h1>Final risk assessment</h1>
+        </div>
+
+        <p>
+          A consolidated view of the weighted ThreatLens analysis modules.
+        </p>
+
+      </div>
 
 
-        <!-- =================================================
-             BREADCRUMB
-             ================================================= -->
+      <!-- HERO RISK CARD -->
 
-        <div class="breadcrumb">
-            CASES
-            <span>›</span>
-            EMAIL ANALYSIS
-            <span>›</span>
-            FINAL REPORT
+      <div class="risk-hero">
+
+        <!-- LEFT -->
+
+        <div class="risk-main">
+
+          <div class="risk-label">
+            <span class="status-dot danger"></span>
+            HIGH RISK CLASSIFICATION
+          </div>
+
+          <div class="big-score">
+            79
+            <span>/ 100</span>
+          </div>
+
+          <p class="risk-description">
+            The final risk score is derived from the weighted contribution
+            of independent ThreatLens analysis modules.
+          </p>
+
+          <div class="classification">
+
+            <span class="small-label">CLASSIFICATION</span>
+
+            <div class="classification-value">
+              <span class="status-dot danger"></span>
+              PHISHING
+              <span class="separator">•</span>
+              HIGH
+            </div>
+
+          </div>
+
         </div>
 
 
+        <!-- RIGHT -->
 
-        <!-- =================================================
-             REPORT TITLE
-             ================================================= -->
+        <div class="risk-composition">
 
-        <section class="report-title-section">
+          <div class="score-ring">
+
+            <div class="ring">
+              <div class="ring-inner">
+                <strong>79</strong>
+                <span>/ 100</span>
+              </div>
+            </div>
+
+          </div>
+
+
+          <div class="composition">
+
+            <div class="composition-header">
+              <span>SCORE COMPOSITION</span>
+              <strong>6 MODULES</strong>
+            </div>
+
+
+            <div class="composition-row">
+              <span>ML Analysis</span>
+              <div class="mini-bar">
+                <i style="width:90%"></i>
+              </div>
+              <b>90</b>
+            </div>
+
+            <div class="composition-row">
+              <span>IP Intelligence</span>
+              <div class="mini-bar">
+                <i class="medium" style="width:50%"></i>
+              </div>
+              <b>50</b>
+            </div>
+
+            <div class="composition-row">
+              <span>Domain Intelligence</span>
+              <div class="mini-bar">
+                <i class="low" style="width:3%"></i>
+              </div>
+              <b>0</b>
+            </div>
+
+            <div class="composition-row">
+              <span>URL Intelligence</span>
+              <div class="mini-bar">
+                <i class="low" style="width:3%"></i>
+              </div>
+              <b>0</b>
+            </div>
+
+            <div class="composition-row">
+              <span>Attachment Intelligence</span>
+              <div class="mini-bar">
+                <i class="medium" style="width:25%"></i>
+              </div>
+              <b>25</b>
+            </div>
+
+            <div class="composition-row">
+              <span>Image Intelligence</span>
+              <div class="mini-bar">
+                <i class="critical" style="width:78%"></i>
+              </div>
+              <b>78</b>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= SECTION 02 ================= -->
+
+    <section class="section">
+
+      <div class="section-heading">
+
+        <div>
+          <div class="section-number">02 / WEIGHTED OUTPUT</div>
+          <h2>Risk score composition</h2>
+        </div>
+
+        <p>
+          Module-level scores contributing to the final classification.
+        </p>
+
+      </div>
+
+
+      <div class="score-grid">
+
+
+        <!-- ML -->
+
+        <div class="score-card high-card">
+
+          <div class="score-card-top">
+            <h3>ML Analysis</h3>
+            <span class="level high">HIGH</span>
+          </div>
+
+          <div class="score-number">
+            90 <span>/100</span>
+          </div>
+
+          <div class="score-bar">
+            <i style="width:90%"></i>
+          </div>
+
+          <span class="score-caption">RISK SCORE</span>
+
+        </div>
+
+
+        <!-- IP -->
+
+        <div class="score-card medium-card">
+
+          <div class="score-card-top">
+            <h3>IP Intelligence</h3>
+            <span class="level medium">MEDIUM</span>
+          </div>
+
+          <div class="score-number">
+            50 <span>/100</span>
+          </div>
+
+          <div class="score-bar">
+            <i class="medium" style="width:50%"></i>
+          </div>
+
+          <span class="score-caption">RISK SCORE</span>
+
+        </div>
+
+
+        <!-- DOMAIN -->
+
+        <div class="score-card low-card">
+
+          <div class="score-card-top">
+            <h3>Domain Intelligence</h3>
+            <span class="level low">LOW</span>
+          </div>
+
+          <div class="score-number">
+            0 <span>/100</span>
+          </div>
+
+          <div class="score-bar">
+            <i class="low" style="width:3%"></i>
+          </div>
+
+          <span class="score-caption">RISK SCORE</span>
+
+        </div>
+
+
+        <!-- URL -->
+
+        <div class="score-card low-card">
+
+          <div class="score-card-top">
+            <h3>URL Intelligence</h3>
+            <span class="level low">LOW</span>
+          </div>
+
+          <div class="score-number">
+            0 <span>/100</span>
+          </div>
+
+          <div class="score-bar">
+            <i class="low" style="width:3%"></i>
+          </div>
+
+          <span class="score-caption">RISK SCORE</span>
+
+        </div>
+
+
+        <!-- ATTACHMENT -->
+
+        <div class="score-card medium-card">
+
+          <div class="score-card-top">
+            <h3>Attachment Intelligence</h3>
+            <span class="level medium">MEDIUM</span>
+          </div>
+
+          <div class="score-number">
+            25 <span>/100</span>
+          </div>
+
+          <div class="score-bar">
+            <i class="medium" style="width:25%"></i>
+          </div>
+
+          <span class="score-caption">RISK SCORE</span>
+
+        </div>
+
+
+        <!-- IMAGE -->
+
+        <div class="score-card critical-card">
+
+          <div class="score-card-top">
+            <h3>Image Intelligence</h3>
+            <span class="level critical">CRITICAL</span>
+          </div>
+
+          <div class="score-number">
+            78 <span>/100</span>
+          </div>
+
+          <div class="score-bar">
+            <i class="critical" style="width:78%"></i>
+          </div>
+
+          <span class="score-caption">RISK SCORE</span>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= SECTION 03 ================= -->
+
+    <section class="section">
+
+      <div class="section-heading">
+
+        <div>
+          <div class="section-number">03 / ANALYST DETAIL</div>
+          <h2>Module risk analysis</h2>
+        </div>
+
+        <p>
+          Technical reasoning without duplicating investigation evidence.
+        </p>
+
+      </div>
+
+
+      <div class="analysis-grid">
+
+
+        <!-- ML -->
+
+        <article class="analysis-card">
+
+          <div class="analysis-header">
+
+            <div class="module-icon ml">
+              ML
+            </div>
 
             <div>
-
-                <div class="section-kicker">
-                    FINAL INVESTIGATION REPORT
-                </div>
-
-                <h1>
-                    Email Threat Assessment
-                </h1>
-
-                <div class="case-meta">
-
-                    <span id="case-id">
-                        CASE-2026---------
-                    </span>
-
-                    <span class="meta-separator">|</span>
-
-                    <span id="analysis-date">
-                        Analyzed --
-                    </span>
-
-                    <span
-                        id="top-verdict"
-                        class="status-badge warning"
-                    >
-                        ANALYZING
-                    </span>
-
-                </div>
-
+              <h3>ML Analysis</h3>
+              <span>ANALYSIS MODULE 01</span>
             </div>
 
+            <div class="arrow">↗</div>
 
-            <div class="report-actions">
+          </div>
 
-                <button id="backCaseBtn">
-                    <i data-lucide="arrow-left"></i>
-                    Back to Case
-                </button>
 
-                <button id="exportReportBtn">
-                    <i data-lucide="download"></i>
-                    Export Report
-                </button>
+          <div class="analysis-score">
 
-                <button id="printReportBtn">
-                    <i data-lucide="printer"></i>
-                    Print
-                </button>
-
+            <div>
+              <span>RISK SCORE</span>
+              <strong>90<small>/100</small></strong>
             </div>
 
-        </section>
-
-
-
-        <!-- =================================================
-             EXECUTIVE SUMMARY
-             ================================================= -->
-
-        <section class="report-section executive-section">
-
-            <div class="section-heading">
-
-                <div class="heading-icon">
-                    <i data-lucide="shield-alert"></i>
-                </div>
-
-                <div>
-                    <small>SECTION 01 / EXECUTIVE SUMMARY</small>
-                    <h2>Executive Summary</h2>
-                </div>
-
+            <div>
+              <span>RISK LEVEL</span>
+              <b class="high-text">● HIGH</b>
             </div>
 
-
-            <div class="executive-grid">
-
-
-                <!-- LEFT -->
-
-                <div class="executive-main">
-
-                    <div class="verdict-line">
-
-                        <span>Verdict:</span>
-
-                        <strong
-                            id="executive-verdict"
-                            class="warning-text"
-                        >
-                            ANALYZING
-                        </strong>
-
-                    </div>
+          </div>
 
 
-                    <p id="executive-description">
-                        Analyzing email intelligence and threat
-                        indicators...
-                    </p>
+          <div class="reason">
+
+            <span>ⓘ &nbsp; TECHNICAL REASONING</span>
+
+            <p>
+              The trained threat detection model classified the email
+              as phishing based on the feature set supplied to the classifier.
+            </p>
+
+          </div>
+
+        </article>
 
 
-                    <div class="score-area">
+        <!-- IP -->
 
-                        <div class="score-label-row">
+        <article class="analysis-card">
 
-                            <span>
-                                COMPOSITE THREAT SCORE
-                            </span>
+          <div class="analysis-header">
 
-                            <strong>
-                                <span id="composite-score">
-                                    0
-                                </span>
-                                <small>/ 100</small>
-                            </strong>
-
-                        </div>
-
-
-                        <div class="score-bar">
-
-                            <div
-                                id="composite-score-fill"
-                                class="score-fill"
-                            ></div>
-
-                        </div>
-
-
-                        <div class="score-scale">
-
-                            <span>LOW</span>
-                            <span>MEDIUM</span>
-                            <span>HIGH</span>
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-
-
-                <!-- RIGHT -->
-
-                <div class="executive-stats">
-
-                    <div class="exec-stat">
-
-                        <span>THREAT LEVEL</span>
-
-                        <strong
-                            id="threat-level"
-                            class="warning-text"
-                        >
-                            --
-                        </strong>
-
-                    </div>
-
-
-                    <div class="exec-stat">
-
-                        <span>ML CONFIDENCE</span>
-
-                        <strong id="ml-confidence">
-                            NOT AVAILABLE
-                        </strong>
-
-                    </div>
-
-
-                    <div class="exec-stat">
-
-                        <span>RECOMMENDED ACTION</span>
-
-                        <strong
-                            id="recommended-action"
-                            class="cyan-text"
-                        >
-                            REVIEW
-                        </strong>
-
-                    </div>
-
-                </div>
-
+            <div class="module-icon ip">
+              IP
             </div>
 
-        </section>
-
-
-
-        <!-- =================================================
-             ANALYSIS OVERVIEW
-             ================================================= -->
-
-        <section class="report-section">
-
-            <div class="section-heading">
-
-                <div class="heading-icon">
-                    <i data-lucide="activity"></i>
-                </div>
-
-                <div>
-                    <small>SECTION 02 / SIGNALS</small>
-                    <h2>Analysis Overview</h2>
-                </div>
-
+            <div>
+              <h3>IP Intelligence</h3>
+              <span>ANALYSIS MODULE 02</span>
             </div>
 
+            <div class="arrow">↗</div>
 
-            <div class="overview-grid">
-
-
-                <div class="overview-card">
-
-                    <div class="overview-icon">
-                        <i data-lucide="brain"></i>
-                    </div>
-
-                    <span>ML ANALYSIS</span>
-
-                    <strong id="overview-ml">
-                        N/A
-                    </strong>
-
-                    <small id="overview-ml-status">
-                        NOT AVAILABLE
-                    </small>
-
-                </div>
+          </div>
 
 
+          <div class="analysis-score">
 
-                <div class="overview-card">
-
-                    <div class="overview-icon">
-                        <i data-lucide="shield"></i>
-                    </div>
-
-                    <span>HEADER FORENSICS</span>
-
-                    <strong id="overview-header-score">
-                        0
-                    </strong>
-
-                    <small id="overview-header-status">
-                        LOW RISK
-                    </small>
-
-                </div>
-
-
-
-                <div class="overview-card">
-
-                    <div class="overview-icon">
-                        <i data-lucide="network"></i>
-                    </div>
-
-                    <span>IP INTELLIGENCE</span>
-
-                    <strong id="overview-ip-score">
-                        --
-                    </strong>
-
-                    <small id="overview-ip-status">
-                        --
-                    </small>
-
-                </div>
-
-
-
-                <div class="overview-card">
-
-                    <div class="overview-icon">
-                        <i data-lucide="globe"></i>
-                    </div>
-
-                    <span>DOMAIN INTELLIGENCE</span>
-
-                    <strong id="overview-domain-score">
-                        --
-                    </strong>
-
-                    <small id="overview-domain-status">
-                        --
-                    </small>
-
-                </div>
-
-
-
-                <div class="overview-card">
-
-                    <div class="overview-icon">
-                        <i data-lucide="link"></i>
-                    </div>
-
-                    <span>URL INTELLIGENCE</span>
-
-                    <strong id="overview-url-score">
-                        --
-                    </strong>
-
-                    <small id="overview-url-status">
-                        --
-                    </small>
-
-                </div>
-
-
-
-                <div class="overview-card">
-
-                    <div class="overview-icon">
-                        <i data-lucide="paperclip"></i>
-                    </div>
-
-                    <span>ATTACHMENT INTELLIGENCE</span>
-
-                    <strong id="overview-attachment-score">
-                        --
-                    </strong>
-
-                    <small id="overview-attachment-status">
-                        --
-                    </small>
-
-                </div>
-
+            <div>
+              <span>RISK SCORE</span>
+              <strong>50<small>/100</small></strong>
             </div>
 
-        </section>
+            <div>
+              <span>RISK LEVEL</span>
+              <b class="medium-text">● MEDIUM</b>
+            </div>
 
+          </div>
 
 
-        <!-- =================================================
-             KEY FINDINGS + EMAIL
-             ================================================= -->
+          <div class="reason">
 
-        <div class="two-column">
+            <span>ⓘ &nbsp; TECHNICAL REASONING</span>
 
+            <p>
+              Available infrastructure and threat-intelligence signals
+              contributed to a medium IP risk assessment.
+            </p>
 
-            <!-- KEY FINDINGS -->
+          </div>
 
-            <section class="report-section">
+        </article>
 
-                <div class="section-heading">
 
-                    <div class="heading-icon">
-                        <i data-lucide="list-checks"></i>
-                    </div>
+        <!-- DOMAIN -->
 
-                    <div>
-                        <small>SECTION 03 / OBSERVATIONS</small>
-                        <h2>Key Findings</h2>
-                    </div>
+        <article class="analysis-card">
 
-                </div>
+          <div class="analysis-header">
 
+            <div class="module-icon domain">
+              DI
+            </div>
 
-                <div
-                    id="key-findings"
-                    class="findings-list"
-                >
+            <div>
+              <h3>Domain Intelligence</h3>
+              <span>ANALYSIS MODULE 03</span>
+            </div>
 
-                    <div class="finding-row">
+            <div class="arrow">↗</div>
 
-                        <div class="finding-icon info">
-                            <i data-lucide="loader"></i>
-                        </div>
+          </div>
 
-                        <span>
-                            Analyzing threat indicators...
-                        </span>
 
-                    </div>
+          <div class="analysis-score">
 
-                </div>
+            <div>
+              <span>RISK SCORE</span>
+              <strong>0<small>/100</small></strong>
+            </div>
 
-            </section>
+            <div>
+              <span>RISK LEVEL</span>
+              <b class="low-text">● LOW</b>
+            </div>
 
+          </div>
 
 
-            <!-- EMAIL & SENDER -->
+          <div class="reason">
 
-            <section class="report-section">
+            <span>ⓘ &nbsp; TECHNICAL REASONING</span>
 
-                <div class="section-heading">
+            <p>
+              No significant domain-level threat indicators contributed
+              to the overall risk assessment.
+            </p>
 
-                    <div class="heading-icon">
-                        <i data-lucide="mail"></i>
-                    </div>
+          </div>
 
-                    <div>
-                        <small>SECTION 04 / MESSAGE</small>
-                        <h2>Email & Sender</h2>
-                    </div>
+        </article>
 
-                </div>
 
+        <!-- URL -->
 
-                <div class="email-info-grid">
+        <article class="analysis-card">
 
+          <div class="analysis-header">
 
-                    <div>
+            <div class="module-icon url">
+              UI
+            </div>
 
-                        <span>FROM DOMAIN</span>
+            <div>
+              <h3>URL Intelligence</h3>
+              <span>ANALYSIS MODULE 04</span>
+            </div>
 
-                        <strong id="report-from-domain">
-                            —
-                        </strong>
+            <div class="arrow">↗</div>
 
-                    </div>
+          </div>
 
 
-                    <div>
+          <div class="analysis-score">
 
-                        <span>SUBJECT</span>
+            <div>
+              <span>RISK SCORE</span>
+              <strong>0<small>/100</small></strong>
+            </div>
 
-                        <strong
-                            id="report-subject"
-                            class="truncate"
-                        >
-                            —
-                        </strong>
+            <div>
+              <span>RISK LEVEL</span>
+              <b class="low-text">● LOW</b>
+            </div>
 
-                    </div>
+          </div>
 
 
-                    <div>
+          <div class="reason">
 
-                        <span>REPLY-TO</span>
+            <span>ⓘ &nbsp; TECHNICAL REASONING</span>
 
-                        <strong id="report-reply">
-                            —
-                        </strong>
+            <p>
+              No significant malicious URL reputation indicators
+              contributed to the overall risk assessment.
+            </p>
 
-                    </div>
+          </div>
 
+        </article>
 
-                    <div>
 
-                        <span>DATE</span>
+        <!-- ATTACHMENT -->
 
-                        <strong id="report-date">
-                            —
-                        </strong>
+        <article class="analysis-card">
 
-                    </div>
+          <div class="analysis-header">
 
+            <div class="module-icon attachment">
+              AI
+            </div>
 
-                    <div>
+            <div>
+              <h3>Attachment Intelligence</h3>
+              <span>ANALYSIS MODULE 05</span>
+            </div>
 
-                        <span>RETURN-PATH</span>
+            <div class="arrow">↗</div>
 
-                        <strong id="report-return">
-                            —
-                        </strong>
+          </div>
 
-                    </div>
 
+          <div class="analysis-score">
 
-                    <div>
+            <div>
+              <span>RISK SCORE</span>
+              <strong>25<small>/100</small></strong>
+            </div>
 
-                        <span>TOTAL URLS</span>
+            <div>
+              <span>RISK LEVEL</span>
+              <b class="medium-text">● MEDIUM</b>
+            </div>
 
-                        <strong id="report-total-urls">
-                            0
-                        </strong>
+          </div>
 
-                    </div>
 
+          <div class="reason">
 
-                    <div>
+            <span>ⓘ &nbsp; TECHNICAL REASONING</span>
 
-                        <span>ATTACHMENTS</span>
+            <p>
+              Elevated file entropy contributed to the attachment risk
+              assessment, while no strong executable, script or structural
+              malware indicators were identified.
+            </p>
 
-                        <strong id="report-total-attachments">
-                            0
-                        </strong>
+          </div>
 
-                    </div>
+        </article>
 
-                </div>
 
-            </section>
+        <!-- IMAGE -->
+
+        <article class="analysis-card">
+
+          <div class="analysis-header">
+
+            <div class="module-icon image">
+              IM
+            </div>
+
+            <div>
+              <h3>Image Intelligence</h3>
+              <span>ANALYSIS MODULE 06</span>
+            </div>
+
+            <div class="arrow">↗</div>
+
+          </div>
+
+
+          <div class="analysis-score">
+
+            <div>
+              <span>RISK SCORE</span>
+              <strong>78<small>/100</small></strong>
+            </div>
+
+            <div>
+              <span>RISK LEVEL</span>
+              <b class="critical-text">● CRITICAL</b>
+            </div>
+
+          </div>
+
+
+          <div class="reason">
+
+            <span>ⓘ &nbsp; TECHNICAL REASONING</span>
+
+            <p>
+              Image analysis identified brand impersonation, QR-code
+              presence and phishing-oriented content, contributing
+              significantly to the overall risk assessment.
+            </p>
+
+          </div>
+
+        </article>
+
+      </div>
+
+    </section>
+
+
+    <!-- ================= BOTTOM ================= -->
+
+    <section class="bottom-grid">
+
+
+      <!-- FINAL ASSESSMENT -->
+
+      <div class="final-card">
+
+        <div class="section-number">04 / CONCLUSION</div>
+
+        <h2>Final assessment</h2>
+
+
+        <div class="final-score-row">
+
+          <div>
+            <span>CLASSIFICATION</span>
+            <strong>PHISHING</strong>
+          </div>
+
+          <div>
+            <span>FINAL RISK</span>
+            <strong class="final-number">
+              79 <small>/100</small>
+            </strong>
+          </div>
 
         </div>
 
 
-
-        <!-- =================================================
-             HEADER AUTHENTICATION
-             ================================================= -->
-
-        <section class="report-section">
-
-            <div class="section-heading">
-
-                <div class="heading-icon">
-                    <i data-lucide="shield-check"></i>
-                </div>
-
-                <div>
-                    <small>SECTION 05 / AUTHENTICATION</small>
-                    <h2>Header Authentication</h2>
-                </div>
-
-            </div>
-
-
-            <div class="auth-grid">
-
-
-                <div class="auth-card">
-
-                    <div class="auth-top">
-
-                        <span>SPF</span>
-
-                        <i
-                            id="spf-icon"
-                            data-lucide="x"
-                        ></i>
-
-                    </div>
-
-                    <strong id="report-spf">
-                        MISSING
-                    </strong>
-
-                    <div
-                        id="spf-line"
-                        class="auth-line warning-line"
-                    ></div>
-
-                </div>
-
-
-
-                <div class="auth-card">
-
-                    <div class="auth-top">
-
-                        <span>DKIM</span>
-
-                        <i
-                            id="dkim-icon"
-                            data-lucide="check"
-                        ></i>
-
-                    </div>
-
-                    <strong id="report-dkim">
-                        PASS
-                    </strong>
-
-                    <div
-                        id="dkim-line"
-                        class="auth-line success-line"
-                    ></div>
-
-                </div>
-
-
-
-                <div class="auth-card">
-
-                    <div class="auth-top">
-
-                        <span>DMARC</span>
-
-                        <i
-                            id="dmarc-icon"
-                            data-lucide="x"
-                        ></i>
-
-                    </div>
-
-                    <strong id="report-dmarc">
-                        MISSING
-                    </strong>
-
-                    <div
-                        id="dmarc-line"
-                        class="auth-line warning-line"
-                    ></div>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             URL INTELLIGENCE
-             ================================================= -->
-
-        <section class="report-section">
-
-            <div class="section-heading">
-
-                <div class="heading-icon">
-                    <i data-lucide="link"></i>
-                </div>
-
-                <div>
-                    <small>SECTION 06 / EXTRACTED INDICATORS</small>
-                    <h2>URL Intelligence</h2>
-                </div>
-
-            </div>
-
-
-            <div class="url-summary-bar">
-
-                <div>
-                    <span>TOTAL URLS</span>
-                    <strong id="report-url-total">0</strong>
-                </div>
-
-                <div>
-                    <span>CRITICAL</span>
-                    <strong id="report-url-critical">0</strong>
-                </div>
-
-                <div>
-                    <span>HIGH</span>
-                    <strong id="report-url-high">0</strong>
-                </div>
-
-                <div>
-                    <span>MEDIUM</span>
-                    <strong id="report-url-medium">0</strong>
-                </div>
-
-                <div>
-                    <span>LOW</span>
-                    <strong id="report-url-low">0</strong>
-                </div>
-
-                <div>
-                    <span>MAX SCORE</span>
-                    <strong id="report-url-max">0</strong>
-                </div>
-
-            </div>
-
-
-            <div
-                id="report-url-list"
-                class="report-url-list"
-            >
-            </div>
-
-        </section>
-
-
-
-        <!-- =================================================
-             DOMAIN + IP
-             ================================================= -->
-
-        <div class="two-column">
-
-
-            <!-- DOMAIN -->
-
-            <section class="report-section">
-
-                <div class="section-heading">
-
-                    <div class="heading-icon">
-                        <i data-lucide="globe"></i>
-                    </div>
-
-                    <div>
-                        <small>SECTION 07 / REPUTATION</small>
-                        <h2>Domain Intelligence</h2>
-                    </div>
-
-                </div>
-
-
-                <div class="intel-list">
-
-
-                    <div>
-                        <span>From Domain</span>
-                        <strong id="domain-from-report">—</strong>
-                    </div>
-
-
-                    <div>
-                        <span>Reply-To</span>
-                        <strong id="domain-reply-report">—</strong>
-                    </div>
-
-
-                    <div>
-                        <span>Return-Path</span>
-                        <strong id="domain-return-report">—</strong>
-                    </div>
-
-
-                    <div>
-                        <span>Body Domains</span>
-                        <strong
-                            id="domain-body-report"
-                            class="truncate"
-                        >
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>From ↔ Reply-To</span>
-                        <strong id="domain-reply-match-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>From ↔ Return-Path</span>
-                        <strong id="domain-return-match-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>Body Domain</span>
-                        <strong id="domain-body-match-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>Lookalike Domain</span>
-                        <strong id="domain-lookalike-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>MX Record</span>
-                        <strong id="domain-mx-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>Domain Risk</span>
-                        <strong
-                            id="domain-risk-report"
-                            class="warning-text"
-                        >
-                            —
-                        </strong>
-                    </div>
-
-                </div>
-
-            </section>
-
-
-
-            <!-- IP -->
-
-            <section class="report-section">
-
-                <div class="section-heading">
-
-                    <div class="heading-icon">
-                        <i data-lucide="network"></i>
-                    </div>
-
-                    <div>
-                        <small>SECTION 08 / NETWORK</small>
-                        <h2>IP Intelligence</h2>
-                    </div>
-
-                </div>
-
-
-                <div class="intel-list">
-
-
-                    <div>
-                        <span>Origin IP</span>
-
-                        <strong
-                            id="ip-origin-report"
-                            class="mono"
-                        >
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>Country</span>
-
-                        <strong id="ip-country-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>City</span>
-
-                        <strong id="ip-city-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>ASN</span>
-
-                        <strong id="ip-asn-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>Provider</span>
-
-                        <strong id="ip-provider-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>Hosting</span>
-
-                        <strong id="ip-hosting-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>Proxy / VPN</span>
-
-                        <strong id="ip-proxy-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>Public Origin</span>
-
-                        <strong id="ip-public-origin-report">
-                            —
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>Extracted IPs</span>
-
-                        <strong id="ip-total-report">
-                            0
-                        </strong>
-                    </div>
-
-
-                    <div>
-                        <span>IP Risk</span>
-
-                        <strong
-                            id="ip-risk-report"
-                            class="warning-text"
-                        >
-                            —
-                        </strong>
-                    </div>
-
-                </div>
-
-            </section>
+        <div class="final-reason">
+
+          <p>
+            ThreatLens identified a high-risk phishing pattern through
+            the combined contribution of machine-learning classification,
+            infrastructure intelligence, attachment analysis and image
+            intelligence. The final assessment is based on correlated
+            module-level risk scores rather than a single indicator.
+          </p>
 
         </div>
 
 
+        <small class="formula-note">
+          Risk score represents the weighted combination of ThreatLens
+          analysis modules.
+        </small>
 
-        <!-- =================================================
-             ATTACHMENT INTELLIGENCE
-             ================================================= -->
+      </div>
 
-        <section class="report-section">
 
-            <div class="section-heading">
+      <!-- RECOMMENDED ACTION -->
 
-                <div class="heading-icon">
-                    <i data-lucide="paperclip"></i>
-                </div>
+      <div class="action-card">
 
-                <div>
-                    <small>SECTION 09 / FILE ANALYSIS</small>
-                    <h2>Attachment Intelligence</h2>
-                </div>
+        <div class="section-number">05 / RESPONSE</div>
 
-            </div>
+        <h2>Recommended action</h2>
 
 
-            <div class="attachment-summary">
+        <div class="action-list">
 
-                <div>
-                    <span>TOTAL</span>
-                    <strong id="report-attachment-total">
-                        0
-                    </strong>
-                </div>
+          <div class="action-item">
 
-                <div>
-                    <span>HIGH RISK</span>
-                    <strong id="report-attachment-high">
-                        NO
-                    </strong>
-                </div>
+            <div class="action-number">01</div>
 
-                <div>
-                    <span>EXECUTABLE</span>
-                    <strong id="report-attachment-executable">
-                        NO
-                    </strong>
-                </div>
+            <p>
+              Treat the email as potentially malicious.
+            </p>
 
-                <div>
-                    <span>MACROS / SCRIPTS</span>
-                    <strong id="report-attachment-scripts">
-                        NO
-                    </strong>
-                </div>
+          </div>
 
-                <div>
-                    <span>MAX SCORE</span>
-                    <strong id="report-attachment-score">
-                        0
-                    </strong>
-                </div>
 
-                <div>
-                    <span>STATUS</span>
-                    <strong
-                        id="report-attachment-status"
-                        class="safe-text"
-                    >
-                        LOW
-                    </strong>
-                </div>
+          <div class="action-item">
 
-            </div>
+            <div class="action-number">02</div>
 
+            <p>
+              Avoid interacting with embedded links, QR codes or suspicious
+              content.
+            </p>
 
-            <div
-                id="report-attachment-list"
-                class="report-attachment-list"
-            >
-            </div>
+          </div>
 
-        </section>
 
+          <div class="action-item">
 
+            <div class="action-number">03</div>
 
-        <!-- =================================================
-             FINAL RISK + ACTION
-             ================================================= -->
+            <p>
+              Escalate the case for further investigation if required.
+            </p>
 
-        <div class="two-column final-row">
-
-
-            <!-- FINAL RISK -->
-
-            <section class="report-section final-risk-section">
-
-                <div class="section-heading">
-
-                    <div class="heading-icon">
-                        <i data-lucide="shield-alert"></i>
-                    </div>
-
-                    <div>
-                        <small>SECTION 10 / DECISION</small>
-                        <h2>Final Risk Assessment</h2>
-                    </div>
-
-                </div>
-
-
-                <div class="final-risk-content">
-
-                    <div class="final-risk-main">
-
-                        <span>OVERALL RISK</span>
-
-                        <strong
-                            id="final-risk"
-                            class="warning-text"
-                        >
-                            MEDIUM
-                        </strong>
-
-                    </div>
-
-
-                    <div
-                        id="final-score-circle"
-                        class="score-circle"
-                    >
-
-                        <strong id="final-score">
-                            0
-                        </strong>
-
-                        <span>/100</span>
-
-                    </div>
-
-                </div>
-
-
-                <div class="final-module-grid">
-
-                    <div>
-                        <span>ML</span>
-                        <strong id="final-ml">N/A</strong>
-                    </div>
-
-                    <div>
-                        <span>HEADER</span>
-                        <strong id="final-header">LOW</strong>
-                    </div>
-
-                    <div>
-                        <span>IP</span>
-                        <strong id="final-ip">MEDIUM</strong>
-                    </div>
-
-                    <div>
-                        <span>DOMAIN</span>
-                        <strong id="final-domain">MEDIUM</strong>
-                    </div>
-
-                    <div>
-                        <span>URL</span>
-                        <strong id="final-url">MEDIUM</strong>
-                    </div>
-
-                    <div>
-                        <span>ATTACHMENTS</span>
-                        <strong id="final-attachments">LOW</strong>
-                    </div>
-
-                </div>
-
-
-                <p
-                    id="final-conclusion"
-                    class="final-conclusion"
-                >
-                    Assessment generated from available email
-                    intelligence signals.
-                </p>
-
-            </section>
-
-
-
-            <!-- RECOMMENDED ACTION -->
-
-            <section class="report-section">
-
-                <div class="section-heading">
-
-                    <div class="heading-icon">
-                        <i data-lucide="clipboard-check"></i>
-                    </div>
-
-                    <div>
-                        <small>SECTION 11 / RESPONSE</small>
-                        <h2>Recommended Action</h2>
-                    </div>
-
-                </div>
-
-
-                <div class="primary-action">
-
-                    <div class="action-icon">
-                        <i data-lucide="shield-check"></i>
-                    </div>
-
-                    <div>
-
-                        <span>PRIMARY RECOMMENDATION</span>
-
-                        <strong id="primary-action">
-                            REVIEW EMAIL
-                        </strong>
-
-                    </div>
-
-                </div>
-
-
-                <div
-                    id="recommended-actions"
-                    class="action-list"
-                >
-
-                    <div>
-                        <span>01</span>
-                        Quarantine the email if policy requires
-                    </div>
-
-                    <div>
-                        <span>02</span>
-                        Investigate suspicious domains
-                    </div>
-
-                    <div>
-                        <span>03</span>
-                        Monitor extracted IP indicators
-                    </div>
-
-                    <div>
-                        <span>04</span>
-                        Review similar emails from sender
-                    </div>
-
-                    <div>
-                        <span>05</span>
-                        Block indicators if malicious activity
-                        is confirmed
-                    </div>
-
-                </div>
-
-            </section>
+          </div>
 
         </div>
 
+      </div>
+
+    </section>
 
 
-        <!-- =================================================
-             FOOTER
-             ================================================= -->
+    <!-- ================= FOOTER ================= -->
 
-        <footer class="report-footer">
+    <footer class="footer">
 
-            <span>
-                THREATLENS // INVESTIGATION REPORT
-            </span>
+      <div>
+        <strong>THREATLENS</strong>
+        <span>Evidence-driven email forensic investigation</span>
+      </div>
 
-            <span>
-                CASE <span id="footer-case-id">--------</span>
-                // CONFIDENTIAL
-            </span>
+      <div class="footer-right">
 
-        </footer>
+        <span>
+          <i></i>
+          REPORT STATUS:
+          <b>FINAL</b>
+        </span>
 
+        <em></em>
 
-    </main>
+        <span>
+          CONFIDENTIAL — SECURITY INVESTIGATION REPORT
+        </span>
 
+      </div>
 
-    <!-- Report JS -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="js/report.js"></script>
+    </footer>
+
+  </div>
 
 </body>
-
 </html>

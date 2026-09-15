@@ -454,8 +454,370 @@ document.addEventListener("DOMContentLoaded", async () => {
         renderDomainIntelligence(email);
         renderURLIntelligence(email);
         renderAttachmentIntelligence(email);
+        renderImageIntelligence(email);
         lucide.createIcons();
     }
+
+    function renderImageIntelligence(email) {
+
+    console.log("🖼️ Rendering Image Intelligence...");
+
+    const imageIntel = email.imageIntelligence || {};
+
+    console.log("🖼️ Image Intelligence:", imageIntel);
+
+    // =========================
+    // SUMMARY
+    // =========================
+
+    const imagesAnalyzed =
+        document.getElementById("images-analyzed");
+
+    if (imagesAnalyzed) {
+        imagesAnalyzed.textContent =
+            imageIntel.images_analyzed ?? 0;
+    }
+
+
+    const overallRiskScore =
+        document.getElementById("image-overall-risk-score");
+
+    if (overallRiskScore) {
+        overallRiskScore.textContent =
+            imageIntel.overall_risk_score ?? 0;
+    }
+
+
+    const riskLevel =
+        document.getElementById("image-risk-level");
+
+    if (riskLevel) {
+
+        const risk =
+            (imageIntel.risk_level || "UNKNOWN").toUpperCase();
+
+        riskLevel.textContent = risk;
+
+        riskLevel.classList.remove(
+            "safe",
+            "warning",
+            "danger"
+        );
+
+        if (risk === "CRITICAL" || risk === "HIGH") {
+            riskLevel.classList.add("danger");
+
+        } else if (risk === "MEDIUM") {
+            riskLevel.classList.add("warning");
+
+        } else {
+            riskLevel.classList.add("safe");
+        }
+    }
+
+
+    const verdict =
+        document.getElementById("image-verdict");
+
+    if (verdict) {
+        verdict.textContent =
+            imageIntel.verdict || "—";
+    }
+
+
+    // =========================
+    // REASONS
+    // =========================
+
+    const reasonsList =
+        document.getElementById("image-reasons");
+
+    if (reasonsList) {
+
+        const reasons =
+            imageIntel.reasons || [];
+
+        if (!reasons.length) {
+
+            reasonsList.innerHTML = `
+                <div class="finding">
+                    <i data-lucide="circle-check"></i>
+                    <span>No suspicious image findings</span>
+                </div>
+            `;
+
+        } else {
+
+            reasonsList.innerHTML =
+                reasons.map(reason => `
+                    <div class="finding">
+                        <i data-lucide="circle-alert"></i>
+                        <span>
+                            ${escapeHtml(reason)}
+                        </span>
+                    </div>
+                `).join("");
+        }
+    }
+
+
+    // =========================
+    // IMAGE DETAILS
+    // =========================
+
+    const imageList =
+        document.getElementById("image-details-list");
+
+    if (!imageList) {
+        lucide.createIcons();
+        return;
+    }
+
+    imageList.innerHTML = "";
+
+    const images =
+        imageIntel.image_details || [];
+
+    if (!images.length) {
+
+        imageList.innerHTML = `
+            <div class="image-empty">
+                <i data-lucide="image-off"></i>
+                <span>No images found</span>
+            </div>
+        `;
+
+        lucide.createIcons();
+        return;
+    }
+
+
+    // =========================
+    // EACH IMAGE
+    // =========================
+
+    images.forEach((image, index) => {
+
+        const textAnalysis =
+            image.text_analysis || {};
+
+        const qrData =
+            image.qr_data || [];
+
+        const urlIntel =
+            image.url_intelligence || {};
+
+        const brandData =
+            image.brand_data || {};
+
+
+        const card =
+            document.createElement("div");
+
+        card.className = "image-intelligence-card";
+
+
+        card.innerHTML = `
+
+            <div class="image-card-header">
+
+                <div>
+                    <span>IMAGE ${index + 1}</span>
+
+                    <strong>
+                        ${escapeHtml(
+                            image.path || "Unknown image"
+                        )}
+                    </strong>
+                </div>
+
+                <div class="image-card-risk">
+                    ${image.verdict || "—"}
+                </div>
+
+            </div>
+
+
+            <div class="image-card-grid">
+
+                <div>
+                    <span>RISK SCORE</span>
+                    <strong>
+                        ${image.risk_score ?? 0}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>VERDICT</span>
+                    <strong>
+                        ${image.verdict || "—"}
+                    </strong>
+                </div>
+
+                <div>
+                    <span>SUSPICIOUS TEXT</span>
+                    <strong>
+                        ${
+                            textAnalysis.has_suspicious_text
+                                ? "Detected"
+                                : "No"
+                        }
+                    </strong>
+                </div>
+
+                <div>
+                    <span>INTENTS</span>
+                    <strong>
+                        ${
+                            textAnalysis.detected_intents?.length
+                                ? textAnalysis.detected_intents.join(", ")
+                                : "None"
+                        }
+                    </strong>
+                </div>
+
+            </div>
+
+
+            ${
+                image.ocr_text
+                    ? `
+                    <div class="image-section">
+
+                        <span>OCR TEXT</span>
+
+                        <p>
+                            ${escapeHtml(image.ocr_text)}
+                        </p>
+
+                    </div>
+                    `
+                    : ""
+            }
+
+
+            ${
+                textAnalysis.matched_phrases?.length
+                    ? `
+                    <div class="image-section">
+
+                        <span>MATCHED PHRASES</span>
+
+                        <p>
+                            ${textAnalysis.matched_phrases
+                                .map(phrase =>
+                                    escapeHtml(phrase)
+                                )
+                                .join(", ")
+                            }
+                        </p>
+
+                    </div>
+                    `
+                    : ""
+            }
+
+
+            ${
+                qrData.length
+                    ? `
+                    <div class="image-section">
+
+                        <span>QR CODE</span>
+
+                        ${qrData.map(qr => `
+                            <div class="image-qr">
+                                <strong>Payload:</strong>
+                                ${escapeHtml(
+                                    qr.payload || "—"
+                                )}
+                            </div>
+                        `).join("")}
+
+                    </div>
+                    `
+                    : ""
+            }
+
+
+            ${
+                brandData.detected_brand
+                    ? `
+                    <div class="image-section">
+
+                        <span>BRAND DETECTION</span>
+
+                        <div class="image-brand">
+
+                            <strong>
+                                ${escapeHtml(
+                                    brandData.detected_brand
+                                )}
+                            </strong>
+
+                            <span>
+                                ${
+                                    brandData.is_impersonation
+                                        ? "Impersonation detected"
+                                        : "No impersonation"
+                                }
+                            </span>
+
+                            <span>
+                                Risk Score:
+                                ${brandData.risk_score ?? 0}
+                            </span>
+
+                        </div>
+
+                    </div>
+                    `
+                    : ""
+            }
+
+
+            ${
+                urlIntel.url
+                    ? `
+                    <div class="image-section">
+
+                        <span>QR URL INTELLIGENCE</span>
+
+                        <div class="image-url">
+
+                            <strong>
+                                ${escapeHtml(
+                                    urlIntel.url
+                                )}
+                            </strong>
+
+                            <span>
+                                Risk:
+                                ${urlIntel.risk_level || "—"}
+                            </span>
+
+                            <span>
+                                Score:
+                                ${urlIntel.risk_score ?? 0}
+                            </span>
+
+                        </div>
+
+                    </div>
+                    `
+                    : ""
+            }
+
+        `;
+
+        imageList.appendChild(card);
+    });
+
+
+    lucide.createIcons();
+
+    console.log("✅ Image Intelligence rendered");
+}
 
     function renderAttachmentIntelligence(email) {
 

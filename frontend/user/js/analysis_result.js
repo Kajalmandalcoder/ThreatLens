@@ -479,6 +479,12 @@ function renderTechnicalSummary(email) {
     const attachment = email.attachmentIntelligence || {};
     const journey = email.emailJourney || {};
     const ml = email.mlAnalysis || {};
+    const imageIntel = email.imageIntelligence || {};
+
+    const imageReason =
+        Array.isArray(imageIntel.reasons) && imageIntel.reasons.length > 0
+            ? imageIntel.reasons[0]
+            : "No image intelligence findings";
 
     // ==============================
     // AUTHENTICATION
@@ -616,6 +622,16 @@ function renderTechnicalSummary(email) {
             <span>Suspicious links</span>
             <strong>
                 ${urlCount} detected
+            </strong>
+        </div>
+
+        <div class="technical-item">
+            <span>Image Intelligence</span>
+            <strong>
+                ${escapeHtml(
+                    email.imageIntelligence?.reasons?.[0] ||
+                    "No image intelligence findings"
+                )}
             </strong>
         </div>
 

@@ -263,6 +263,10 @@
             Attachment Intelligence
         </button>
 
+        <button class="tab" data-tab="image-intelligence">
+            Image Intelligence
+        </button>
+
         <button class="tab" data-tab="campaign">
             Campaign
         </button>
@@ -959,6 +963,60 @@
         </div>
 
     </section>
+
+    <!-- IMAGE INTELLIGENCE -->
+     <div id="image-intelligence" class="tab-panel">
+
+    <div class="section-header">
+        <h2>Image Intelligence</h2>
+    </div>
+
+    <!-- Overall Summary -->
+    <div class="intelligence-grid">
+
+        <div class="info-card">
+            <span>Images Analyzed</span>
+            <strong id="images-analyzed">0</strong>
+        </div>
+
+        <div class="info-card">
+            <span>Overall Risk Score</span>
+            <strong id="image-overall-risk-score">0</strong>
+        </div>
+
+        <div class="info-card">
+            <span>Risk Level</span>
+            <strong id="image-risk-level">N/A</strong>
+        </div>
+
+        <div class="info-card">
+            <span>Verdict</span>
+            <strong id="image-verdict">N/A</strong>
+        </div>
+
+    </div>
+
+
+    <!-- Reasons -->
+    <div class="intelligence-section">
+        <h3>Risk Reasons</h3>
+
+        <ul id="image-reasons">
+            <!-- JS dynamically adds reasons -->
+        </ul>
+    </div>
+
+
+    <!-- Individual Images -->
+    <div class="intelligence-section">
+        <h3>Image Details</h3>
+
+        <div id="image-details-list">
+            <!-- JS dynamically adds each image's intelligence -->
+        </div>
+    </div>
+
+</div>
 
         <!-- CAMPAIGN -->
 

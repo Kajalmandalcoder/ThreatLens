@@ -4305,3 +4305,744 @@ body {
 #reportBtn:active {
     transform: translateY(1px);
 }
+
+/* =========================================================
+   IMAGE INTELLIGENCE - COMPLETE CSS
+========================================================= */
+
+
+/* =========================================================
+   MAIN IMAGE INTELLIGENCE PANEL
+========================================================= */
+
+#image-intelligence {
+    position: relative;
+
+    margin-top: 28px;
+    padding: 26px 36px 30px;
+
+    border: 1px solid #1c3040;
+    border-radius: 16px;
+
+    background-color: #09141f;
+
+    /* subtle dashboard grid */
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.018) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.018) 1px,
+            transparent 1px
+        );
+
+    background-size: 74px 74px;
+
+    overflow: hidden;
+}
+
+
+/* =========================================================
+   SECTION HEADER
+========================================================= */
+
+#image-intelligence .section-header {
+    margin-bottom: 20px;
+}
+
+#image-intelligence .section-header h2 {
+    margin: 0;
+
+    color: #dce6ef;
+
+    font-size: 21px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+
+/* THREAT INTELLIGENCE label */
+
+#image-intelligence .section-header::before {
+    content: "THREAT INTELLIGENCE";
+
+    display: block;
+
+    margin-bottom: 6px;
+
+    color: #20d5f5;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 1px;
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+========================================================= */
+
+#image-intelligence .intelligence-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 12px;
+
+    margin-bottom: 14px;
+}
+
+
+/* Summary card */
+
+#image-intelligence .info-card {
+    min-height: 58px;
+
+    padding: 12px 15px;
+
+    border: 1px solid #1c3040;
+    border-radius: 9px;
+
+    background: rgba(10, 23, 34, 0.92);
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* Summary hover */
+
+#image-intelligence .info-card:hover {
+    border-color: #1bcfeb;
+
+    box-shadow:
+        0 0 0 1px rgba(27, 207, 235, 0.05),
+        0 0 14px rgba(27, 207, 235, 0.06);
+
+    transform: translateY(-1px);
+}
+
+
+/* Summary label */
+
+#image-intelligence .info-card span {
+    display: block;
+
+    margin-bottom: 5px;
+
+    color: #6e8396;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    letter-spacing: 0.45px;
+
+    text-transform: uppercase;
+}
+
+
+/* Summary value */
+
+#image-intelligence .info-card strong {
+    display: block;
+
+    color: #d6e0e8;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    line-height: 1.2;
+}
+
+
+/* Risk score */
+
+#image-intelligence #image-overall-risk-score {
+    color: #ffb000;
+}
+
+
+/* Risk level */
+
+#image-intelligence #image-risk-level {
+    color: #ffb000;
+}
+
+
+/* Verdict */
+
+#image-intelligence #image-verdict {
+    color: #ff5050;
+}
+
+
+/* Dynamic risk classes */
+
+#image-intelligence #image-risk-level.safe {
+    color: #19d879;
+}
+
+#image-intelligence #image-risk-level.warning {
+    color: #ffb000;
+}
+
+#image-intelligence #image-risk-level.danger {
+    color: #ff5050;
+}
+
+
+/* =========================================================
+   GENERAL SECTION BOX
+========================================================= */
+
+#image-intelligence .intelligence-section {
+    margin-top: 14px;
+
+    padding: 15px 16px;
+
+    border: 1px solid #1c3040;
+    border-radius: 10px;
+
+    background: rgba(9, 21, 31, 0.94);
+}
+
+
+/* Section heading */
+
+#image-intelligence .intelligence-section > h3 {
+    margin: 0 0 11px;
+
+    color: #cbd6df;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    line-height: 1.3;
+}
+
+
+/* =========================================================
+   RISK REASONS
+========================================================= */
+
+#image-intelligence #image-reasons {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+
+/* Finding row */
+
+#image-intelligence #image-reasons .finding {
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+    min-height: 18px;
+}
+
+
+/* Finding icon */
+
+#image-intelligence #image-reasons .finding svg {
+    width: 14px;
+    height: 14px;
+
+    flex-shrink: 0;
+
+    color: #cbd8e2;
+
+    stroke-width: 1.8;
+}
+
+
+/* Finding text */
+
+#image-intelligence #image-reasons .finding span {
+    color: #aebbc7;
+
+    font-size: 9px;
+    font-weight: 500;
+
+    line-height: 1.45;
+}
+
+
+/* =========================================================
+   IMAGE DETAILS CONTAINER
+========================================================= */
+
+#image-intelligence #image-details-list {
+    display: grid;
+
+    grid-template-columns: 1fr;
+
+    gap: 14px;
+}
+
+
+/* =========================================================
+   INDIVIDUAL IMAGE CARD
+========================================================= */
+
+#image-intelligence .image-intelligence-card {
+    position: relative;
+
+    padding: 15px;
+
+    border: 1px solid #1c3242;
+    border-radius: 10px;
+
+    background-color: #0a1823;
+
+    /* grid inside every image card */
+    background-image:
+        linear-gradient(
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255, 255, 255, 0.025) 1px,
+            transparent 1px
+        );
+
+    background-size: 46px 46px;
+
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+/* =========================================================
+   IMAGE CARD HOVER
+========================================================= */
+
+#image-intelligence .image-intelligence-card:hover {
+    border-color: #16d5f4;
+
+    box-shadow:
+        0 0 0 1px rgba(22, 213, 244, 0.06),
+        0 0 20px rgba(22, 213, 244, 0.07);
+
+    transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   IMAGE CARD HEADER
+========================================================= */
+
+#image-intelligence .image-card-header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding-bottom: 10px;
+
+    margin-bottom: 10px;
+
+    border-bottom: 1px solid #1b2e3d;
+}
+
+
+/* Left side */
+
+#image-intelligence .image-card-header > div:first-child {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 4px;
+
+    min-width: 0;
+}
+
+
+/* IMAGE 1 / IMAGE 2 */
+
+#image-intelligence .image-card-header > div:first-child > span {
+    color: #71879a;
+
+    font-size: 8px;
+    font-weight: 800;
+
+    letter-spacing: 0.65px;
+}
+
+
+/* File name */
+
+#image-intelligence .image-card-header > div:first-child > strong {
+    display: block;
+
+    color: #d9e3eb;
+
+    font-size: 11px;
+    font-weight: 700;
+
+    line-height: 1.35;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   CARD RISK BADGE
+========================================================= */
+
+#image-intelligence .image-card-risk {
+    flex-shrink: 0;
+
+    padding: 5px 9px;
+
+    border: 1px solid #354a5a;
+    border-radius: 5px;
+
+    background: rgba(9, 20, 30, 0.8);
+
+    color: #aebdca;
+
+    font-size: 8px;
+    font-weight: 700;
+
+    line-height: 1;
+
+    white-space: nowrap;
+}
+
+
+/* =========================================================
+   IMAGE BASIC DATA GRID
+========================================================= */
+
+#image-intelligence .image-card-grid {
+    display: grid;
+
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+
+    gap: 8px;
+}
+
+
+/* =========================================================
+   BASIC DATA BOX
+========================================================= */
+
+#image-intelligence .image-card-grid > div {
+    min-width: 0;
+
+    padding: 9px 10px;
+
+    border: 1px solid #1a2e3d;
+    border-radius: 7px;
+
+    background: rgba(11, 25, 37, 0.88);
+
+    transition:
+        border-color 0.2s ease,
+        background 0.2s ease;
+}
+
+
+/* Small box hover */
+
+#image-intelligence .image-card-grid > div:hover {
+    border-color: #315264;
+
+    background: rgba(13, 29, 42, 0.95);
+}
+
+
+/* =========================================================
+   BASIC DATA LABEL
+========================================================= */
+
+#image-intelligence .image-card-grid > div > span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #6c8295;
+
+    font-size: 7.5px;
+    font-weight: 800;
+
+    letter-spacing: 0.45px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   BASIC DATA VALUE
+========================================================= */
+
+#image-intelligence .image-card-grid > div > strong {
+    display: block;
+
+    color: #c5d1da;
+
+    font-size: 10px;
+    font-weight: 600;
+
+    line-height: 1.35;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   IMAGE INFORMATION SECTIONS
+========================================================= */
+
+#image-intelligence .image-section {
+    margin-top: 8px;
+
+    padding: 9px 10px;
+
+    border: 1px solid #1a2e3d;
+    border-radius: 7px;
+
+    background: rgba(9, 21, 31, 0.82);
+
+    transition: border-color 0.2s ease;
+}
+
+
+/* Hover */
+
+#image-intelligence .image-section:hover {
+    border-color: #294859;
+}
+
+
+/* =========================================================
+   IMAGE SECTION LABEL
+========================================================= */
+
+#image-intelligence .image-section > span {
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: #6d8294;
+
+    font-size: 7.5px;
+    font-weight: 800;
+
+    letter-spacing: 0.45px;
+
+    text-transform: uppercase;
+}
+
+
+/* =========================================================
+   OCR TEXT
+========================================================= */
+
+#image-intelligence .image-section p {
+    margin: 0;
+
+    color: #a9b7c3;
+
+    font-size: 9px;
+    font-weight: 400;
+
+    line-height: 1.45;
+
+    word-break: break-word;
+}
+
+
+/* =========================================================
+   QR DATA
+========================================================= */
+
+#image-intelligence .image-qr {
+    color: #aab9c5;
+
+    font-size: 9px;
+
+    line-height: 1.45;
+
+    word-break: break-all;
+}
+
+
+/* Payload label */
+
+#image-intelligence .image-qr strong {
+    color: #899baa;
+
+    font-size: 9px;
+}
+
+
+/* QR URL */
+
+#image-intelligence .image-qr {
+    color: #32d4f4;
+}
+
+
+/* =========================================================
+   BRAND DETECTION
+========================================================= */
+
+#image-intelligence .image-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    flex-wrap: wrap;
+}
+
+
+/* Brand name */
+
+#image-intelligence .image-brand strong {
+    color: #d1dce5;
+
+    font-size: 10px;
+    font-weight: 700;
+}
+
+
+/* Brand information */
+
+#image-intelligence .image-brand span {
+    color: #9baebb;
+
+    font-size: 9px;
+
+    line-height: 1.4;
+}
+
+
+/* =========================================================
+   QR URL INTELLIGENCE
+========================================================= */
+
+#image-intelligence .image-url {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    flex-wrap: wrap;
+}
+
+
+/* URL */
+
+#image-intelligence .image-url strong {
+    color: #32d4f4;
+
+    font-size: 9px;
+    font-weight: 600;
+
+    word-break: break-all;
+}
+
+
+/* URL risk */
+
+#image-intelligence .image-url span {
+    color: #9baebb;
+
+    font-size: 9px;
+}
+
+
+/* =========================================================
+   EMPTY STATE
+========================================================= */
+
+#image-intelligence .image-empty {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 7px;
+
+    min-height: 80px;
+
+    color: #718698;
+
+    font-size: 10px;
+}
+
+
+/* Empty icon */
+
+#image-intelligence .image-empty svg {
+    width: 15px;
+    height: 15px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1100px) {
+
+    #image-intelligence {
+        padding: 24px;
+    }
+
+    #image-intelligence .intelligence-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    #image-intelligence .image-card-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 700px) {
+
+    #image-intelligence {
+        padding: 20px 16px;
+    }
+
+    #image-intelligence .intelligence-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #image-intelligence .image-card-grid {
+        grid-template-columns: 1fr;
+    }
+
+    #image-intelligence .image-card-header {
+        flex-direction: column;
+    }
+
+    #image-intelligence .image-card-risk {
+        align-self: flex-start;
+    }
+}
