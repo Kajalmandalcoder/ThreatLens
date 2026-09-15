@@ -394,17 +394,28 @@ try {
     .replace(/\s+/g, " ")
     .trim();
 
-  const emailText = [
+const cleanForML = (value = "") =>
+  String(value)
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/gi, " ")
+    .replace(/&amp;/gi, "&")
+    .replace(/&lt;/gi, "<")
+    .replace(/&gt;/gi, ">")
+    .replace(/\s+/g, " ")
+    .trim();
+
+const cleanPlainText = cleanForML(
+  parsedEmail.body?.plainText || ""
+);
+
+const emailText = [
   parsedEmail.headers?.subject || "",
-  parsedEmail.body?.plainText || "",
-  htmlText || ""
+  cleanPlainText
 ].join(" ").trim();
 
-  const mlExplanationText = [
-    parsedEmail.headers?.subject || "",
-    parsedEmail.body?.plainText || "",
-    htmlText || ""
-  ].join(" ").trim();
+const mlExplanationText = emailText;
 
   mlResult = await runMLPrediction(
     emailText,
@@ -530,8 +541,134 @@ try {
        imageIntelligence
     });
 
+// =====================================================
+// FINAL EVIDENCE-BASED RISK
+// ML prediction alone must NOT decide final threat level.
+// =====================================================
+
+const auth = headerForensics?.authentication_matrix || {};
+const identity = headerForensics?.identity_analysis || {};
+
+const spf = String(auth.spf || "").toUpperCase();
+const dkim = String(auth.dkim || "").toUpperCase();
+const dmarc = String(auth.dmarc || "").toUpperCase();
+
+const authPassCount = [spf, dkim, dmarc].filter(
+  (value) => value === "PASS"
+).length;
+
+const authFailCount = [spf, dkim, dmarc].filter(
+  (value) => value === "FAIL"
+).length;
+
+const isSpoofed = identity.is_spoofed === true;
+
+const socialRiskScore = Number(
+  socialEngineeringAnalysis?.risk_score || 0
+);
+
+const urlMaxScore = Number(
+  urlIntelligence?.summary?.max_risk_score || 0
+);
+
+const attachmentMaxScore = Number(
+  attachmentIntelligence?.summary?.max_attachment_risk_score || 0
+);
+
+const imageRiskScore = Number(
+  imageIntelligence?.overall_risk_score || 0
+);
+
+const prediction = String(
+  mlResult?.prediction || ""
+).toUpperCase();
+
+const confidence = Number(
+  mlResult?.confidence || 0
+);
+
+let finalRiskLevel = "REVIEW";
+
+// ---------------------------------------------
+// 1. DEFINITE / STRONG THREAT EVIDENCE
+// ---------------------------------------------
+
+const criticalEvidence =
+  prediction === "MALWARE" ||
+  attachmentMaxScore >= 75 ||
+  imageRiskScore >= 75 ||
+  urlMaxScore >= 75 ||
+  isSpoofed ||
+  authFailCount >= 2 ||
+  socialRiskScore >= 70;
+
+if (criticalEvidence) {
+  finalRiskLevel = "CRITICAL";
+}
+
+// ---------------------------------------------
+// 2. HIGH RISK
+// ---------------------------------------------
+
+else {
+
+  const highRiskEvidence =
+    (prediction === "PHISHING" && confidence >= 65) ||
+    (prediction === "BEC" && confidence >= 65) ||
+    (prediction === "SPAM" && confidence >= 70 && socialRiskScore >= 30) ||
+    urlMaxScore >= 50 ||
+    attachmentMaxScore >= 50 ||
+    imageRiskScore >= 50 ||
+    authFailCount === 1 ||
+    socialRiskScore >= 50;
+
+  if (highRiskEvidence) {
+    finalRiskLevel = "HIGH";
+  }
+
+  // ---------------------------------------------
+  // 3. LIKELY SAFE
+  // ---------------------------------------------
+
+  else {
+
+    const likelySafe =
+      prediction === "BENIGN" &&
+      confidence >= 50 &&
+      socialRiskScore < 30 &&
+      urlMaxScore < 30 &&
+      attachmentMaxScore < 30 &&
+      imageRiskScore < 30 &&
+      authFailCount === 0 &&
+      !isSpoofed;
+
+    if (likelySafe) {
+      finalRiskLevel = "LOW";
+    }
+
+    // ---------------------------------------------
+    // 4. SPAM ALONE IS NOT A CRITICAL THREAT
+    // ---------------------------------------------
+
+    else if (
+      prediction === "SPAM" &&
+      confidence < 70 &&
+      socialRiskScore < 30 &&
+      urlMaxScore < 50 &&
+      attachmentMaxScore < 50 &&
+      imageRiskScore < 50 &&
+      authFailCount === 0 &&
+      !isSpoofed
+    ) {
+      finalRiskLevel = "REVIEW";
+    }
+  }
+}
+
+
 // Merge all findings into the email document
-// Merge all findings into the email document
+
+
 parsedEmail.mlAnalysis = {
   success: mlResult?.success ?? false,
   prediction: mlResult?.prediction ?? null,
@@ -545,7 +682,7 @@ parsedEmail.mlAnalysis = {
 
   raw_label: mlResult?.raw_label ?? null,
   threatScore: mlResult?.threatScore ?? null,
-  riskLevel: mlResult?.riskLevel ?? null,
+  riskLevel: finalRiskLevel,
 
   model: {
     name: mlResult?.model?.name ?? null,
